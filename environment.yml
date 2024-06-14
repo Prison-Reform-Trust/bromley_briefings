@@ -12,8 +12,6 @@ dependencies:
 - notebook
 - jupyterlab
 - ipywidgets
-- cookiecutter
-- cookiecutter-data-science
 - python-dotenv
 - black
 - nbqa
