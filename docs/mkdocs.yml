@@ -1,8 +1,8 @@
-site_name: Prison Reform Trust Cookiecutter Data Science
-site_description: A project template and directory structure for Prison Reform Trust Python data projects.
-repo_url: https://github.com/Prison-Reform-Trust/prt-cookiecutter-data-science
+site_name: Prison Reform Trust—Bromley Briefings visualizations
+site_description: A home for information on producing the visualization used in the Bromley Briefings Prison Factfile.
+repo_url: https://github.com/Prison-Reform-Trust/bromley_briefings
 edit_uri: edit/master/docs/docs
-copyright: Written by Prison Reform Trust. This project is heavily indebted to <a target=_blanks href="https://www.drivendata.org">DrivenData</a> and <a target=_blanks href="https://github.com/hackalog/easydata">EasyData</a>.
+copyright: Written by Prison Reform Trust.
 markdown_extensions:
   - admonition
   - pymdownx.details
