@@ -1,0 +1,5 @@
+# File paths
+- data:
+    rawFilePath: data/raw/
+    interimFilePath: data/interim/
+    processedPath: data/processed/
