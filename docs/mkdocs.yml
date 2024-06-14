@@ -48,7 +48,4 @@ extra_css:
   - css/extra.css
 nav:
   - Welcome: index.md
-  - Setting up a development environment: setting-up-a-development-environment.md
-  - Starting a new project: starting-a-new-project.md
-  - Updating your environment: updating-your-environment.md
-  - Opinions: opinions.md
+  - Data catalogue: data-catalogue.md
