@@ -2,7 +2,7 @@ site_name: Prison Reform Trust—Bromley Briefings visualizations
 site_description: A home for information on producing the visualization used in the Bromley Briefings Prison Factfile.
 repo_url: https://github.com/Prison-Reform-Trust/bromley_briefings
 edit_uri: edit/master/docs/docs
-copyright: Written by Prison Reform Trust.
+copyright: Written by <a href=https://prisonreformtrust.org.uk/>Prison Reform Trust</a>
 markdown_extensions:
   - admonition
   - pymdownx.details
