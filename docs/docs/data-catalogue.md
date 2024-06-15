@@ -1,5 +1,10 @@
 # Data catalogue
 
+## Introduction
+We draw from a wide range of different sources in order to write and visualize the findings of our analysis. However, the majority of our visualizations rely on data from two main bodies (1) Gov.uk statistical publications and (2) Parliament.uk written questions.
+
+This section lists the data sources which we have drawn from for the latest release of the Bromley Briefings Prison Factfile and which are downloaded by the project's data downloader.
+
 ## Gov.uk
 ### [Offender management statistics quarterly: October to December 2023](https://www.gov.uk/government/statistics/offender-management-statistics-quarterly-october-to-december-2023)
 
@@ -44,3 +49,5 @@
 * [MONTHLY DATASET TO BE ADDED]
 
 ### [Proven reoffending statistics: April to June 2022](https://www.gov.uk/government/statistics/proven-reoffending-statistics-april-to-june-2022)
+
+## Parliament.uk
