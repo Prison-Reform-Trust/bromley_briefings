@@ -49,3 +49,4 @@ extra_css:
 nav:
   - Welcome: index.md
   - Data catalogue: data-catalogue.md
+  - Opinions: opinions.md
