@@ -90,3 +90,6 @@ target/
 
 # environment files
 /envs
+
+# report figure files
+*.svg
