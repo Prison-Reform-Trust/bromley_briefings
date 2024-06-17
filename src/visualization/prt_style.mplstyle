@@ -1,0 +1,70 @@
+#PRT Matplotlib stylesheet
+##Created by Alex Hewson
+##Last updated 31 December 2023
+
+### FIGURE
+figure.facecolor: white
+figure.figsize: 3.5, 2.8
+figure.dpi: 100
+figure.titlesize: 14
+figure.titleweight: bold
+
+### LINES
+lines.linewidth: 1.5
+lines.markersize: 6.0
+
+### PATCHES
+patch.facecolor: 0072B2
+patch.linewidth: 1.0
+
+### LEGEND
+legend.fontsize: 6
+legend.title_fontsize: 12
+
+### TICKS
+xtick.bottom: False
+ytick.left: False
+xtick.labelsize: 8
+ytick.labelsize: 8
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+xtick.minor.width: 0.6
+ytick.minor.width: 0.6
+xtick.major.size: 3.5
+ytick.major.size: 3.5
+xtick.minor.size: 2.0
+ytick.minor.size: 2.0
+xtick.color: 454545
+ytick.color: 454545
+
+
+### FONTS
+font.family: sans-serif
+font.sans-serif: Helvetica, Arial, sans-serif
+font.size: 8
+text.color: 454545
+
+### AXES
+axes.grid: True
+axes.grid.axis: y
+axes.facecolor: white
+axes.edgecolor: lightgray
+axes.titlesize: 14
+axes.titlecolor: 454545
+axes.titleweight: bold
+axes.titlepad: 10
+axes.linewidth: 0.8
+axes.labelsize: 8
+axes.labelpad: 8
+axes.labelcolor: 454545
+axes.spines.top: False
+axes.spines.bottom: False
+axes.spines.right: False
+axes.spines.left: False
+axes.prop_cycle : cycler(color=['A01D28','499CC9','F9A237','6FBA3A','573D6B'])
+
+### GRID
+grid.linestyle: -
+grid.linewidth: 0.5
+grid.color: lightgray
+grid.alpha: 0.5
