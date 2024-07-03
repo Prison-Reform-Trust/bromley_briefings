@@ -4,11 +4,12 @@
 
 import plotly.io as pio
 import plotly.graph_objs as go
+import textwrap
 
 #PRT standard template
 pio.templates["prt_template"] = go.layout.Template(
     layout=go.Layout(
-        title_font=dict(family="Helvetica Neue, Arial", size=17),
+        title_font=dict(family="Helvetica Neue, Arial", size=20),
         title_y=0.94,
         title_yanchor="bottom",
         font_color="#54565B",
@@ -68,3 +69,15 @@ def add_annotation(
             font_size=font_size,
         )
     )
+
+def add_title(
+        fig, 
+        title, 
+        width=60,
+        bold=True):
+    
+    if bold:
+        title = textwrap.wrap(f'<b>{title}</b>', width=width)
+    else:
+        title = textwrap.wrap(f'{title}', width=width)
+    fig.update_layout(title="<br>".join(title))
