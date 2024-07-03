@@ -26,6 +26,13 @@ pio.templates["prt_template"] = go.layout.Template(
         height=500,
     )
 )
+pio.templates["prt_template"].data.scatter = [
+    go.Scatter(
+        line_width=4,
+        marker_size=10
+        )
+        ]
+
 ## Chart annotations
 def add_annotation(
     annotations_list,
