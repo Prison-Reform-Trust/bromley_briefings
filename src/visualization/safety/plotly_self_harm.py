@@ -2,14 +2,25 @@
 # -*- coding: utf-8 -*-
 
 # Importing libraries
+import os
+
+import chart_studio
+import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-import textwrap
-from datetime import datetime
+from dotenv import find_dotenv, load_dotenv
 
 from src.visualization import prt_theme
 
+##Loading environment variables
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+##Adding plotly credentials
+chart_studio.tools.set_credentials_file(
+    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
+)
 #Setting default Plotly template
 pio.templates.default = "prt_template"
 
@@ -54,4 +65,4 @@ prt_theme.add_annotation(annotations, "Self-harm incidents per 1,000 prisoners",
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
 
-fig.show()
+py.plot(fig, filename="self_harm")
