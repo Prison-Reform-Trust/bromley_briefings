@@ -26,17 +26,44 @@ pio.templates["prt_template"] = go.layout.Template(
     )
 )
 ## Chart annotations
-def source_annotation(source, annotations_list):
+def add_annotation(
+    annotations_list,
+    text,
+    x=None,
+    y=None,
+    xref="paper",
+    yref="paper",
+    xanchor="left",
+    yanchor="top",
+    showarrow=False,
+    font_size=12,
+    annotation_type="custom",
+    dataframe=None,
+    dataframe_column=None
+):
+    if annotation_type == "source":
+        text = f"Source: {text}"
+        x = 0 if x is None else x
+        y = -0.19 if y is None else y
+    elif annotation_type == "y-axis":
+        # Set x to the first value of the specified dataframe column if provided
+        if dataframe is not None and dataframe_column is not None:
+            x = dataframe[dataframe_column].iloc[0]
+            xref = "x"
+        else:
+            x = 0 if x is None else x
+        y = 1 if y is None else y
+
     annotations_list.append(
         dict(
-            xref="paper",
-            yref="paper",
-            xanchor="left",
-            yanchor="top",
-            x=-0.08,
-            y=-0.19,
-            showarrow=False,
-            text=f"Source: {source}",
-            font_size=12,
+            xref=xref,
+            yref=yref,
+            xanchor=xanchor,
+            yanchor=yanchor,
+            x=x,
+            y=y,
+            showarrow=showarrow,
+            text=text,
+            font_size=font_size,
         )
     )
