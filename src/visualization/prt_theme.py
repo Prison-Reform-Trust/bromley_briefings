@@ -43,6 +43,7 @@ def add_annotation(
     yref="paper",
     xanchor="left",
     yanchor="top",
+    align=None,
     showarrow=False,
     font_size=14,
     annotation_type="custom",
@@ -52,6 +53,7 @@ def add_annotation(
     if annotation_type == "source":
         text = f"Source: {text}"
         font_size=12
+        align = "left"
         x = 0 if x is None else x
         y = -0.1 if y is None else y
     elif annotation_type == "y-axis":
@@ -71,9 +73,11 @@ def add_annotation(
             yanchor=yanchor,
             x=x,
             y=y,
+            align=align,
             showarrow=showarrow,
             text=text,
             font_size=font_size,
+
         )
     )
 
