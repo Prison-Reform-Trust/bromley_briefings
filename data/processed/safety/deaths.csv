@@ -1,0 +1,14 @@
+ids,death_type,value,parent
+Total deaths,Total deaths,291,
+Self-inflicted,Self-inflicted,85,Total deaths
+Self-inflicted - Male,Male,82,Self-inflicted
+Self-inflicted - Female,Female,3,Self-inflicted
+Natural causes,Natural causes,171,Total deaths
+Natural causes - Male,Male,168,Natural causes
+Natural causes - Female,Female,3,Natural causes
+Homicide,Homicide,1,Total deaths
+Homicide - Male,Male,1,Homicide
+Homicide - Female,Female,0,Homicide
+Other,Other,34,Total deaths
+Other - Male,Male,31,Other
+Other - Female,Female,3,Other
