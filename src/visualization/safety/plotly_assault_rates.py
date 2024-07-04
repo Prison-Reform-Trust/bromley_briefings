@@ -94,7 +94,7 @@ annotations = []
 prt_theme.add_title(fig, "Assaults and serious assaults declined during the pandemic—but are rising again")
 
 # Add source annotation with default placement
-prt_theme.add_annotation(annotations, "Table 3.1, Ministry of Justice (2024). Safety in custody:\nQuarterly update to December 2023.", annotation_type="source")
+prt_theme.add_annotation(annotations, "Table 3.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
 prt_theme.add_annotation(annotations, "Incidents per 1,000 prisoners", annotation_type="y-axis", y=1.05)
