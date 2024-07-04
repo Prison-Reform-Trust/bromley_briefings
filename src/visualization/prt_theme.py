@@ -87,4 +87,6 @@ def add_title(
         title = textwrap.wrap(f'<b>{title}</b>', width=width)
     else:
         title = textwrap.wrap(f'{title}', width=width)
-    fig.update_layout(title="<br>".join(title))
+    fig.update_layout(
+        title="<br>".join(title),
+        title_automargin=True)
