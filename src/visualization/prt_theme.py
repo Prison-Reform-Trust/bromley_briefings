@@ -36,7 +36,7 @@ pio.templates["prt_template"].data.scatter = [
 ## Chart annotations
 def add_annotation(
     annotations_list,
-    text,
+    text=None,
     x=None,
     y=None,
     xref="paper",
@@ -46,13 +46,17 @@ def add_annotation(
     align=None,
     showarrow=False,
     font_size=14,
+    font_color=None,
     annotation_type="custom",
     dataframe=None,
-    dataframe_column=None
+    dataframe_column=None,
+    trace_list=None
 ):
     if annotation_type == "source":
+        if text is None:
+            raise ValueError("Text must be provided for source annotation.")
         text = f"Source: {text}"
-        font_size=12
+        font_size = 12
         align = "left"
         x = 0 if x is None else x
         y = -0.1 if y is None else y
@@ -64,7 +68,35 @@ def add_annotation(
         else:
             x = 0 if x is None else x
         y = 1.1 if y is None else y
+    elif annotation_type == "trace_label":
+        if trace_list is not None:
+            for j in range(len(trace_list)):
+                trace = trace_list[j]
+                x = trace.x[-1]
+                y = trace.y[-1]
+                text = str(trace.name)
+                font_color = pio.templates['prt_template'].layout.colorway[j]
+                
+                annotations_list.append(
+                    dict(
+                        xref="x",
+                        yref="y",
+                        xanchor=xanchor,
+                        yanchor=yanchor,
+                        x=x,
+                        y=y,
+                        align=align,
+                        showarrow=showarrow,
+                        text=text,
+                        font_size=font_size,
+                        font_color=font_color
+                    )
+                )
+            return  # Return early since we are appending multiple annotations
+        else:
+            raise ValueError("You must supply a valid trace_list")
 
+    # Append the annotation for other types or source/y-axis annotations
     annotations_list.append(
         dict(
             xref=xref,
@@ -77,7 +109,7 @@ def add_annotation(
             showarrow=showarrow,
             text=text,
             font_size=font_size,
-
+            font_color=font_color
         )
     )
 
