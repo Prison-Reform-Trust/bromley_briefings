@@ -47,11 +47,16 @@ def add_annotation(
     showarrow=False,
     font_size=14,
     font_color=None,
-    annotation_type="custom",
+    annotation_type=None,
     dataframe=None,
     dataframe_column=None,
     trace_list=None
 ):
+    annotation_types = {"source", "y-axis", "trace_label"}
+
+    if annotation_type not in annotation_types:
+        raise ValueError(f"You must supply a valid annotation_type from {annotation_types}")
+
     if annotation_type == "source":
         if text is None:
             raise ValueError("Text must be provided for source annotation.")
@@ -60,18 +65,18 @@ def add_annotation(
         align = "left"
         x = 0 if x is None else x
         y = -0.1 if y is None else y
+
     elif annotation_type == "y-axis":
-        # Set x to the first value of the specified dataframe column if provided
         if dataframe is not None and dataframe_column is not None:
             x = dataframe[dataframe_column].iloc[0]
             xref = "x"
         else:
             x = 0 if x is None else x
         y = 1.1 if y is None else y
+
     elif annotation_type == "trace_label":
         if trace_list is not None:
-            for j in range(len(trace_list)):
-                trace = trace_list[j]
+            for j, trace in enumerate(trace_list):
                 x = trace.x[-1]
                 y = trace.y[-1]
                 text = str(trace.name)
@@ -92,7 +97,7 @@ def add_annotation(
                         font_color=font_color
                     )
                 )
-            return  # Return early since we are appending multiple annotations
+            return
         else:
             raise ValueError("You must supply a valid trace_list")
 
@@ -112,6 +117,7 @@ def add_annotation(
             font_color=font_color
         )
     )
+
 
 def add_title(
         fig, 
