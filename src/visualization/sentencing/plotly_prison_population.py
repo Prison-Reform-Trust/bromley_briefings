@@ -85,11 +85,12 @@ fig.add_trace(
 )
 
 # Set y-axes range
-fig.update_yaxes(range=[0, 120000],
+fig.update_yaxes(range=[0, 120500],
                 dtick=20000)
 
 # Set x-axes range
-fig.update_xaxes(range=['1989-1-1', '2029-01-01'])
+fig.update_xaxes(range=['1989-1-1', '2029-01-01'],
+                dtick="M60")
 
 # Axis parameter adjustments
 fig.update_layout(
