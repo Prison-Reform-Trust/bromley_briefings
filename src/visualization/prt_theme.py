@@ -1,6 +1,6 @@
 #Custom Plotly template for all charts in this project
 ##Created by Alex Hewson
-##Last updated 3 July 2024
+##Last updated 10 July 2024
 
 import plotly.io as pio
 import plotly.graph_objs as go
