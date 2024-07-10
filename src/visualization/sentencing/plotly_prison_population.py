@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Importing libraries
+import os
+
+import chart_studio
+import chart_studio.plotly as py
+import pandas as pd
+import plotly.graph_objs as go
+import plotly.io as pio
+from plotly.subplots import make_subplots
+from dotenv import find_dotenv, load_dotenv
+
+from src.visualization import prt_theme
+
+##Loading environment variables
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+##Adding plotly credentials
+chart_studio.tools.set_credentials_file(
+    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
+)
+#Setting default Plotly template and assigning attributes to prt_template
+pio.templates.default = "prt_template"
+prt_template = prt_theme.pio.templates['prt_template']
+
+#Read in datasets
+df = pd.read_csv("data/processed/sentencing/prison_population_inc_projections.csv")
+
+## Plotting
+# Create figure with secondary y-axis
+fig = go.Figure()
+
+fig.add_trace(
+    go.Scatter(
+        name="Prison population",
+        x=df["date"],
+        y=df["population"],
+        mode="lines",
+        hovertemplate="%{y} prisoners",
+        # xperiodalignment="start",
+    ),
+)
+
+fig.add_trace(
+    go.Scatter(
+        name='Lower projection',
+        x=df['date'],
+        y=df['l_projection'],
+        marker=dict(color="#444"),
+        line_width=0,
+        mode='lines',
+        fillcolor='rgba(68, 68, 68, 0.3)',
+        hovertemplate="%{y} prisoners",
+        ),
+)
+
+fig.add_trace(
+    go.Scatter(
+        name='Central projection',
+        x=df['date'],
+        y=df['c_projection'],
+        marker_color=prt_template.layout.colorway[0],
+        mode='lines',
+        line_dash="dot",
+        fillcolor='rgba(68, 68, 68, 0.3)',
+        fill='tonexty',
+        hovertemplate="%{y} prisoners",
+        ),
+)
+
+fig.add_trace(
+    go.Scatter(
+        name='High projection',
+        x=df['date'],
+        y=df['h_projection'],
+        marker=dict(color="#444"),
+        line_width=0,
+        mode='lines',
+        fillcolor='rgba(68, 68, 68, 0.3)',
+        fill='tonexty',
+        hovertemplate="%{y} prisoners",
+        ),
+)
+
+# Set y-axes range
+fig.update_yaxes(range=[0, 120000],
+                dtick=20000)
+
+# Set x-axes range
+fig.update_xaxes(range=['1989-1-1', '2029-01-01'])
+
+# Axis parameter adjustments
+fig.update_layout(
+    xaxis_ticks="inside",
+    yaxis_tickformat= ",.0f",
+    hovermode="x",
+    margin_pad = 5)
+
+## Chart annotations
+annotations = []
+
+# Add title
+prt_theme.add_title(fig, "The prison population has risen by 93% in the last 30 years—it is predicted to rise by around 17,000 people by 2026")
+
+# Add source annotation with default placement
+prt_theme.add_annotation(annotations, ("Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
+                                        "Ministry of Justice (2024). Population and capacity briefing for 5 July 2024.<br>"
+                                        "Ministry of Justice (2024). Prison population projections: 2023 to 2028."), 
+                                        annotation_type="source")
+
+# Add y-axis label annotation with placement based on dataframe column
+prt_theme.add_annotation(annotations, "People in prison", annotation_type="y-axis", y=1.05)
+
+# Adding annotations to layout
+fig.update_layout(annotations=annotations)
+
+py.plot(fig, filename="prison_population_inc_projections")
