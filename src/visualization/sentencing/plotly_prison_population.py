@@ -9,7 +9,6 @@ import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from plotly.subplots import make_subplots
 from dotenv import find_dotenv, load_dotenv
 from matplotlib import colors
 
