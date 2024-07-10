@@ -39,8 +39,7 @@ fig.add_trace(
         x=df["date"],
         y=df["population"],
         mode="lines",
-        hovertemplate="%{y} prisoners",
-        # xperiodalignment="start",
+        hovertemplate="%{y} prisoners<extra></extra>",
     ),
 )
 
