@@ -11,6 +11,7 @@ import plotly.graph_objs as go
 import plotly.io as pio
 from plotly.subplots import make_subplots
 from dotenv import find_dotenv, load_dotenv
+from matplotlib import colors
 
 from src.visualization import prt_theme
 
@@ -25,6 +26,7 @@ chart_studio.tools.set_credentials_file(
 #Setting default Plotly template and assigning attributes to prt_template
 pio.templates.default = "prt_template"
 prt_template = prt_theme.pio.templates['prt_template']
+PROJECTION_SHADING = f'rgba{colors.to_rgba(prt_template.layout.colorway[0], alpha=0.2)}'
 
 #Read in datasets
 df = pd.read_csv("data/processed/sentencing/prison_population_inc_projections.csv")
@@ -51,7 +53,7 @@ fig.add_trace(
         marker=dict(color="#444"),
         line_width=0,
         mode='lines',
-        fillcolor='rgba(68, 68, 68, 0.3)',
+        fillcolor=PROJECTION_SHADING,
         hovertemplate="%{y} prisoners",
         ),
 )
@@ -64,7 +66,7 @@ fig.add_trace(
         marker_color=prt_template.layout.colorway[0],
         mode='lines',
         line_dash="dot",
-        fillcolor='rgba(68, 68, 68, 0.3)',
+        fillcolor=PROJECTION_SHADING,
         fill='tonexty',
         hovertemplate="%{y} prisoners",
         ),
@@ -78,7 +80,7 @@ fig.add_trace(
         marker=dict(color="#444"),
         line_width=0,
         mode='lines',
-        fillcolor='rgba(68, 68, 68, 0.3)',
+        fillcolor=PROJECTION_SHADING,
         fill='tonexty',
         hovertemplate="%{y} prisoners",
         ),
