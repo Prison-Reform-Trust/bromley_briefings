@@ -53,7 +53,7 @@ for i in df["type"].unique():
 
 fig.add_traces(trace_list)
 
-# Set y-axes titles
+# Set y-axes range
 fig.update_yaxes(range=[-31, 11])
 
 # Axis parameter adjustments
