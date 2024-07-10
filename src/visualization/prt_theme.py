@@ -36,7 +36,7 @@ pio.templates["prt_template"].data.scatter = [
 ## Chart annotations
 def add_annotation(
     annotations_list,
-    text,
+    text=None,
     x=None,
     y=None,
     xref="paper",
@@ -46,18 +46,27 @@ def add_annotation(
     align=None,
     showarrow=False,
     font_size=14,
-    annotation_type="custom",
+    font_color=None,
+    annotation_type=None,
     dataframe=None,
-    dataframe_column=None
+    dataframe_column=None,
+    trace_list=None
 ):
+    annotation_types = {"source", "y-axis", "trace_label"}
+
+    if annotation_type not in annotation_types:
+        raise ValueError(f"You must supply a valid annotation_type from {annotation_types}")
+
     if annotation_type == "source":
+        if text is None:
+            raise ValueError("Text must be provided for source annotation.")
         text = f"Source: {text}"
-        font_size=12
+        font_size = 12
         align = "left"
         x = 0 if x is None else x
         y = -0.1 if y is None else y
+
     elif annotation_type == "y-axis":
-        # Set x to the first value of the specified dataframe column if provided
         if dataframe is not None and dataframe_column is not None:
             x = dataframe[dataframe_column].iloc[0]
             xref = "x"
@@ -65,6 +74,34 @@ def add_annotation(
             x = 0 if x is None else x
         y = 1.1 if y is None else y
 
+    elif annotation_type == "trace_label":
+        if trace_list is not None:
+            for j, trace in enumerate(trace_list):
+                x = trace.x[-1]
+                y = trace.y[-1]
+                text = str(trace.name)
+                font_color = pio.templates['prt_template'].layout.colorway[j]
+                
+                annotations_list.append(
+                    dict(
+                        xref="x",
+                        yref="y",
+                        xanchor=xanchor,
+                        yanchor=yanchor,
+                        x=x,
+                        y=y,
+                        align=align,
+                        showarrow=showarrow,
+                        text=text,
+                        font_size=font_size,
+                        font_color=font_color
+                    )
+                )
+            return
+        else:
+            raise ValueError("You must supply a valid trace_list")
+
+    # Append the annotation for other types or source/y-axis annotations
     annotations_list.append(
         dict(
             xref=xref,
@@ -77,9 +114,10 @@ def add_annotation(
             showarrow=showarrow,
             text=text,
             font_size=font_size,
-
+            font_color=font_color
         )
     )
+
 
 def add_title(
         fig, 
