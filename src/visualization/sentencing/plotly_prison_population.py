@@ -103,7 +103,7 @@ fig.update_layout(
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "The prison population has risen by 93% in the last 30 years—it is predicted to rise by around 17,000 people by 2026")
+prt_theme.add_title(fig, "The prison population has risen by 93% in the last 30 years—and it is predicted to rise further still")
 
 # Add source annotation with default placement
 prt_theme.add_annotation(annotations, ("Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
