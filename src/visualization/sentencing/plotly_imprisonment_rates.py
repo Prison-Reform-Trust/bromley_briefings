@@ -44,18 +44,21 @@ fig.add_trace(
 fig.update_yaxes(
     type='category',
     autorange="reversed",
-    automargin=True)
+    automargin=True,
+    domain=[0,0.95]
+    )
 
 fig.update_layout(
     xaxis_ticks="inside",
     margin_pad = 5,
+    margin_t = 20
     )
 
 ## Chart annotations
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "Scotland and England & Wales have the highest imprisonment rates in western Europe")
+# prt_theme.add_title(fig, "Scotland and England & Wales have the highest imprisonment rates in western Europe")
 
 # Add source annotation with default placement
 prt_theme.add_annotation(annotations, "World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.", annotation_type="source")

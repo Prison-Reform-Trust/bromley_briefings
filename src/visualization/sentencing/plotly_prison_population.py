@@ -86,8 +86,12 @@ fig.add_trace(
 )
 
 # Set y-axes range
-fig.update_yaxes(range=[0, 120500],
-                dtick=20000)
+fig.update_yaxes(
+    range=[0, 120500],
+    dtick=20000,
+    automargin=True,
+    domain=[0,0.95]
+    )
 
 # Set x-axes range
 fig.update_xaxes(range=['1989-1-1', '2029-01-01'],
@@ -98,7 +102,8 @@ fig.update_layout(
     xaxis_ticks="inside",
     yaxis_tickformat= ",.0f",
     hovermode="x",
-    margin_pad = 5)
+    margin_pad = 5,
+    margin_t = 20)
 
 ## Chart annotations
 annotations = []
