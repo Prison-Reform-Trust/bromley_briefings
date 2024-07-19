@@ -38,17 +38,18 @@ fig.add_trace(
         text = df['rate'],
         texttemplate="%{x:,.0f}",
         textposition="outside",
+        cliponaxis = False,
     ),
 )
 fig.update_yaxes(
     type='category',
-    autorange="reversed")
+    autorange="reversed",
+    automargin=True)
 
 fig.update_layout(
     xaxis_ticks="inside",
     margin_pad = 5,
-    xaxis_domain=[0.06,1],
-    margin_r=20)
+    )
 
 ## Chart annotations
 annotations = []
