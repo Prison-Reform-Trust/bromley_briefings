@@ -94,8 +94,9 @@ fig.update_yaxes(
     )
 
 # Set x-axes range
-fig.update_xaxes(range=['1989-1-1', '2029-01-01'],
-                dtick="M60")
+fig.update_xaxes(
+    range=['1989-1-1', '2031-01-01'],
+    )
 
 # Axis parameter adjustments
 fig.update_layout(
