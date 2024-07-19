@@ -110,13 +110,13 @@ fig.update_layout(
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "The prison population has risen by 93% in the last 30 years—and it is predicted to rise further still")
+# prt_theme.add_title(fig, "The prison population has risen by 93% in the last 30 years—and it is predicted to rise further still")
 
 # Add source annotation with default placement
-prt_theme.add_annotation(annotations, ("Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
-                                        "Ministry of Justice (2024). Population and capacity briefing for 5 July 2024.<br>"
-                                        "Ministry of Justice (2024). Prison population projections: 2023 to 2028."), 
-                                        annotation_type="source")
+# prt_theme.add_annotation(annotations, ("Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
+#                                         "Ministry of Justice (2024). Population and capacity briefing for 5 July 2024.<br>"
+#                                         "Ministry of Justice (2024). Prison population projections: 2023 to 2028."), 
+#                                         annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
 prt_theme.add_annotation(annotations, "People in prison", annotation_type="y-axis", y=1.05)
