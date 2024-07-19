@@ -1,6 +1,6 @@
 #Custom Plotly template for all charts in this project
 ##Created by Alex Hewson
-##Last updated 10 July 2024
+##Last updated 19 July 2024
 
 import plotly.io as pio
 import plotly.graph_objs as go
@@ -72,7 +72,7 @@ def add_annotation(
             xref = "x"
         else:
             x = 0 if x is None else x
-        y = 1.1 if y is None else y
+        y = 1 if y is None else y
 
     elif annotation_type == "trace_label":
         if trace_list is not None:
@@ -122,13 +122,20 @@ def add_annotation(
 def add_title(
         fig, 
         title, 
-        width=60,
+        width=40,
         bold=True):
     
+    title = textwrap.wrap(f"{title}", width=width)
+    font_size = "1.5rem"
+    title.append("</span>")
+    
     if bold:
-        title = textwrap.wrap(f'<b>{title}</b>', width=width)
+        span_start = f"<span style='font-size:{font_size};font-weight:bold'>"
     else:
-        title = textwrap.wrap(f'{title}', width=width)
+        span_start = f"<span style='font-size:{font_size}>"
+    
+    title = span_start + "<br>".join(title)
+
     fig.update_layout(
-        title="<br>".join(title),
+        title=title,
         title_automargin=True)
