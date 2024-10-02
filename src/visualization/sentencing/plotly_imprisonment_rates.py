@@ -51,7 +51,7 @@ fig.update_yaxes(
 fig.update_layout(
     xaxis_ticks="inside",
     margin_pad = 5,
-    margin_t = 20
+    margin = dict(t=20, b=25, l=0, r=25),
     )
 
 ## Chart annotations
@@ -61,7 +61,7 @@ annotations = []
 # prt_theme.add_title(fig, "Scotland and England & Wales have the highest imprisonment rates in western Europe")
 
 # Add source annotation with default placement
-prt_theme.add_annotation(annotations, "World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.", annotation_type="source")
+# prt_theme.add_annotation(annotations, "World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.", annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
 prt_theme.add_annotation(annotations, "People in prison per 100,000 population", annotation_type="y-axis", xref="x", y=1.05)

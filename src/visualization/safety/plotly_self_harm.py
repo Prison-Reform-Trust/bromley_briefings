@@ -48,16 +48,18 @@ fig.update_yaxes(
 
 fig.update_layout(
     xaxis_ticks="inside",
-    margin_pad = 5)
+    margin_pad = 5,
+    margin = dict(t=20, b=25, l=40, r=25),
+    )
 
 ## Chart annotations
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "Rates of self-harm remain at historic highs")
+# prt_theme.add_title(fig, "Rates of self-harm remain at historic highs")
 
 # Add source annotation with default placement
-prt_theme.add_annotation(annotations, "Table 2.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
+# prt_theme.add_annotation(annotations, "Table 2.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
 prt_theme.add_annotation(annotations, "Self-harm incidents per 1,000 prisoners", annotation_type="y-axis", y=1.05)
