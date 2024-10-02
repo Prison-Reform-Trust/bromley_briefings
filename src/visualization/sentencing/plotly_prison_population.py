@@ -82,6 +82,7 @@ fig.add_trace(
         fillcolor=PROJECTION_SHADING,
         fill='tonexty',
         hovertemplate="%{y} prisoners",
+        cliponaxis = False,
         ),
 )
 
@@ -104,7 +105,8 @@ fig.update_layout(
     yaxis_tickformat= ",.0f",
     hovermode="x",
     margin_pad = 5,
-    margin_t = 20)
+    margin = dict(t=20, b=25, l=0, r=25),
+    )
 
 ## Chart annotations
 annotations = []
