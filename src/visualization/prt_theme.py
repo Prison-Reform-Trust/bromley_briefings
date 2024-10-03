@@ -4,7 +4,9 @@
 
 import plotly.io as pio
 import plotly.graph_objs as go
+import pandas as pd
 import textwrap
+from typing import Optional, Literal
 
 #PRT standard template
 pio.templates["prt_template"] = go.layout.Template(
@@ -119,7 +121,6 @@ def add_annotation(
         )
     )
 
-
 def add_title(
         fig, 
         title, 
@@ -143,3 +144,56 @@ def add_title(
         title_yref='container',
         title_xanchor='left',
         title_x=0)
+    
+def set_axis_range(
+    fig: go.Figure,
+    axis: Literal["x", "y"],
+    dataframe: Optional[pd.DataFrame] = None,
+    dataframe_column: Optional[str] = None,
+    min_value: Optional[float] = None,
+    max_value: Optional[float] = None
+) -> None:
+    """
+    Sets the axis range manually or based on a dataframe's column.
+
+    Parameters
+    ----------
+    fig : go.Figure
+        Target Plotly figure.
+
+    axis : Literal["x", "y"]
+        Axis to apply the range transformation ('x' or 'y').
+
+    dataframe : pd.DataFrame, optional
+        DataFrame for automatic calculation of min and/or max value if not provided.
+
+    dataframe_column : str, optional
+        Column in the DataFrame to calculate the axis range from.
+
+    min_value : float, optional
+        Minimum value for the axis range. Automatically calculated if not provided.
+
+    max_value : float, optional
+        Maximum value for the axis range. Automatically calculated if not provided.
+
+    Raises
+    ------
+    ValueError
+        If `min_value` or `max_value` is not provided and `dataframe` or `dataframe_column` is missing.
+    """
+
+    axis_update_funcs = {
+        "x": fig.update_xaxes,
+        "y": fig.update_yaxes
+    }
+
+    if min_value is None or max_value is None:
+        if dataframe is None or dataframe_column is None:
+            raise ValueError("Both dataframe and dataframe_column must be provided if min_value or max_value is None.")
+        
+        padding = (dataframe[dataframe_column].max() - dataframe[dataframe_column].min()) / len(dataframe[dataframe_column])
+        min_value = dataframe[dataframe_column].min() - padding if min_value is None else min_value
+        max_value = dataframe[dataframe_column].max() + padding if max_value is None else max_value
+
+    if axis in axis_update_funcs:
+        axis_update_funcs[axis](range=[min_value, max_value])
