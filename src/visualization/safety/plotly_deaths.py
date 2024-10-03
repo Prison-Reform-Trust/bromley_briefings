@@ -46,7 +46,7 @@ fig.add_trace(go.Sunburst(
     ))
 
 fig.update_layout(
-    margin = dict(t=60),
+    margin = dict(t=20, b=20),
     uniformtext_minsize=10, 
     uniformtext_mode='hide',
     )
