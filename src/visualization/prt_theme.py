@@ -73,6 +73,7 @@ def add_annotation(
         else:
             x = 0 if x is None else x
         y = 1 if y is None else y
+        yanchor="bottom"
 
     elif annotation_type == "trace_label":
         if trace_list is not None:
