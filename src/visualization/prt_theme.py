@@ -54,7 +54,7 @@ def add_annotation(
     dataframe_column=None,
     trace_list=None
 ):
-    annotation_types = {"source", "y-axis", "trace_label"}
+    annotation_types = {"source", "y-axis", "trace_label", "label"}
 
     if annotation_type not in annotation_types:
         raise ValueError(f"You must supply a valid annotation_type from {annotation_types}")
@@ -103,6 +103,14 @@ def add_annotation(
             return
         else:
             raise ValueError("You must supply a valid trace_list")
+    
+    elif annotation_type == "label":
+        if text is None:
+            raise ValueError("Text must be provided.")
+        # font_size = 12
+        align = "center"
+        x = 0.5 if x is None else x
+        y = 0.5 if y is None else y
 
     # Append the annotation for other types or source/y-axis annotations
     annotations_list.append(
