@@ -60,6 +60,7 @@ fig.update_yaxes(range=[-31, 11])
 fig.update_layout(
     xaxis_ticks="inside",
     margin_pad=5,
+    margin = dict(t=20, b=25, l=40, r=25),
     yaxis_ticksuffix='%'
 )
 
