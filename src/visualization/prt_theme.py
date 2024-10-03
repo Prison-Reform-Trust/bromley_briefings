@@ -123,7 +123,7 @@ def add_annotation(
 def add_title(
         fig, 
         title, 
-        width=40,
+        width=80,
         bold=True):
     
     title = textwrap.wrap(f"{title}", width=width)
@@ -139,4 +139,7 @@ def add_title(
 
     fig.update_layout(
         title=title,
-        title_automargin=True)
+        title_automargin=True,
+        title_yref='container',
+        title_xanchor='left',
+        title_x=0)
