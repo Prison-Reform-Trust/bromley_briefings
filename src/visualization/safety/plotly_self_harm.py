@@ -46,8 +46,17 @@ fig.update_yaxes(
     type='category',
     autorange="reversed")
 
+prt_theme.set_axis_range(
+    fig, 
+    axis="x", 
+    dataframe=df, 
+    dataframe_column="rate", 
+    min_value=0,
+    )
+
 fig.update_layout(
     xaxis_ticks="inside",
+    xaxis_tickformat= ",.0f",
     margin_pad = 5,
     margin = dict(t=20, b=25, l=40, r=25),
     )
@@ -62,7 +71,7 @@ annotations = []
 # prt_theme.add_annotation(annotations, "Table 2.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "Self-harm incidents per 1,000 prisoners", annotation_type="y-axis", y=1.05)
+prt_theme.add_annotation(annotations, "Self-harm incidents per 1,000 prisoners", annotation_type="y-axis")
 
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
