@@ -75,7 +75,9 @@ fig.update_yaxes(
 # Axis parameter adjustments
 fig.update_layout(
     xaxis_ticks="inside",
-    margin_pad = 5)
+    margin_pad = 5,
+    margin = dict(t=20, b=25, l=60, r=25),
+    )
 
 ## Adding dotted line for recording change
 fig.add_shape(
@@ -91,16 +93,16 @@ fig.add_shape(
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "Assaults and serious assaults declined during the pandemic—but are rising again")
+# prt_theme.add_title(fig, "Assaults and serious assaults declined during the pandemic—but are rising again")
 
 # Add source annotation with default placement
-prt_theme.add_annotation(annotations, "Table 3.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
+# prt_theme.add_annotation(annotations, "Table 3.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "Incidents per 1,000 prisoners", annotation_type="y-axis", y=1.05)
+prt_theme.add_annotation(annotations, "Incidents per 1,000 prisoners", annotation_type="y-axis")
 
 # Add note
-prt_theme.add_annotation(annotations, "The definition of recorded<br>assaults changed in 2019", xref="x", yref="y", x=2019.5, y=475)
+prt_theme.add_annotation(annotations, "The definition of recorded<br>assaults changed in 2019", annotation_type='label', xref="x", yref="y", x=2019.5, y=475)
 
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
