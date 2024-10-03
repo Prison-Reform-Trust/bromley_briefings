@@ -67,13 +67,13 @@ fig.update_layout(
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "Public sector prison officer numbers remain down on 2010")
+# prt_theme.add_title(fig, "Public sector prison officer numbers remain down on 2010")
 
 # Add source annotation
-prt_theme.add_annotation(annotations, "Table 4, Ministry of Justice (2023). HMPPS workforce quarterly: March 2023.", annotation_type="source")
+# prt_theme.add_annotation(annotations, "Table 4, Ministry of Justice (2023). HMPPS workforce quarterly: March 2023.", annotation_type="source")
 
 # Add y-axis label annotation
-prt_theme.add_annotation(annotations, "Percentage change since 2010", annotation_type="y-axis", y=1.05)
+prt_theme.add_annotation(annotations, "Percentage change since 2010", annotation_type="y-axis")
 
 # Add trace label annotation
 prt_theme.add_annotation(annotations, annotation_type="trace_label", trace_list=trace_list)
