@@ -132,12 +132,15 @@ fig.update_xaxes(
 
 # Set y-axis ranges
 fig.update_yaxes(
+    showgrid=True,
+    gridcolor='#CACFDB',
     range=[0,210],
     dtick=50,
     tickfont_color=prt_template.layout.colorway[0],
     secondary_y=False)
 
 fig.update_yaxes(
+    showgrid=False,
     range=[0,12600],
     dtick=3000,
     tickformat= ",.0f",
