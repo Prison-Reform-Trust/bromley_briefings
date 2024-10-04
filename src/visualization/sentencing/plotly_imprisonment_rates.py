@@ -64,7 +64,7 @@ annotations = []
 # prt_theme.add_annotation(annotations, "World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.", annotation_type="source")
 
 # Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "People in prison per 100,000 population", annotation_type="y-axis", xref="x", y=1.05)
+prt_theme.add_annotation(annotations, "People in prison per 100,000 population", annotation_type="y-axis")
 
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
