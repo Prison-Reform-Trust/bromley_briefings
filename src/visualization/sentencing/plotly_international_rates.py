@@ -125,6 +125,11 @@ fig.update_layout(
         titlefont_color=prt_template.layout.colorway[1],
         ),
 )
+
+fig.update_xaxes(
+    ticks="inside",
+)
+
 # Set y-axis ranges
 fig.update_yaxes(
     range=[0,210],
