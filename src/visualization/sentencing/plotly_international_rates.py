@@ -111,6 +111,10 @@ fig.add_traces(trace_list)
 
 # Set y-axes titles
 fig.update_layout(
+    margin_pad = 5,
+    margin = dict(t=30, b=50, l=70, r=70),
+    autosize=False,
+    height = 300,
     yaxis=dict(
         title_text="Imprisonment rate per 100,000",
         titlefont_color=prt_template.layout.colorway[0],
