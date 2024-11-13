@@ -152,7 +152,21 @@ def add_title(
         title_yref='container',
         title_xanchor='left',
         title_x=0)
-    
+
+def wrap_labels(text, max_chars=20):
+    """
+    Wraps text with specified max characters per line and replaces newlines with <br>.
+
+    Args:
+        text (str): The text to wrap.
+        max_chars (int): The maximum number of characters per line.
+
+    Returns:
+        str: Text with wrapped lines and <br> instead of newline characters.
+    """
+    # Wrap the text with textwrap and replace newlines with <br>
+    return textwrap.fill(text, width=max_chars).replace('\n', '<br>')
+
 def set_axis_range(
     fig: go.Figure,
     axis: Literal["x", "y"],
