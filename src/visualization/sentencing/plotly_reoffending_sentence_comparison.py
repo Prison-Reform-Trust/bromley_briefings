@@ -54,6 +54,7 @@ for sentence in unique_sentences:
         text=[percent],
         texttemplate="%{x}%",
         textposition="outside",
+        cliponaxis = False,
         name=str(sentence)
     ))
 
@@ -61,27 +62,27 @@ fig.update_yaxes(
     type='category',
     autorange="reversed",
     automargin=True,
-    domain=[0,1],
     )
 
 fig.update_xaxes(
     ticks="",
     showticklabels=False,
     zeroline=False,
-    range=[None, 90]
+    range=[0, 80], # Must specify lower range as well as upper to avoid trace labels from being cut off
 )
 
 fig.update_layout(
     margin_pad = 5,
     margin = dict(t=20, b=25, l=0, r=0),
-    hovermode=False
+    hovermode=False,
+    dragmode=False
     )
 
 ## Chart annotations
 annotations = []
 
 # Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "Reconviction rate", annotation_type="y-axis")
+prt_theme.add_annotation(annotations, "Reconviction rate (within one year)", annotation_type="y-axis")
 
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
