@@ -54,6 +54,7 @@ def add_annotation(
     dataframe_column=None,
     trace_list=None,
     trace_list_idx: Union[None, int, List[int]] = None,
+    x_pad=0
 ):
     annotation_types = {"source", "y-axis", "trace_label", "label"}
 
@@ -122,6 +123,10 @@ def add_annotation(
         align = "center"
         x = 0.5 if x is None else x
         y = 0.5 if y is None else y
+
+    # Apply padding to x if not None
+    if x is not None:
+        x += x_pad
 
     # Append the annotation only if the type is not `trace_label`
     if annotation_type != "trace_label":
