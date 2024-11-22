@@ -123,22 +123,23 @@ def add_annotation(
         x = 0.5 if x is None else x
         y = 0.5 if y is None else y
 
-    # Append the annotation for other types or source/y-axis annotations
-    annotations_list.append(
-        dict(
-            xref=xref,
-            yref=yref,
-            xanchor=xanchor,
-            yanchor=yanchor,
-            x=x,
-            y=y,
-            align=align,
-            showarrow=showarrow,
-            text=text,
-            font_size=font_size,
-            font_color=font_color
+    # Append the annotation only if the type is not `trace_label`
+    if annotation_type != "trace_label":
+        annotations_list.append(
+            dict(
+                xref=xref,
+                yref=yref,
+                xanchor=xanchor,
+                yanchor=yanchor,
+                x=x,
+                y=y,
+                align=align,
+                showarrow=showarrow,
+                text=text,
+                font_size=font_size,
+                font_color=font_color
+            )
         )
-    )
 
 def add_title(
         fig, 
