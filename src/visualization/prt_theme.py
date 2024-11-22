@@ -52,7 +52,8 @@ def add_annotation(
     annotation_type=None,
     dataframe=None,
     dataframe_column=None,
-    trace_list=None
+    trace_list=None,
+    trace_list_idx: Union[None, int, List[int]] = None,
 ):
     annotation_types = {"source", "y-axis", "trace_label", "label"}
 
@@ -75,35 +76,45 @@ def add_annotation(
         else:
             x = 0 if x is None else x
         y = 1 if y is None else y
-        yanchor="bottom"
+        yanchor = "bottom"
 
     elif annotation_type == "trace_label":
         if trace_list is not None:
+            # Normalize `trace_list_idx` into a list
+            if trace_list_idx is None:
+                trace_list_idx = list(range(len(trace_list)))  # Default: adjust all traces
+            elif isinstance(trace_list_idx, int):
+                trace_list_idx = [trace_list_idx]
+            
+            # Create mappings for x and y overrides
+            x_map = {trace_list_idx[i]: x[i] for i in range(len(trace_list_idx))} if isinstance(x, list) else {}
+            y_map = {trace_list_idx[i]: y[i] for i in range(len(trace_list_idx))} if isinstance(y, list) else {}
+
             for j, trace in enumerate(trace_list):
-                x = trace.x[-1]
-                y = trace.y[-1]
-                text = str(trace.name)
-                font_color = pio.templates['prt_template'].layout.colorway[j]
-                
+                # Use overrides if trace is targeted, otherwise default to trace data
+                x_override = x_map.get(j, trace.x[-1]) + x_pad  # Apply x padding
+                y_override = y_map.get(j, trace.y[-1])
+
+                # Append annotation
                 annotations_list.append(
                     dict(
                         xref="x",
                         yref="y",
                         xanchor=xanchor,
                         yanchor=yanchor,
-                        x=x,
-                        y=y,
+                        x=x_override,
+                        y=y_override,
                         align=align,
                         showarrow=showarrow,
-                        text=text,
+                        text=str(trace.name),
                         font_size=font_size,
-                        font_color=font_color
+                        font_color=pio.templates['prt_template'].layout.colorway[j]
                     )
                 )
             return
         else:
             raise ValueError("You must supply a valid trace_list")
-    
+
     elif annotation_type == "label":
         if text is None:
             raise ValueError("Text must be provided.")
