@@ -6,7 +6,7 @@ import plotly.io as pio
 import plotly.graph_objs as go
 import pandas as pd
 import textwrap
-from typing import Optional, Literal
+from typing import Optional, Literal, Union, List
 
 #PRT standard template
 pio.templates["prt_template"] = go.layout.Template(
@@ -37,7 +37,7 @@ pio.templates["prt_template"].data.scatter = [
 
 ## Chart annotations
 def add_annotation(
-    annotations_list,
+    annotations_list: list,
     text=None,
     x=None,
     y=None,
@@ -56,6 +56,77 @@ def add_annotation(
     trace_list_idx: Union[None, int, List[int]] = None,
     x_pad=0
 ):
+    """
+    Add an annotation to a Plotly chart.
+
+    Parameters:
+    ----------
+    annotations_list : list
+        A list to which the annotation dictionary will be appended.
+    
+    text : str, optional
+        The text to display in the annotation. Required for "source" and "label" annotation types.
+    
+    x : float or list of floats, optional
+        The x-coordinate(s) for the annotation(s). If not specified, defaults are used based on `annotation_type`.
+    
+    y : float or list of floats, optional
+        The y-coordinate(s) for the annotation(s). If not specified, defaults are used based on `annotation_type`.
+    
+    xref : str, default="paper"
+        The reference for the x-coordinate. Can be "paper" (relative to the plot area) or "x" (data coordinates).
+    
+    yref : str, default="paper"
+        The reference for the y-coordinate. Can be "paper" (relative to the plot area) or "y" (data coordinates).
+    
+    xanchor : str, default="left"
+        The horizontal alignment of the annotation. Options include "left", "center", and "right".
+    
+    yanchor : str, default="top"
+        The vertical alignment of the annotation. Options include "top", "middle", and "bottom".
+    
+    align : str, optional
+        The alignment of the text within the annotation box. Options include "left", "center", and "right".
+    
+    showarrow : bool, default=False
+        Whether to display an arrow pointing to the annotation's coordinates.
+    
+    font_size : int, default=14
+        The font size of the annotation text.
+    
+    font_color : str, optional
+        The color of the annotation text. If not specified, a default color is used.
+    
+    annotation_type : str, required
+        The type of annotation. Must be one of:
+        - "source": Adds a source label to the chart.
+        - "y-axis": Adds a label near the y-axis.
+        - "trace_label": Adds annotations to specific traces.
+        - "label": Adds a generic label annotation.
+    
+    dataframe : pandas.DataFrame, optional
+        A DataFrame to extract values for certain annotations (e.g., "y-axis").
+    
+    dataframe_column : str, optional
+        The column in `dataframe` to use for the annotation's x-coordinate (used with "y-axis" type).
+    
+    trace_list : list, optional
+        A list of Plotly traces to annotate (used with "trace_label" type).
+    
+    trace_list_idx : int or list of ints, optional
+        The indices of traces in `trace_list` to annotate. If not provided, all traces are annotated.
+    
+    x_pad : float, default=0
+        An optional padding to apply to the x-coordinate of the annotation(s). Useful for adjusting placement.
+    
+    Raises:
+    -------
+    ValueError
+        If `annotation_type` is not one of the predefined types.
+        If required arguments (e.g., `text`, `trace_list`) are missing for certain annotation types.
+
+    """
+
     annotation_types = {"source", "y-axis", "trace_label", "label"}
 
     if annotation_type not in annotation_types:
@@ -112,14 +183,12 @@ def add_annotation(
                         font_color=pio.templates['prt_template'].layout.colorway[j]
                     )
                 )
-            return
         else:
             raise ValueError("You must supply a valid trace_list")
 
     elif annotation_type == "label":
         if text is None:
             raise ValueError("Text must be provided.")
-        # font_size = 12
         align = "center"
         x = 0.5 if x is None else x
         y = 0.5 if y is None else y
