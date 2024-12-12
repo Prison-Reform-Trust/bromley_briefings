@@ -18,8 +18,9 @@ load_dotenv(dotenv_path)
 chart_studio.tools.set_credentials_file(
     username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
 )
-# Setting default Plotly template
+#Setting default Plotly template and assigning attributes to prt_template
 pio.templates.default = "prt_template"
+prt_template = prt_theme.pio.templates['prt_template']
 
 # Read in datasets
 df = pd.read_csv("data/processed/sentencing/sentence_lengths.csv")
@@ -39,19 +40,6 @@ if len(df) > 1:
 fig = go.Figure()
 fig.add_trace(
     go.Bar(
-        x=df["total"],
-        y=df["year"],
-        orientation="h",
-        name="All offences",
-        text=text_total,
-        texttemplate="%{text}",
-        textposition="inside",
-        hovertemplate="<b>%{y}</b>: %{x} months",
-        zorder=1,  # Setting trace to be on top
-    ),
-)
-fig.add_trace(
-    go.Bar(
         x=df["indictable"],
         y=df["year"],
         orientation="h",
@@ -61,6 +49,21 @@ fig.add_trace(
         textposition="inside",
         hovertemplate="<b>%{y}</b>: %{x} months",
         zorder=-1,  # Setting trace to be overlaid
+        marker_color=prt_template.layout.colorway[1]
+    ),
+)
+fig.add_trace(
+    go.Bar(
+        x=df["total"],
+        y=df["year"],
+        orientation="h",
+        name="All offences",
+        text=text_total,
+        texttemplate="%{text}",
+        textposition="inside",
+        hovertemplate="<b>%{y}</b>: %{x} months",
+        zorder=1,  # Setting trace to be on top
+        marker_color=prt_template.layout.colorway[0]
     ),
 )
 
@@ -85,5 +88,5 @@ prt_theme.add_annotation(
 
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
-fig.show()
-# py.plot(fig, filename="sentence_lengths")
+# fig.show()
+py.plot(fig, filename="sentence_lengths")
