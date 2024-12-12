@@ -32,8 +32,10 @@ text_total = [""] * len(df)
 text_indictable = [""] * len(df)
 if len(df) > 1:
     text_total[0] = f"{df['total'].iloc[0]} months"
+    text_total[-4] = f"{df['total'].iloc[-4]} months"
     text_total[-1] = f"{df['total'].iloc[-1]} months"
     text_indictable[0] = f"{df['indictable'].iloc[0]} months"
+    text_indictable[-4] = f"{df['indictable'].iloc[-4]} months"
     text_indictable[-1] = f"{df['indictable'].iloc[-1]} months"
 
 ## Plotting
