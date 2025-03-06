@@ -37,7 +37,7 @@ pio.templates["prt_template"].data.scatter = [
 
 ## Chart annotations
 def add_annotation(
-    annotations_list: list,
+    annotations_list=None,  # Default to None, so we can initialize if needed
     text=None,
     x=None,
     y=None,
@@ -61,8 +61,8 @@ def add_annotation(
 
     Parameters:
     ----------
-    annotations_list : list
-        A list to which the annotation dictionary will be appended.
+    annotations_list : list, optional
+        A list to which the annotation dictionary will be appended. If not provided, a new list is created.
     
     text : str, optional
         The text to display in the annotation. Required for "source" and "label" annotation types.
@@ -152,22 +152,18 @@ def add_annotation(
 
     elif annotation_type == "trace_label":
         if trace_list is not None:
-            # Normalize `trace_list_idx` into a list
             if trace_list_idx is None:
-                trace_list_idx = list(range(len(trace_list)))  # Default: adjust all traces
+                trace_list_idx = list(range(len(trace_list)))
             elif isinstance(trace_list_idx, int):
                 trace_list_idx = [trace_list_idx]
-            
-            # Create mappings for x and y overrides
+
             x_map = {trace_list_idx[i]: x[i] for i in range(len(trace_list_idx))} if isinstance(x, list) else {}
             y_map = {trace_list_idx[i]: y[i] for i in range(len(trace_list_idx))} if isinstance(y, list) else {}
 
             for j, trace in enumerate(trace_list):
-                # Use overrides if trace is targeted, otherwise default to trace data
-                x_override = x_map.get(j, trace.x[-1]) + x_pad  # Apply x padding
+                x_override = x_map.get(j, trace.x[-1]) + x_pad
                 y_override = y_map.get(j, trace.y[-1])
 
-                # Append annotation
                 annotations_list.append(
                     dict(
                         xref="x",
@@ -193,11 +189,9 @@ def add_annotation(
         x = 0.5 if x is None else x
         y = 0.5 if y is None else y
 
-    # Apply padding to x if not None
     if x is not None:
         x += x_pad
 
-    # Append the annotation only if the type is not `trace_label`
     if annotation_type != "trace_label":
         annotations_list.append(
             dict(
@@ -214,6 +208,9 @@ def add_annotation(
                 font_color=font_color
             )
         )
+
+    return annotations_list
+
 
 def add_title(
         fig, 
