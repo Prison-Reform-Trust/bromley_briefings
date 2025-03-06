@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+'''
+Title: Scotland and England & Wales have the highest imprisonment rates in western Europe.
+Source: World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.
+'''
+
 # Importing libraries
 import os
 
@@ -11,11 +16,14 @@ import plotly.graph_objs as go
 import plotly.io as pio
 from dotenv import find_dotenv, load_dotenv
 
-from src.visualization import prt_theme
+# Local scripts
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-##Loading environment variables
+## Load environment variables and config
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
+config = utils.read_config()
 
 ##Adding plotly credentials
 chart_studio.tools.set_credentials_file(
@@ -24,50 +32,44 @@ chart_studio.tools.set_credentials_file(
 #Setting default Plotly template
 pio.templates.default = "prt_template"
 
-#Read in datasets
-df = pd.read_csv("data/processed/sentencing/imprisonment_rates.csv")
-
-## Plotting
-fig = go.Figure()
-fig.add_trace(
-    go.Bar(
-        x=df["rate"],
-        y=df["country"],
-        orientation="h",
-        hovertemplate="%{text:,.0f} per 100,000 population<extra></extra>",
-        text = df['rate'],
-        texttemplate="%{x:,.0f}",
-        textposition="outside",
-        cliponaxis = False,
-    ),
-)
-fig.update_yaxes(
-    type='category',
-    autorange="reversed",
-    automargin=True,
-    domain=[0,0.95]
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    fig = go.Figure()
+    annotations = prt_theme.add_annotation(None, "People in prison per 100,000 population", annotation_type="y-axis")
+    
+    fig.add_trace(
+        go.Bar(
+            x=df["rate"].tolist(),
+            y=df["country"],
+            orientation="h",
+            hovertemplate="%{text} per 100,000 population<extra></extra>",
+            text = df['rate'].tolist(),
+            texttemplate="%{x}",
+            textposition="outside",
+            cliponaxis = False,
+        ),
     )
-
-fig.update_layout(
+    fig.update_yaxes(
+        type='category',
+        autorange="reversed",
+        automargin=True,
+        domain=[0,0.95]
+        )
+    
+    fig.update_layout(
     xaxis_ticks="inside",
     margin_pad = 5,
     margin = dict(t=20, b=25, l=0, r=25),
+    annotations=annotations,
+    dragmode=False
     )
+    
+    return fig
 
-## Chart annotations
-annotations = []
+def main():
+    df = utils.load_data(f"{config['data']['clnFilePath']}sentencing/imprisonment_rates.csv")
+    fig = create_chart(df)
+    py.plot(fig, filename="imprisonment_rates")
+    return None
 
-# Add title
-# prt_theme.add_title(fig, "Scotland and England & Wales have the highest imprisonment rates in western Europe")
-
-# Add source annotation with default placement
-# prt_theme.add_annotation(annotations, "World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.", annotation_type="source")
-
-# Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "People in prison per 100,000 population", annotation_type="y-axis")
-
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
-
-# fig.show()
-py.plot(fig, filename="imprisonment_rates")
+if __name__ == "__main__":
+    main()
