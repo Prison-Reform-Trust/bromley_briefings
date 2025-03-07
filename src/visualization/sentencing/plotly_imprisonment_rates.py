@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 '''
-Title: Scotland and England & Wales have the highest imprisonment rates in western Europe.
+Title: We imprison far more of our population than our nearest neighbours
+Subtitle: Scotland and England & Wales have the highest imprisonment rates in western Europe
 Source: World Prison Brief, Institute for Crime & Justice Policy Research. 10 July 2024.
 '''
 
