@@ -82,12 +82,9 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure layout
     fig.update_layout(
-        xaxis_ticks="inside", 
         yaxis_tickformat=",.0f",
         hovermode="x",
-        margin=dict(t=20, b=25, l=0, r=25, pad=5),
         annotations=annotations,
-        dragmode=False,
     )
 
     return fig

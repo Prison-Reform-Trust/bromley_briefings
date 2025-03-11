@@ -23,9 +23,12 @@ pio.templates["prt_template"] = go.layout.Template(
         modebar_activecolor="#A01D28",
         showlegend=False,
         xaxis_showgrid=False,
+        xaxis_ticks='inside',
         xaxis_tickcolor="#54565B",
         width=700,
         height=500,
+        margin=dict(t=20, b=25, l=0, r=25, pad=5),
+        dragmode=False,
     )
 )
 pio.templates["prt_template"].data.scatter = [
