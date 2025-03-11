@@ -6,8 +6,10 @@ import yaml
 import pandas as pd
 import plotly.graph_objs as go  # Offline plotting
 import chart_studio.plotly as py  # Online plotting
+import chart_studio.tools
 import plotly.io as pio
 import textwrap
+from dotenv import find_dotenv, load_dotenv
 
 import src.visualization.prt_theme as prt_theme
 
