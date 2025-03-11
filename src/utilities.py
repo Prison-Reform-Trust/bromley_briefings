@@ -77,7 +77,7 @@ def generate_annotations(traces, colorway, y_label, y_label_placement=None, y_of
             xanchor="left",
             showarrow=False,
             text=y_label,
-            font_size=12,
+            font_size=14,
         )
     )
 
