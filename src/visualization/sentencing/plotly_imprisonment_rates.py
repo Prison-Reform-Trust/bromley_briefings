@@ -19,19 +19,8 @@ from dotenv import find_dotenv, load_dotenv
 import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
-# Load environment variables and configuration
-load_dotenv(find_dotenv())
+# Load configuration
 config = utils.read_config()
-
-# Set Plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), 
-    api_key=os.getenv("PLOTLY_API_KEY")
-)
-
-# Set default Plotly template
-pio.templates.default = "prt_template"
-
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a horizontal bar chart of imprisonment rates by country."""
@@ -67,6 +56,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
+    utils.setup_plotly_credentials()
     data_path = f"{config['data']['clnFilePath']}sentencing/imprisonment_rates.csv"
     df = utils.load_data(data_path)
     fig = create_chart(df)

@@ -18,6 +18,15 @@ def read_config():
             Loader=yaml.SafeLoader) for k, v in d.items()}
     return config
 
+def setup_plotly_credentials():
+    """Loads environment variables and sets Plotly credentials."""
+    load_dotenv(find_dotenv())
+    chart_studio.tools.set_credentials_file(
+        username=os.getenv("PLOTLY_USERNAME"),
+        api_key=os.getenv("PLOTLY_API_KEY"),
+    )
+    pio.templates.default = "prt_template"
+
 ## Read data
 def load_data(filepath:str) -> pd.DataFrame:
     """Loads processed data from CSV."""
