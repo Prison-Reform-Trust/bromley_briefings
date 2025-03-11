@@ -25,6 +25,8 @@ pio.templates["prt_template"] = go.layout.Template(
         xaxis_showgrid=False,
         xaxis_ticks='inside',
         xaxis_tickcolor="#54565B",
+        xaxis_gridcolor="rgba(84, 86, 91, 0.15)",
+        yaxis_gridcolor="rgba(84, 86, 91, 0.15)",
         width=700,
         height=500,
         margin=dict(t=20, b=25, l=0, r=25, pad=5),

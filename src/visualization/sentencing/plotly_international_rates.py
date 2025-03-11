@@ -4,7 +4,16 @@
 """
 Title: If we imprison more people won't crime fall?
 Subtitle: International comparisons show there is no consistent link between the two
-Source: Data source not specified.
+Sources: 
+- Institute for Crime and Justice Policy Research (2023). World Prison Brief. Birkbeck, University of London. https://www.prisonstudies.org/world-prison-brief-data
+- Eurostat (2015). Crimes recorded by the police (1950-2000). https://ec.europa.eu/eurostat/databrowser/view/crim_hist/default/table
+- Clarke, S.(2013). Trends in crime and criminal justice, 2010. Eurostat.
+- Home Office (2023). Police recorded crime and outcomes open data tables: Outcomes open data ending March 2021.
+- Office for National Statistics (2022). UK population estimates, 1838 to 2020.
+- Statistics Finland (2023). 13ex -- Offences recorded and their solving by offence category according to the municipality of offence and year of reporting, 1980-2022.
+- Statistics Finland (2023). Population and society. https://www.stat.fi/tup/suoluk/suoluk_vaesto_en.html
+- Statistics Canada (2018). Canada's crime rate: Two decades of decline. https://www150.statcan.gc.ca/n1/pub/11-630-x/11-630-x2015001-eng.htm#def1
+- Statistics Canada (2023). Incident-based crime statistics, by detailed violations, Canada, provinces, territories, Census Metropolitan areas and Canadian Forces Military Police.
 """
 
 import os
@@ -112,8 +121,6 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         margin=dict(t=20, b=25, l=55, r=70, pad=5),
         annotations=annotations,
-        xaxis_ticks="inside",
-        dragmode=False,
     )
 
     # Sync y-axes ranges for primary and secondary y-axes across all subplots
@@ -127,7 +134,6 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             title_text="Imprisonment rate per 100,000" if i == 1 else '',
             titlefont_color=colorway[0],
             showgrid=True,
-            gridcolor="#CACFDB",
             range=primary_y_range,  # Set range for primary y-axis
             dtick=50,
             tickfont_color=colorway[0],
