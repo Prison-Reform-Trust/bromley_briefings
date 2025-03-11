@@ -87,6 +87,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         hovermode="x",
         margin=dict(t=20, b=25, l=0, r=25, pad=5),
         annotations=annotations,
+        dragmode=False,
     )
 
     return fig
