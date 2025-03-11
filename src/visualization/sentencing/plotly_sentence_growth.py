@@ -1,80 +1,82 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Importing libraries
-import os
+"""
+Title: We choose to send people to prison for a long time — and it’s growing
+Subtitle: Almost three times as many people were sentenced to 10 years or more in 2023 than in 2010
+Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023.
+"""
 
+import os
 import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
 from dotenv import find_dotenv, load_dotenv
-from plotly.subplots import make_subplots
 
-# Import prt_theme module
-from src.visualization import prt_theme
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-# Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+# Load configuration
+config = utils.read_config()
 
-# Adding plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
-
-# Setting default Plotly template and assigning attributes to prt_template
-pio.templates.default = "prt_template"
-prt_template = prt_theme.pio.templates['prt_template']
-
-# Read in datasets
-df = pd.read_csv("data/processed/sentencing/sentence_growth.csv")
-
-## Plotting
-fig = go.Figure()
-trace_list= []
-
-for i in df["sentence"].unique():
-    df_type = df[df["sentence"] == i]
-
-    trace = go.Scatter(
-        x=df_type["year"],
-        y=df_type["percent"],
-        mode="lines+markers",
-        text=df_type['sentence'],
-        name=str(df_type['sentence'].iloc[0]),
-        customdata=df_type['percent'],
-        hovertemplate="<b>%{text}</b><br>Change since 2010: %{y:,.0f}%<extra></extra>"
+## Generate traces for Plotly
+def generate_traces(df:pd.DataFrame) -> list:
+    """Generates Plotly traces for each sentence length in dataset."""
+    traces = [
+        go.Scatter(
+            x=df_sentence["year"],
+            y=df_sentence["percent"],
+            mode="lines+markers",
+            text=df_sentence['sentence'],
+            hovertemplate="<b>%{text}</b><br>Change since 2010: %{y:,.0f}%<extra></extra>",
+            name=str(sentence),
         )
+        for sentence, df_sentence in df.groupby(df["sentence"])
+    ]
+    return traces
+
+
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    """Creates a line chart showing percentage change of custodial sentences by length."""
+
+    fig = go.Figure()
+    traces = generate_traces(df)[::-1] # Reverse order for better visibility
+    fig.add_traces(traces)
     
-    trace_list.append(trace)
+    # Generate annotations with optional y_offset_dict
+    colorway = pio.templates[pio.templates.default].layout.colorway
+    y_label = "People sentenced (percentage change since 2010)"
+    y_offset_dict = {"6 months to less than 12 months": 10, 
+                    "12 months to less than 4 years": -8,
+                    "4 years to 10 years": 8}
+    annotations = utils.generate_annotations(traces, colorway, y_label, y_offset_dict=y_offset_dict, x_pad=0.3)
 
-fig.add_traces(trace_list)
+    # Set axes ranges
+    fig.update_yaxes(range=[-110, 210])
+    fig.update_xaxes(range=[2009.8, 2024.2])
 
-# Set y-axes range
-fig.update_yaxes(range=[-110, 210])
+    # Axis parameter adjustments
+    fig.update_layout(
+        margin=dict(l=50, r=130),
+        yaxis_ticksuffix='%',
+        hovermode='x unified',
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
+        annotations=annotations,
+    )
+    return fig
 
-# Axis parameter adjustments
-fig.update_layout(
-    xaxis_ticks="inside",
-    margin_pad=5,
-    margin = dict(t=20, b=25, l=50, r=25),
-    yaxis_ticksuffix='%',
-    hovermode='x unified',
-    hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)'
-)
 
-## Chart annotations
-annotations = []
+def main() -> go.Figure:
+    """Loads data, generates the chart, and uploads it to Chart Studio."""
+    utils.setup_plotly_credentials()
+    data_path = f"{config['data']['clnFilePath']}sentencing/sentence_growth.csv"
+    df = utils.load_data(data_path)
+    fig = create_chart(df)
+    py.plot(fig, filename="sentence_growth")
+    return fig
 
-# Add y-axis label annotation
-prt_theme.add_annotation(annotations, "People sentenced (percentage change since 2010)", annotation_type="y-axis")
-
-# Add trace label annotation
-prt_theme.add_annotation(annotations, annotation_type="trace_label", trace_list=trace_list, trace_list_idx=[1, 3], y=[30, -5], x_pad=0.3)
-
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
-# fig.show()
-py.plot(fig, filename="sentence_growth")
+if __name__ == "__main__":
+    main()
