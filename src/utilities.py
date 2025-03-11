@@ -35,7 +35,7 @@ def load_data(filepath:str) -> pd.DataFrame:
     return pd.read_csv(filepath)
 
 ## Generate annotations dynamically
-def generate_annotations(traces, colorway, y_label, y_offset_dict=None):
+def generate_annotations(traces, colorway, y_label, y_label_placement=None, y_offset_dict=None, x_pad=None):
     """
     Generates trace labels and y-label annotation, allowing individual y-value adjustments.
     
@@ -43,7 +43,9 @@ def generate_annotations(traces, colorway, y_label, y_offset_dict=None):
         traces (list): Plotly trace objects.
         colorway (list): Color scheme from Plotly template.
         y_label (str): Y-axis label text.
+        y_label_placement (str, optional): Y-axis label placement.
         y_offset_dict (dict, optional): A dictionary mapping trace names (years) to y-offsets.
+        x_pad (float or int, optional): Horizontal padding for trace labels.
     """
     if y_offset_dict is None:
         y_offset_dict = {}
@@ -52,7 +54,7 @@ def generate_annotations(traces, colorway, y_label, y_offset_dict=None):
         dict(
             xref="x",
             yref="y",
-            x=trace.x[-1],
+            x=trace.x[-1] + x_pad if x_pad else trace.x[-1],
             y=trace.y[-1] + y_offset_dict.get(trace.name, 0),  # Apply y-offset if available
             text=trace.name,
             xanchor="left",
@@ -69,7 +71,7 @@ def generate_annotations(traces, colorway, y_label, y_offset_dict=None):
         dict(
             xref="x",
             yref="paper",
-            x=1,
+            x=y_label_placement if y_label_placement else traces[0].x[0],
             y=1.04,
             align="left",
             xanchor="left",
