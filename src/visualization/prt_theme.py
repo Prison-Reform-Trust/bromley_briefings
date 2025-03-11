@@ -126,6 +126,9 @@ def add_annotation(
         If required arguments (e.g., `text`, `trace_list`) are missing for certain annotation types.
 
     """
+    # Ensure annotations_list is initialized
+    if annotations_list is None:
+        annotations_list = []
 
     annotation_types = {"source", "y-axis", "trace_label", "label"}
 
