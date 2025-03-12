@@ -23,7 +23,7 @@ config = utils.read_config()
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
     """Filters data to retain every other year."""
-    return df.iloc[::2]
+    return df.iloc[::2].copy()
 
 def generate_labels(df:pd.DataFrame) -> list:
     """Generates labels for all offences and indictable offences"""
@@ -79,7 +79,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.add_traces(traces)
     
     # Configure axes
-    fig.update_yaxes(autorange="reversed")
+    fig.update_yaxes(autorange="reversed", tick0=2011, dtick=2)
     fig.update_xaxes(zeroline=False)
     
     # Configure layout
@@ -88,6 +88,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         hovermode="closest",
         margin_l=40,
         annotations=annotations,
+        # dragmode="pan", Currently deactivated. May see whether I can use in future to view earlier time period when panned
+        
     )
     return fig
 
