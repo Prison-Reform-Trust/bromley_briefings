@@ -8,12 +8,9 @@ Source: World Prison Brief, Institute for Crime & Justice Policy Research. 10 Ma
 """
 
 import os
-import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
-import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
@@ -24,19 +21,17 @@ config = utils.read_config()
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a horizontal bar chart of imprisonment rates by country."""
-    
-    df["rate"] = df["rate"].tolist()  # Ensure proper serialization for Chart Studio
 
     fig = go.Figure()
     annotations = prt_theme.add_annotation(None, "People in prison per 100,000 population", annotation_type="y-axis")
 
     fig.add_trace(
         go.Bar(
-            x=df["rate"], 
-            y=df["country"], 
+            x=df["rate"].tolist(), 
+            y=df["country"].tolist(), 
             orientation="h",
             hovertemplate="%{text} per 100,000 population<extra></extra>",
-            text=df["rate"],
+            text=df["rate"].tolist(),
             texttemplate="%{x}",
             textposition="outside",
             cliponaxis=False,
@@ -57,7 +52,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
     utils.setup_plotly_credentials()
-    data_path = f"{config['data']['clnFilePath']}sentencing/imprisonment_rates.csv"
+    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/imprisonment_rates.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
     py.plot(fig, filename="imprisonment_rates")
