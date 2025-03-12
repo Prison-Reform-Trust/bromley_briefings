@@ -10,7 +10,6 @@ Source:
 """
 
 import os
-import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -22,27 +21,15 @@ from matplotlib import colors
 import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
-# Load environment variables and configuration
-load_dotenv(find_dotenv())
+# Load configuration
 config = utils.read_config()
-
-# Set Plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), 
-    api_key=os.getenv("PLOTLY_API_KEY")
-)
-
-# Set default Plotly template
-pio.templates.default = "prt_template"
-
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a Plotly chart for prison population trends with projections."""
     
+    fig = go.Figure()
     colorway = pio.templates[pio.templates.default].layout.colorway
     projection_shading = f'rgba{colors.to_rgba(colorway[0], alpha=0.2)}'
-
-    fig = go.Figure()
     annotations = prt_theme.add_annotation(None, "People in prison", annotation_type="y-axis")
 
     traces = [
@@ -92,7 +79,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    data_path = f"{config['data']['clnFilePath']}sentencing/prison_population_inc_projections.csv"
+    utils.setup_plotly_credentials()
+    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
     py.plot(fig, filename="prison_population_inc_projections")
