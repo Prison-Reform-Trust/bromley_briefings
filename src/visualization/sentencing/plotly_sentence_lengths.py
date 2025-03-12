@@ -86,7 +86,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         barmode="overlay",
         hovermode="closest",
-        margin=dict(l=40),
+        margin_l=40,
         annotations=annotations,
     )
     return fig
