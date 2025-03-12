@@ -1,6 +1,13 @@
-# Importing libraries
-import os
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+"""
+Title: 
+Subtitle: Almost all offences now receive a much longer prison sentence than they used to.
+Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023.
+"""
+
+import os
 import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
@@ -8,43 +15,72 @@ import plotly.graph_objs as go
 import plotly.io as pio
 from dotenv import find_dotenv, load_dotenv
 
-from src.visualization import prt_theme
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-## Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+# Load configuration
+config = utils.read_config()
 
-## Adding Plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
-#Setting default Plotly template
-pio.templates.default = "prt_template"
+def process_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Wrapping x-axis labels using textwrap.fill with apply"""
+    df['wrapped_offence'] = df['offence'].apply(prt_theme.wrap_labels, max_chars=14)
+    return df
 
-# Read in datasets
-df = pd.read_csv("data/processed/sentencing/sentence_inflation.csv")
-
-# Wrapping x-axis labels using textwrap.fill with apply
-df['wrapped_offence'] = df['offence'].apply(prt_theme.wrap_labels, max_chars=14)
-
-## Plotting
-fig = go.Figure()
-
-trace_list= []
-
-for i in df["year"].unique():
-    df_year = df[df["year"] == i]
-
-    trace = go.Bar(
-        x=df_year["wrapped_offence"],
-        y=df_year["length"],
-        text=df_year['length'],
-        name=str(df_year['year'].iloc[0]),
-        customdata=df_year['year'],
-        hovertemplate="<b>%{customdata}</b><br>%{x}: %{y} months<extra></extra>"
-        )
+## Generate traces for Plotly
+def generate_traces(df:pd.DataFrame) -> list:
+    """Generates Plotly traces for each offence  in dataset."""
     
-    trace_list.append(trace)
+    traces = [
+        go.Bar(
+            x=df_year["wrapped_offence"].tolist(),
+            y=df_year["length"].tolist(),
+            text=df_year['length'],
+            texttemplate='%{text}',
+            name=str(year),
+            customdata=df_year[['year','offence']], #Adding multiple columns to allow year and non-wrapped offences to be used in hovertemplate
+            hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}: %{y} months<extra></extra>"
+            )
+            for year, df_year in df.groupby(df["year"])
+    ]
+    return traces
+
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    """Creates a line chart showing percentage change of custodial sentences by length."""
+
+    fig = go.Figure()
+    traces = generate_traces(df)
+    annotations = prt_theme.add_annotation(None, "Average sentence length (months)", annotation_type="y-axis")
+    
+    fig.add_traces(traces)
+
+    fig.update_xaxes(tickfont_size=12)
+
+    fig.update_layout(
+        barmode="group",
+        uniformtext_minsize=8,
+        uniformtext_mode='show',
+        margin=dict(b=55, l=35),
+        annotations=annotations
+    )
+
+    return fig
+
+
+def main() -> go.Figure:
+    """Loads data, generates the chart, and uploads it to Chart Studio."""
+    utils.setup_plotly_credentials()
+    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/sentence_inflation.csv")
+    df = utils.load_data(data_path).pipe(process_data)
+    fig = create_chart(df)
+    py.plot(fig, filename="sentence_inflation")
+    return fig
+
+
+if __name__ == "__main__":
+    main()
+
+
 """
 Possible development of arrows trace to show the percentage increase between the two years
 arrow_trace = go.Scatter(
@@ -57,30 +93,3 @@ arrow_trace = go.Scatter(
 
 trace_list.append(arrow_trace)
 """
-
-fig.add_traces(trace_list)
-
-fig.update_layout(
-    barmode="group",
-    hovermode='closest',
-    xaxis_ticks="inside",
-    xaxis_tickangle=0,
-    uniformtext_minsize=8, 
-    uniformtext_mode='hide',
-    margin_pad=5,
-    margin=dict(t=20, b=60, l=40, r=25),
-)
-
-fig.update_xaxes(tickfont_size=12)
-
-## Chart annotations
-annotations = []
-
-# Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(
-    annotations, "Average sentence length (months)", annotation_type="y-axis"
-)
-
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
-py.plot(fig, filename="sentence_inflation")
