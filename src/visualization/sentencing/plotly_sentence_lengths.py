@@ -3,7 +3,7 @@
 
 """
 Title:
-Subtitle: For more serious, indictable offences, the average prison sentence is now 62.4 months—almost two years longer than in 2010
+Subtitle: For more serious, indictable offences, the average prison sentence is now 62.4 months—almost two years longer than in 2011
 Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023.
 """
 
