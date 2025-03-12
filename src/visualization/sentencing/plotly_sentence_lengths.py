@@ -1,94 +1,104 @@
-# Importing libraries
-import os
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-import chart_studio
+"""
+Title:
+Subtitle: For more serious, indictable offences, the average prison sentence is now 62.4 months—almost two years longer than in 2010
+Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023.
+"""
+
+import os
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
 from dotenv import find_dotenv, load_dotenv
 
-from src.visualization import prt_theme
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-## Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+# Load configuration
+config = utils.read_config()
 
-## Adding Plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
-#Setting default Plotly template and assigning attributes to prt_template
-pio.templates.default = "prt_template"
-prt_template = prt_theme.pio.templates['prt_template']
+def process_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Filters data to retain every other year."""
+    return df.iloc[::2]
 
-# Read in datasets
-df = pd.read_csv("data/processed/sentencing/sentence_lengths.csv")
-# Filtering for every other year
-df = df[::2]
+def generate_labels(df:pd.DataFrame) -> list:
+    """Generates labels for all offences and indictable offences"""
+    text_total = [""] * len(df)
+    text_indictable = [""] * len(df)
+    
+    if len(df) > 1:
+        for idx in [0, -4, -1]:
+            if idx < len(df):
+                text_total[idx] = f"{df['total'].iloc[idx]} months"
+                text_indictable[idx] = f"{df['indictable'].iloc[idx]} months"
+    
+    return text_total, text_indictable
 
-# Create text arrays with labels only for the first and last observations
-text_total = [""] * len(df)
-text_indictable = [""] * len(df)
-if len(df) > 1:
-    text_total[0] = f"{df['total'].iloc[0]} months"
-    text_total[-4] = f"{df['total'].iloc[-4]} months"
-    text_total[-1] = f"{df['total'].iloc[-1]} months"
-    text_indictable[0] = f"{df['indictable'].iloc[0]} months"
-    text_indictable[-4] = f"{df['indictable'].iloc[-4]} months"
-    text_indictable[-1] = f"{df['indictable'].iloc[-1]} months"
+def generate_traces(df:pd.DataFrame) -> list:
+    """Generates Plotly traces for all offences and indictable offences"""
+    text_total, text_indictable = generate_labels(df)
+    colorway = pio.templates[pio.templates.default].layout.colorway
+    
+    traces = [
+        go.Bar(
+            x=df["indictable"].tolist(),
+            y=df["year"].tolist(),
+            orientation="h",
+            name="Indictable offences (more serious)",
+            text=text_indictable,
+            texttemplate="%{text}",
+            textposition="inside",
+            hovertemplate="<b>%{y}</b>: %{x} months",
+            marker_color=colorway[1],
+        ),
+        go.Bar(
+            x=df["total"].tolist(),
+            y=df["year"].tolist(),
+            orientation="h",
+            name="All offences",
+            text=text_total,
+            texttemplate="%{text}",
+            textposition="inside",
+            hovertemplate="<b>%{y}</b>: %{x} months",
+            marker_color=colorway[0],
+        ),
+    ]
+    return traces
 
-## Plotting
-fig = go.Figure()
-fig.add_trace(
-    go.Bar(
-        x=df["indictable"],
-        y=df["year"],
-        orientation="h",
-        name="Indictable offences (more serious)",
-        text=text_indictable,
-        texttemplate="%{text}",
-        textposition="inside",
-        hovertemplate="<b>%{y}</b>: %{x} months",
-        zorder=-1,  # Setting trace to be overlaid
-        marker_color=prt_template.layout.colorway[1]
-    ),
-)
-fig.add_trace(
-    go.Bar(
-        x=df["total"],
-        y=df["year"],
-        orientation="h",
-        name="All offences",
-        text=text_total,
-        texttemplate="%{text}",
-        textposition="inside",
-        hovertemplate="<b>%{y}</b>: %{x} months",
-        zorder=1,  # Setting trace to be on top
-        marker_color=prt_template.layout.colorway[0]
-    ),
-)
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    """Creates a Plotly horizontal bar chart of average sentence lengths by year."""
 
-fig.update_yaxes(autorange="reversed")
-fig.update_xaxes(zeroline=False)
+    fig = go.Figure()
+    traces = generate_traces(df)
+    annotations = prt_theme.add_annotation(None, "Average sentence length", annotation_type="y-axis")
 
-fig.update_layout(
-    barmode="overlay",
-    hovermode='closest',
-    xaxis_ticks="inside",
-    margin_pad=5,
-    margin=dict(t=20, b=25, l=40, r=25),
-)
+    fig.add_traces(traces)
+    
+    # Configure axes
+    fig.update_yaxes(autorange="reversed")
+    fig.update_xaxes(zeroline=False)
+    
+    # Configure layout
+    fig.update_layout(
+        barmode="overlay",
+        hovermode="closest",
+        margin=dict(l=40),
+        annotations=annotations,
+    )
+    return fig
 
-## Chart annotations
-annotations = []
+def main() -> go.Figure:
+    """Loads data, generates the chart, and uploads it to Chart Studio."""
+    utils.setup_plotly_credentials()
+    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/sentence_lengths.csv")
+    df = utils.load_data(data_path).pipe(process_data)
+    fig = create_chart(df)
+    py.plot(fig, filename="sentence_lengths")
+    return fig
 
-# Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(
-    annotations, "Average sentence length", annotation_type="y-axis"
-)
-
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
-# fig.show()
-py.plot(fig, filename="sentence_lengths")
+if __name__ == "__main__":
+    main()
