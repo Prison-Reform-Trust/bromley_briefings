@@ -27,8 +27,8 @@ def generate_traces(df:pd.DataFrame) -> list:
     """Generates Plotly traces for each sentence length in dataset."""
     traces = [
         go.Scatter(
-            x=df_sentence["year"],
-            y=df_sentence["percent"],
+            x=df_sentence["year"].tolist(),
+            y=df_sentence["percent"].tolist(),
             mode="lines+markers",
             text=df_sentence['sentence'],
             hovertemplate="<b>%{text}</b><br>Change since 2010: %{y:,.0f}%<extra></extra>",
