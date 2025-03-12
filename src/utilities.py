@@ -35,14 +35,15 @@ def load_data(filepath:str) -> pd.DataFrame:
     return pd.read_csv(filepath)
 
 ## Generate annotations dynamically
-def generate_annotations(traces, colorway, y_label, y_label_placement=None, y_offset_dict=None, x_pad=None):
+def generate_annotations(traces, colorway, max_chars=None, y_label=None, y_label_placement=None, y_offset_dict=None, x_pad=None):
     """
     Generates trace labels and y-label annotation, allowing individual y-value adjustments.
     
     Parameters:
         traces (list): Plotly trace objects.
         colorway (list): Color scheme from Plotly template.
-        y_label (str): Y-axis label text.
+        max_chars (int, optional): Set maximum number of characters for trace labels before text is wrapped.
+        y_label (str, optional): Y-axis label text.
         y_label_placement (str, optional): Y-axis label placement.
         y_offset_dict (dict, optional): A dictionary mapping trace names (years) to y-offsets.
         x_pad (float or int, optional): Horizontal padding for trace labels.
@@ -56,12 +57,12 @@ def generate_annotations(traces, colorway, y_label, y_label_placement=None, y_of
             yref="y",
             x=trace.x[-1] + x_pad if x_pad else trace.x[-1],
             y=trace.y[-1] + y_offset_dict.get(trace.name, 0),  # Apply y-offset if available
-            text=trace.name,
+            text=prt_theme.wrap_labels(trace.name, max_chars) if max_chars else trace.name,
             xanchor="left",
             align="left",
             showarrow=False,
             font_color=colorway[i],
-            font_size=10,
+            font_size=12,
         )
         for i, trace in enumerate(traces)
     ]
@@ -76,7 +77,7 @@ def generate_annotations(traces, colorway, y_label, y_label_placement=None, y_of
             align="left",
             xanchor="left",
             showarrow=False,
-            text=y_label,
+            text=y_label if y_label else "",
             font_size=14,
         )
     )
