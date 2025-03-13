@@ -46,7 +46,7 @@ def generate_traces(df:pd.DataFrame) -> list:
     return traces
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
-    """Creates a line chart showing percentage change of custodial sentences by length."""
+    """Creates a bar chart showing change in average custodial sentence length by offence."""
 
     fig = go.Figure()
     traces = generate_traces(df)
@@ -54,13 +54,15 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     
     fig.add_traces(traces)
 
+    # Configure axes
+    fig.update_yaxes(range=[0, 121], dtick=20, automargin=True)
     fig.update_xaxes(tickfont_size=12)
 
     fig.update_layout(
         barmode="group",
         uniformtext_minsize=8,
         uniformtext_mode='show',
-        margin=dict(b=55, l=35),
+        margin=dict(b=60, l=35),
         annotations=annotations
     )
 
