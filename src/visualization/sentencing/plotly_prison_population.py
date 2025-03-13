@@ -64,9 +64,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.add_traces(traces)
 
     # Configure axes
-    fig.update_yaxes(range=[0, 120500], dtick=20000, automargin=True, 
-                    # domain=[0, 0.95]
-                    )
+    fig.update_yaxes(range=[0, 120500], dtick=20000, automargin=True)
     fig.update_xaxes(range=["1989-01-01", "2031-01-01"])
 
     # Configure layout
