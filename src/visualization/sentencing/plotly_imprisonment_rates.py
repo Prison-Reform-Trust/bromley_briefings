@@ -39,7 +39,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
 
     # Configure axes
-    fig.update_yaxes(type="category", autorange="reversed", automargin=True, domain=[0, 0.95])
+    fig.update_yaxes(type="category", autorange="reversed", automargin=True)
 
     # Configure layout
     fig.update_layout(
