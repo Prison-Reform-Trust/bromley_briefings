@@ -30,9 +30,9 @@ def setup_plotly_credentials():
     pio.templates.default = "prt_template"
 
 ## Read data
-def load_data(filepath: str, usecols=None) -> pd.DataFrame:
-    """Loads processed data from CSV with optional column selection."""
-    return pd.read_csv(filepath, usecols=usecols)
+def load_data(filepath: str, usecols=None, parse_dates=None, date_format=None) -> pd.DataFrame:
+    """Loads processed data from CSV with optional column selectiom and date parsing."""
+    return pd.read_csv(filepath, usecols=usecols, parse_dates=parse_dates, date_format=date_format)
 
 ## Generate annotations dynamically
 def generate_annotations(traces, colorway, max_chars=None, y_label=None, y_label_placement=None, y_offset_dict=None, x_pad=None):
