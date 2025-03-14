@@ -46,7 +46,7 @@ fig.add_trace(go.Sunburst(
     ))
 
 fig.update_layout(
-    margin = dict(t=60),
+    margin = dict(t=20, b=20),
     uniformtext_minsize=10, 
     uniformtext_mode='hide',
     )
@@ -55,10 +55,10 @@ fig.update_layout(
 annotations = []
 
 # Add title
-prt_theme.add_title(fig, "Nearly 300 people died in prison in the year to March 2024", width=65)
+# prt_theme.add_title(fig, "Nearly 300 people died in prison in the year to March 2024", width=65)
 
 # Add source annotation
-prt_theme.add_annotation(annotations, "Table 2, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source", y=-0.03)
+# prt_theme.add_annotation(annotations, "Table 2, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source", y=-0.03)
 
 # Adding annotations to layout
 fig.update_layout(annotations=annotations)
