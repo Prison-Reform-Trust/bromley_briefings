@@ -58,9 +58,7 @@ fig.update_yaxes(range=[-31, 11])
 
 # Axis parameter adjustments
 fig.update_layout(
-    xaxis_ticks="inside",
-    margin_pad=5,
-    margin = dict(t=20, b=25, l=40, r=25),
+    margin_l=40,
     yaxis_ticksuffix='%'
 )
 

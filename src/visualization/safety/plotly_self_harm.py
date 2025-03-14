@@ -57,8 +57,7 @@ prt_theme.set_axis_range(
 fig.update_layout(
     xaxis_ticks="inside",
     xaxis_tickformat= ",.0f",
-    margin_pad = 5,
-    margin = dict(t=20, b=25, l=40, r=25),
+    margin_l=40,
     )
 
 ## Chart annotations
