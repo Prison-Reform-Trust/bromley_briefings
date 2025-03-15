@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Remand on the rise
-Subtitle: The number of people in prison on remand is now at its highest level in at least 50 years
-Source: Ministry of Justice (2024). Offender management statistics quarterly: January to March 2024. And previous editions
+Title: Deaths in prisons in England and Wales
+Subtitle: Nearly 350 people died in prison during 2024
+Source: Ministry of Justice (2024). Safety in custody: quarterly update to September 2024
 """
 
 import os
