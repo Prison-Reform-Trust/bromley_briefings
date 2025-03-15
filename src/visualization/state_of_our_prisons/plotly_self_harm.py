@@ -1,78 +1,81 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Importing libraries
-import os
+"""
+Title: Self-harm in prisons in England and Wales
+Subtitle: Rates of self-harm remain at historic highs
+Source: Ministry of Justice (2024). Safety in custody: quarterly update to September 2024
+"""
 
-import chart_studio
+import os
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
-import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
-from src.visualization import prt_theme
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-##Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+# Load configuration
+config = utils.read_config()
 
-##Adding plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
-#Setting default Plotly template
-pio.templates.default = "prt_template"
+def process_data(df: pd.DataFrame, year: int) -> pd.DataFrame:
+    """Filters data by year to retain every other year."""
+    filt = df['year'] >= year
+    return df[filt].iloc[::2].copy()
 
-#Read in datasets
-df = pd.read_csv("data/processed/safety/self_harm.csv")
-#Filtering for every other year
-df = df[::2]
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    """Creates a sunburst chart showing number and proportion of deaths in prison by type and gender."""
 
-## Plotting
-fig = go.Figure()
-fig.add_trace(
-    go.Bar(
-        x=df["rate"],
-        y=df["year"],
-        orientation="h",
-        hovertemplate="%{text:,.0f} incidents<extra></extra>",
-        text = df['incidents'],
-        texttemplate="%{x:,.0f}",
-        textposition="outside",
-    ),
-)
-fig.update_yaxes(
-    type='category',
-    autorange="reversed")
+    fig = go.Figure()
+    annotations = prt_theme.add_annotation(None, "Self-harm incidents per 1,000 prisoners", annotation_type="y-axis")
 
-prt_theme.set_axis_range(
-    fig, 
-    axis="x", 
-    dataframe=df, 
-    dataframe_column="rate", 
-    min_value=0,
+    fig.add_trace(
+        go.Bar(
+            x=df["rate"],
+            y=df["year"],
+            orientation="h",
+            hovertemplate="%{text:,.0f} incidents<extra></extra>",
+            text = df['incidents'],
+            texttemplate="%{x:,.0f}",
+            textposition="outside",
+        ),
+    )
+    
+    fig.update_yaxes(
+        type='category',
+        autorange="reversed"
+    )
+    
+    fig.update_xaxes(
+        ticks="inside",
+        tickformat= ",.0f",
     )
 
-fig.update_layout(
-    xaxis_ticks="inside",
-    xaxis_tickformat= ",.0f",
-    margin_l=40,
+    prt_theme.set_axis_range(
+        fig, 
+        axis="x", 
+        dataframe=df, 
+        dataframe_column="rate", 
+        min_value=0,
     )
 
-## Chart annotations
-annotations = []
+    fig.update_layout(
+        margin_l=45,
+        annotations=annotations
+        )
 
-# Add title
-# prt_theme.add_title(fig, "Rates of self-harm remain at historic highs")
+    return fig
 
-# Add source annotation with default placement
-# prt_theme.add_annotation(annotations, "Table 2.1, Ministry of Justice (2024). Safety in custody:<br>Quarterly update to December 2023.", annotation_type="source")
+def main() -> go.Figure:
+    """Loads data, generates the chart, and uploads it to Chart Studio."""
+    utils.setup_plotly_credentials()
+    data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/self_harm.csv")
+    df = utils.load_data(data_path).pipe(process_data, 2013)
+    fig = create_chart(df)
+    py.plot(fig, filename="self_harm")
+    return fig
 
-# Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "Self-harm incidents per 1,000 prisoners", annotation_type="y-axis")
 
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
-
-py.plot(fig, filename="self_harm")
+if __name__ == "__main__":
+    main()
