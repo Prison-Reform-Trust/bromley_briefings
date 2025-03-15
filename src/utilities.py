@@ -31,7 +31,7 @@ def setup_plotly_credentials():
 
 ## Read data
 def load_data(filepath: str, usecols=None, parse_dates=None, date_format=None) -> pd.DataFrame:
-    """Loads processed data from CSV with optional column selectiom and date parsing."""
+    """Loads processed data from CSV with optional column selection and date parsing."""
     return pd.read_csv(filepath, usecols=usecols, parse_dates=parse_dates, date_format=date_format)
 
 ## Generate annotations dynamically
