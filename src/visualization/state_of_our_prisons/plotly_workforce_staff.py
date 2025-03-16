@@ -1,84 +1,88 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Importing libraries
-import os
+"""
+Title: Staff in prisons in England and Wales
+Subtitle: Public sector prison officer numbers remain down on 2010
+Source: Ministry of Justice (2023). HMPPS workforce quarterly: March 2023.
+"""
 
-import chart_studio
+import os
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
-from plotly.subplots import make_subplots
 
-# Import prt_theme module
-from src.visualization import prt_theme
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-# Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+# Load configuration
+config = utils.read_config()
 
-# Adding plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
+def process_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Filters data by year to retain every other year."""
+    df['type'] = df['type'].replace({"HMPPS employed prison officers": "HMPPS employed<br>prison officers"})
+    df['percent'] = df['percent'] * 100
+    return df
 
-# Setting default Plotly template and assigning attributes to prt_template
-pio.templates.default = "prt_template"
-prt_template = prt_theme.pio.templates['prt_template']
+def generate_traces(df:pd.DataFrame) -> list:
+    """Generates Plotly traces for each group in dataset."""
+    traces = [
+        go.Scatter(
+            x=df_group["year"].tolist(),
+            y=df_group["percent"].tolist(),
+            mode="lines+markers",
+            text=df_group['type'],
+            customdata=df_group['number'],
+            hovertemplate="<b>Change since 2010:</b> %{y}<br><b>%{text}:</b> %{customdata:,.0f}<extra></extra>",
+            name=str(group),
+        )
+        for group, df_group in df.groupby(df["type"])
+    ]
 
-# Read in datasets
-df = pd.read_csv("data/processed/resources_staffing/workforce_staff.csv")
-df['type'] = df['type'].replace({"HMPPS employed prison officers": "HMPPS employed<br>prison officers"})
+    return traces
 
-## Plotting
-fig = go.Figure()
-trace_list = []
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    """Creates a line chart showing percentage change in number of people in prison and band 3-5 officers since 2010."""
 
-for i in df["type"].unique():
-    df_type = df[df["type"] == i]
+    fig = go.Figure()
+    traces = generate_traces(df)
+    fig.add_traces(traces)
 
-    trace = go.Scatter(
-        x=df_type["year"],
-        y=df_type["percent"],
-        mode="lines+markers",
-        text=df_type['type'],
-        name=str(df_type['type'].iloc[0]),
-        customdata=df_type['number'],
-        hovertemplate="<b>Change since 2010:</b> %{y}<br><b>%{text}:</b> %{customdata:,.0f}<extra></extra>"
-    )
+    colorway = pio.templates[pio.templates.default].layout.colorway
+
+    annotations = utils.generate_annotations(
+        traces=traces,
+        colorway=colorway,
+        y_label="Percentage change since 2010",
+        x_pad=0.3
+        )
+
+    # Set axes ranges
+    fig.update_yaxes(range=[-31, 11])
+    fig.update_xaxes(range=[2009.8, 2025.2])
     
-    trace_list.append(trace)
 
-fig.add_traces(trace_list)
+    # Axis parameter adjustments
+    fig.update_layout(
+        margin_l=40,
+        margin_r=75,
+        yaxis_ticksuffix='%',
+        annotations=annotations
+    )
 
-# Set y-axes range
-fig.update_yaxes(range=[-31, 11])
+    return fig
 
-# Axis parameter adjustments
-fig.update_layout(
-    margin_l=40,
-    yaxis_ticksuffix='%'
-)
+def main() -> go.Figure:
+    """Loads data, generates the chart, and uploads it to Chart Studio."""
+    utils.setup_plotly_credentials()
+    data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/workforce_staff.csv")
+    df = utils.load_data(data_path).pipe(process_data)
+    fig = create_chart(df)
+    py.plot(fig, filename="workforce_staff")
+    return fig
 
-## Chart annotations
-annotations = []
 
-# Add title
-# prt_theme.add_title(fig, "Public sector prison officer numbers remain down on 2010")
-
-# Add source annotation
-# prt_theme.add_annotation(annotations, "Table 4, Ministry of Justice (2023). HMPPS workforce quarterly: March 2023.", annotation_type="source")
-
-# Add y-axis label annotation
-prt_theme.add_annotation(annotations, "Percentage change since 2010", annotation_type="y-axis")
-
-# Add trace label annotation
-prt_theme.add_annotation(annotations, annotation_type="trace_label", trace_list=trace_list)
-
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
-
-# fig.show()
-py.plot(fig, filename="workforce_staff")
+if __name__ == "__main__":
+    main()
