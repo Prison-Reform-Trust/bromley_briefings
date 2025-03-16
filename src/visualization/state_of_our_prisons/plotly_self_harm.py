@@ -25,7 +25,7 @@ def process_data(df: pd.DataFrame, year: int) -> pd.DataFrame:
     return df[filt].iloc[::2].copy()
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
-    """Creates a sunburst chart showing number and proportion of deaths in prison by type and gender."""
+    """Creates a horizontal bar chart showing rate and number of self-harm incidents in prison."""
 
     fig = go.Figure()
     annotations = prt_theme.add_annotation(None, "Self-harm incidents per 1,000 prisoners", annotation_type="y-axis")
@@ -62,6 +62,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     fig.update_layout(
         margin_l=45,
+        margin_r=0,
         annotations=annotations
         )
 
