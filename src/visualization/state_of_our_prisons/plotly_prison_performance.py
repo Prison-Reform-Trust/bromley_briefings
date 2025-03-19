@@ -3,7 +3,7 @@
 
 """
 Title: Prison performance in England and Wales
-Subtitle: Over a third of prisons are rated “of concern” or “serious concern" by the prison service
+Subtitle: More than two in five prisons are rated “of concern” or “serious concern" by the prison service
 Source: Source: Ministry of Justice. Annual prison performance ratings 2023-24 and previous editions.
         Note that ratings were suspended in 2020-21 and reduced in 2021-22
 """
