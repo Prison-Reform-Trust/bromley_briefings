@@ -28,7 +28,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ids=df["ids"],
         labels=df['death_type'],
         parents=df["parent"],
-        values=df["value"],
+        values=df["value"].tolist(),
         branchvalues="total",
         texttemplate="<b>%{label}</b><br>%{value}",
         hovertemplate="<b>%{label}</b><br>%{value} deaths<br>%{percentParent: .0%} of %{parent}<extra></extra>",
@@ -38,6 +38,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     fig.update_layout(
         margin=dict(t=0, b=0, l=0, r=0),
+        uniformtext=dict(minsize=12, mode="hide"),
         )
     
     return fig
