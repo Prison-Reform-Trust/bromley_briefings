@@ -8,16 +8,13 @@ Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update
 """
 
 import os
-import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
 
 # Load configuration
 config = utils.read_config()
@@ -82,7 +79,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
     utils.setup_plotly_credentials()
-    data_path = f"{config['data']['clnFilePath']}sentencing/sentence_growth.csv"
+    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/sentence_growth.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
     py.plot(fig, filename="sentence_growth")
