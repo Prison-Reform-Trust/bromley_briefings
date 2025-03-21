@@ -7,17 +7,13 @@ Subtitle: The number of Asian and mixed ethnicity prisoners has risen sharply si
 Source: Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024
 """
 
-import os
-import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
 
 # Load configuration
 config = utils.read_config()
