@@ -7,6 +7,7 @@ Subtitle: The number of Asian and mixed ethnicity prisoners has risen sharply si
 Source: Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024
 """
 
+import os
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -65,7 +66,6 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     
     # Layout parameter adjustments
     fig.update_layout(
-        # margin=dict(l=50, r=80),
         yaxis_ticksuffix='%',
         hovermode='x unified',
         hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
@@ -76,7 +76,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
     utils.setup_plotly_credentials()
-    data_path = f"{config['data']['clnFilePath']}people_in_prison/bame_population.csv"
+    data_path = os.path.join(config['data']['clnFilePath'], "people_in_prison/bame_population.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
     py.plot(fig, filename="bame_population")
