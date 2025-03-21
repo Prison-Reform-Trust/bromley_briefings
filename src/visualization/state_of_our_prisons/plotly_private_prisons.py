@@ -29,6 +29,7 @@ def generate_traces(df: pd.DataFrame) -> list:
         "Sodexo": "#283897",
         "G4S": "#ef3e42",
         "Serco": "#46555f",
+        "Mitie": "#5b1f69",
     }
 
     traces = [
@@ -63,11 +64,13 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         map_style="streets",
         showlegend=True,
         legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=0.91,
+            entrywidth=40,
+            itemclick="toggleothers",
+            itemdoubleclick=False,
+            yanchor="top",
+            y=0.95,
             xanchor="right",
-            x=0.98,
+            x=0.95,
         ),
         map=dict(
             bearing=0,
