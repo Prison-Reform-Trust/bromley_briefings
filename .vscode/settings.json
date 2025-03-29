@@ -1,0 +1,36 @@
+{
+    "cSpell.words": [
+        "colorway",
+        "dotenv",
+        "dtick",
+        "entrywidth",
+        "hovermode",
+        "htmlcov",
+        "ipynb",
+        "itemclick",
+        "itemdoubleclick",
+        "Mitie",
+        "mypy",
+        "nosetests",
+        "nticks",
+        "plotlyjs",
+        "pycache",
+        "Scattermap",
+        "sdist",
+        "Serco",
+        "showlegend",
+        "sizex",
+        "sizey",
+        "Spyder",
+        "ticktext",
+        "tickvals",
+        "toggleothers",
+        "usecols",
+        "xaxes",
+        "yaxes",
+        "yaxis"
+    ],
+    "flake8.args": [
+        "--max-line-length=120"
+    ]
+}
