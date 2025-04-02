@@ -8,6 +8,7 @@ Source: Ministry of Justice (2024). Offender management statistics quarterly: Oc
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -24,7 +25,7 @@ config = utils.read_config()
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
     """Processes the data to ensure it is in the correct format for plotting."""
-    
+
     if "offence" in df.columns:
         df["wrapped_offence"] = df["offence"].apply(prt_theme.wrap_labels, max_chars=18)
 
@@ -47,7 +48,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def generate_traces(df: pd.DataFrame, show_legend: bool = True) -> list:
     """Generates Plotly traces for each offence in dataset."""
-    
+
     colorway = pio.templates[pio.templates.default].layout.colorway
     colors = {"women": colorway[0], "men": colorway[1]}
 
@@ -70,7 +71,7 @@ def generate_traces(df: pd.DataFrame, show_legend: bool = True) -> list:
 
 def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Figure:
     """Creates a grouped bar chart for prison receptions by offence and sentence length."""
-    
+
     fig = make_subplots(
         rows=2, cols=1,
         row_heights=[0.5, 0.5],
@@ -124,7 +125,7 @@ def get_data_path(filename: str) -> str:
 
 def main() -> go.Figure:
     """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
-    
+
     utils.setup_plotly_credentials()
 
     df_offences = utils.load_data(get_data_path("offences_by_sex.csv")).pipe(process_data)
