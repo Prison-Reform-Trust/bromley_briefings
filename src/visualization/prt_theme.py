@@ -85,7 +85,7 @@ def add_annotation(
     font_size: int = 14,
     font_color: Optional[str] = None,
     annotation_type: Optional[str] = None,
-    dataframe: Optional[pd.DataFrame] = None,
+    dataframe: Optional[pd.DataFrame]=None,
     dataframe_column: Optional[str] = None,
     trace_list: Optional[List] = None,
     trace_list_idx: Optional[Union[int, List[int]]] = None,
@@ -175,10 +175,7 @@ def add_annotation(
 
     annotation_types = {"source", "y-axis", "trace_label", "label"}
     if annotation_type not in annotation_types:
-        raise ValueError(
-            f"Invalid annotation_type: {annotation_type}. "
-            f"Must be one of {annotation_types}"
-        )
+        raise ValueError(f"Invalid annotation_type: {annotation_type}. Must be one of {annotation_types}")
 
     if annotation_type == "source":
         if not text:
