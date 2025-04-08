@@ -42,25 +42,25 @@ pio.templates["prt_template"].data.scatter = [
 
 ## Chart annotations
 def add_annotation(
-    annotations_list=None,  # Default to None, so we can initialize if needed
-    text=None,
-    x=None,
-    y=None,
-    xref="paper",
-    yref="paper",
-    xanchor="left",
-    yanchor="top",
-    align=None,
-    showarrow=False,
-    font_size=14,
-    font_color=None,
-    annotation_type=None,
-    dataframe=None,
-    dataframe_column=None,
-    trace_list=None,
-    trace_list_idx: Union[None, int, List[int]] = None,
-    x_pad=0
-):
+    annotations_list: Optional[List[dict]] = None,
+    text: Optional[str] = None,
+    x: Optional[Union[float, List[float]]] = None,
+    y: Optional[Union[float, List[float]]] = None,
+    xref: str = "paper",
+    yref: str = "paper",
+    xanchor: str = "left",
+    yanchor: str = "top",
+    align: Optional[str] = None,
+    showarrow: bool = False,
+    font_size: int = 14,
+    font_color: Optional[str] = None,
+    annotation_type: Optional[str] = None,
+    dataframe: Optional[pd.DataFrame]=None,
+    dataframe_column: Optional[str] = None,
+    trace_list: Optional[List] = None,
+    trace_list_idx: Optional[Union[int, List[int]]] = None,
+    x_pad: float = 0
+) -> List[dict]:
     """
     Add an annotation to a Plotly chart.
 
@@ -132,90 +132,77 @@ def add_annotation(
 
     """
     # Ensure annotations_list is initialized
-    if annotations_list is None:
-        annotations_list = []
+    annotations_list = annotations_list or []
 
     annotation_types = {"source", "y-axis", "trace_label", "label"}
-
     if annotation_type not in annotation_types:
-        raise ValueError(f"You must supply a valid annotation_type from {annotation_types}")
+        raise ValueError(f"Invalid annotation_type: {annotation_type}. Must be one of {annotation_types}")
 
     if annotation_type == "source":
-        if text is None:
+        if not text:
             raise ValueError("Text must be provided for source annotation.")
         text = f"Source: {text}"
-        font_size = 12
-        align = "left"
-        x = 0 if x is None else x
-        y = -0.1 if y is None else y
+        x, y = x or 0, y or -0.1
+        font_size, align = 12, "left"
 
     elif annotation_type == "y-axis":
         if dataframe is not None and dataframe_column is not None:
             x = dataframe[dataframe_column].iloc[0]
             xref = "x"
         else:
-            x = 0 if x is None else x
-        y = 1 if y is None else y
-        yanchor = "bottom"
+            x = x or 0
+        y, yanchor = y or 1, "bottom"
 
     elif annotation_type == "trace_label":
-        if trace_list is not None:
-            if trace_list_idx is None:
-                trace_list_idx = list(range(len(trace_list)))
-            elif isinstance(trace_list_idx, int):
-                trace_list_idx = [trace_list_idx]
+        if not trace_list:
+            raise ValueError("trace_list is required for trace_label annotations.")
 
-            x_map = {trace_list_idx[i]: x[i] for i in range(len(trace_list_idx))} if isinstance(x, list) else {}
-            y_map = {trace_list_idx[i]: y[i] for i in range(len(trace_list_idx))} if isinstance(y, list) else {}
+        trace_list_idx = (
+            list(range(len(trace_list))) if trace_list_idx is None
+            else [trace_list_idx] if isinstance(trace_list_idx, int)
+            else trace_list_idx
+        )
 
-            for j, trace in enumerate(trace_list):
-                x_override = x_map.get(j, trace.x[-1]) + x_pad
-                y_override = y_map.get(j, trace.y[-1])
+        for j in trace_list_idx:
+            trace = trace_list[j]
+            annotations_list.append({
+                "xref": "x",
+                "yref": "y",
+                "xanchor": xanchor,
+                "yanchor": yanchor,
+                "x": (x[j] if isinstance(x, list) else trace.x[-1]) + x_pad,
+                "y": y[j] if isinstance(y, list) else trace.y[-1],
+                "align": align,
+                "showarrow": showarrow,
+                "text": str(trace.name),
+                "font_size": font_size,
+                "font_color": font_color or pio.templates['prt_template'].layout.colorway[j]
+            })
 
-                annotations_list.append(
-                    dict(
-                        xref="x",
-                        yref="y",
-                        xanchor=xanchor,
-                        yanchor=yanchor,
-                        x=x_override,
-                        y=y_override,
-                        align=align,
-                        showarrow=showarrow,
-                        text=str(trace.name),
-                        font_size=font_size,
-                        font_color=pio.templates['prt_template'].layout.colorway[j]
-                    )
-                )
-        else:
-            raise ValueError("You must supply a valid trace_list")
+        return annotations_list
 
     elif annotation_type == "label":
-        if text is None:
+        if not text:
             raise ValueError("Text must be provided.")
-        align = "center"
-        x = 0.5 if x is None else x
-        y = 0.5 if y is None else y
+        x, y, align = x or 0.5, y or 0.5, "center"
 
-    if x is not None:
-        x += x_pad
+    # Apply padding if x is set
+    x = x + x_pad if x is not None else None
 
-    if annotation_type != "trace_label":
-        annotations_list.append(
-            dict(
-                xref=xref,
-                yref=yref,
-                xanchor=xanchor,
-                yanchor=yanchor,
-                x=x,
-                y=y,
-                align=align,
-                showarrow=showarrow,
-                text=text,
-                font_size=font_size,
-                font_color=font_color
-            )
-        )
+    # Append the annotation
+    annotations_list.append({
+        "xref": xref,
+        "yref": yref,
+        "xanchor": xanchor,
+        "yanchor": yanchor,
+        "x": x,
+        "y": y,
+        "align": align,
+        "showarrow": showarrow,
+        "text": text,
+        "font_size": font_size,
+        "font_color": font_color
+    })
 
     return annotations_list
 

@@ -5,7 +5,7 @@ dependencies:
 - pandas
 - matplotlib
 - seaborn
-- plotly
+- plotly=6.0.0 # Rolled back to 6.0.0 due to issues with Chart Studio upload on 6.0.1
 - python-kaleido
 - plotly-geo
 - chart-studio
