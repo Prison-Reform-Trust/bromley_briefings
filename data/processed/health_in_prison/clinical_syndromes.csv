@@ -1,0 +1,17 @@
+﻿condition,percent,gender
+mood,35,women
+eating,31,women
+psychotic,29,women
+ptsd,23,women
+mood,20,men
+eating,15,men
+psychotic,14,men
+ptsd,14,men
+alcohol,47,women
+suicidal,38,women
+drug,35,women
+anxiety,34,women
+alcohol,60,men
+suicidal,23,men
+drug,35,men
+anxiety,37,men
