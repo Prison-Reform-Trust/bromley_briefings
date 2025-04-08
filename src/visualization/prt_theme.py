@@ -85,7 +85,7 @@ def add_annotation(
     font_size: int = 14,
     font_color: Optional[str] = None,
     annotation_type: Optional[str] = None,
-    dataframe: Optional[pd.DataFrame]=None,
+    dataframe: Optional[pd.DataFrame] = None,
     dataframe_column: Optional[str] = None,
     trace_list: Optional[List] = None,
     trace_list_idx: Optional[Union[int, List[int]]] = None,
