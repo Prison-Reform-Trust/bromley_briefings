@@ -59,7 +59,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def generate_traces(df):
-    """Generate bar chart traces"""
+    """Generate chart traces"""
 
     colorway = pio.templates[pio.templates.default].layout.colorway
     colors = {
@@ -109,6 +109,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ticks="outside",
         automargin=True,
         ticksuffix='%',
+        range=[0, 100],
     )
 
     # Configure layout
