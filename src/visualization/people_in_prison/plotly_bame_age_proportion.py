@@ -10,6 +10,7 @@ Sources:
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -21,6 +22,7 @@ import src.visualization.prt_theme as prt_theme
 
 # Load configuration
 config = utils.read_config()
+
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
     """Melt dataframe from wide to long and enforce order"""
@@ -41,9 +43,10 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+
 def generate_traces(df):
     """Generate bar chart traces"""
-        
+
     colorway = pio.templates[pio.templates.default].layout.colorway
     colors = {
         "Other": colorway[4],
@@ -67,6 +70,7 @@ def generate_traces(df):
 
     return traces
 
+
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a Plotly horizontal bar chart of proportion of all self-harm incidents by gender."""
 
@@ -75,7 +79,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     annotations = prt_theme.add_annotation(text="Proportion of prison population", annotation_type="y-axis")
 
     fig.add_traces(traces)
-    
+
     # Configure axes
     fig.update_yaxes(
         autorange="reversed",
@@ -86,7 +90,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         zeroline=False,
         ticksuffix='%',
         )
-    
+
     # Configure layout
     fig.update_layout(
         barmode="stack",
@@ -107,6 +111,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
     return fig
 
+
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
     utils.setup_plotly_credentials()
@@ -115,6 +120,7 @@ def main() -> go.Figure:
     fig = create_chart(df)
     py.plot(fig, filename="bame_age_proportion")
     return fig
+
 
 if __name__ == "__main__":
     main()
