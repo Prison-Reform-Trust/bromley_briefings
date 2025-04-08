@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: We choose to send people to prison for a long time — and it’s growing
-Subtitle: Almost three times as many people were sentenced to 10 years or more in 2023 than in 2010
-Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023.
+Title: Age in prisons in England and Wales
+Subtitle: Over 50s account for almost one in six people in prison
+Source: Ministry of Justice (2024). Offender management statistics quarterly: January to March 2024
 """
 
 import os
@@ -19,22 +19,24 @@ import src.utilities as utils
 # Load configuration
 config = utils.read_config()
 
-## Generate traces for Plotly
+def process_data(df: pd.DataFrame) -> pd.DataFrame:
+    df["age_group"] = pd.Categorical(df["age_group"], ordered=True)
+    return df
+
 def generate_traces(df:pd.DataFrame) -> list:
-    """Generates Plotly traces for each sentence length in dataset."""
+    """Generates Plotly traces for each age group in dataset."""
     traces = [
         go.Scatter(
-            x=df_sentence["year"].tolist(),
-            y=df_sentence["percent"].tolist(),
+            x=df_age_group["year"].tolist(),
+            y=df_age_group["percent"].tolist(),
             mode="lines+markers",
-            text=df_sentence['sentence'],
-            hovertemplate="<b>%{text}</b><br>Change since 2010: %{y:,.0f}%<extra></extra>",
-            name=str(sentence),
+            text=df_age_group['age_group'],
+            hovertemplate="<b>%{text}</b><br>Change since 2002: %{y:,.0f}%<extra></extra>",
+            name=str(age_group),
         )
-        for sentence, df_sentence in df.groupby(df["sentence"])
+        for age_group, df_age_group in df.groupby(df["age_group"], observed=True)
     ]
     return traces
-
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a line chart showing percentage change of custodial sentences by length."""
@@ -42,32 +44,33 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
     traces = generate_traces(df)[::-1] # Reverse order for better visibility
     fig.add_traces(traces)
-    
+
     # Generate annotations with optional y_offset_dict
     colorway = pio.templates[pio.templates.default].layout.colorway
-    y_label = "People sentenced (percentage change since 2010)"
-    y_offset_dict = {
-        "Less than 6 months": -20,
-        "6 months to less than 12 months": 8, 
-        "12 months to less than 4 years": -20,
-        "4 years to 10 years": 8
-    }
-    
+    y_label = "People in prison (percentage change since 2002)"
+
     annotations = utils.generate_annotations(
         traces=traces, 
         colorway=colorway,
-        max_chars=19,
+        max_chars=7,
         y_label=y_label, 
-        y_offset_dict=y_offset_dict, 
         x_pad=0.3)
-
-    # Set axes ranges
-    fig.update_yaxes(range=[-110, 210])
-    fig.update_xaxes(range=[2009.8, 2024.2])
-
+    
     # Axis parameter adjustments
+    fig.update_yaxes(
+        automargin=True,
+        range=[-105, 330],
+        dtick=100,
+    )
+
+    fig.update_xaxes(
+        range=[2001.8, 2025.2],
+        tick0=2002,
+        dtick=2,
+        )
+    
+    # Layout parameter adjustments
     fig.update_layout(
-        margin=dict(l=50, r=80),
         yaxis_ticksuffix='%',
         hovermode='x unified',
         hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
@@ -75,14 +78,13 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
     return fig
 
-
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
     utils.setup_plotly_credentials()
-    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/sentence_growth.csv")
-    df = utils.load_data(data_path)
+    data_path = os.path.join(config['data']['clnFilePath'], "people_in_prison/age_groups.csv")
+    df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)
-    py.plot(fig, filename="sentence_growth")
+    py.plot(fig, filename="age_groups")
     return fig
 
 if __name__ == "__main__":

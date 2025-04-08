@@ -1,14 +1,43 @@
-#Custom Plotly template for all charts in this project
-##Created by Alex Hewson
-##Last updated 11 March 2025
+# Custom Plotly template for all charts in this project
+# Created by Alex Hewson
+# Last updated 11 March 2025
+"""
+This module provides utilities for creating and customizing Plotly visualizations
+with a standardized template and additional helper functions for annotations,
+titles, axis range adjustments, and text wrapping.
 
-import plotly.io as pio
-import plotly.graph_objs as go
-import pandas as pd
+Features:
+---------
+1. A custom Plotly template (`prt_template`) designed for consistent styling
+    across charts in the project.
+2. Functions to add annotations to charts, including source labels, y-axis labels,
+    trace-specific labels, and generic labels.
+3. A utility to add wrapped and styled titles to Plotly figures.
+4. A helper function to wrap text labels for better readability in visualizations.
+5. A function to set axis ranges dynamically based on data or manually provided values.
+
+Modules:
+--------
+- `add_annotation`: Adds annotations to a Plotly chart with various customization options.
+- `add_title`: Adds a styled and wrapped title to a Plotly figure.
+- `wrap_labels`: Wraps text labels to a specified maximum character width.
+- `set_axis_range`: Dynamically or manually sets the range of x or y axes in a Plotly figure.
+
+Dependencies:
+-------------
+- pandas
+- plotly
+- textwrap
+"""
+
 import textwrap
-from typing import Optional, Literal, Union, List
+from typing import List, Literal, Optional, Union
 
-#PRT standard template
+import pandas as pd
+import plotly.graph_objs as go
+import plotly.io as pio
+
+# PRT standard template
 pio.templates["prt_template"] = go.layout.Template(
     layout=go.Layout(
         title_font=dict(family="Helvetica Neue, Arial", size=20),
@@ -40,7 +69,8 @@ pio.templates["prt_template"].data.scatter = [
         )
         ]
 
-## Chart annotations
+
+# Chart annotations
 def add_annotation(
     annotations_list: Optional[List[dict]] = None,
     text: Optional[str] = None,
@@ -67,63 +97,72 @@ def add_annotation(
     Parameters:
     ----------
     annotations_list : list, optional
-        A list to which the annotation dictionary will be appended. If not provided, a new list is created.
-    
+        A list to which the annotation dictionary will be appended.
+        If not provided, a new list is created.
+
     text : str, optional
         The text to display in the annotation. Required for "source" and "label" annotation types.
-    
+
     x : float or list of floats, optional
-        The x-coordinate(s) for the annotation(s). If not specified, defaults are used based on `annotation_type`.
-    
+        The x-coordinate(s) for the annotation(s).
+        If not specified, defaults are used based on `annotation_type`.
+
     y : float or list of floats, optional
-        The y-coordinate(s) for the annotation(s). If not specified, defaults are used based on `annotation_type`.
-    
+        The y-coordinate(s) for the annotation(s).
+        If not specified, defaults are used based on `annotation_type`.
+
     xref : str, default="paper"
-        The reference for the x-coordinate. Can be "paper" (relative to the plot area) or "x" (data coordinates).
-    
+        The reference for the x-coordinate.
+        Can be "paper" (relative to the plot area) or "x" (data coordinates).
+
     yref : str, default="paper"
-        The reference for the y-coordinate. Can be "paper" (relative to the plot area) or "y" (data coordinates).
-    
+        The reference for the y-coordinate.
+        Can be "paper" (relative to the plot area) or "y" (data coordinates).
+
     xanchor : str, default="left"
         The horizontal alignment of the annotation. Options include "left", "center", and "right".
-    
+
     yanchor : str, default="top"
         The vertical alignment of the annotation. Options include "top", "middle", and "bottom".
-    
+
     align : str, optional
-        The alignment of the text within the annotation box. Options include "left", "center", and "right".
-    
+        The alignment of the text within the annotation box.
+        Options include "left", "center", and "right".
+
     showarrow : bool, default=False
         Whether to display an arrow pointing to the annotation's coordinates.
-    
+
     font_size : int, default=14
         The font size of the annotation text.
-    
+
     font_color : str, optional
         The color of the annotation text. If not specified, a default color is used.
-    
+
     annotation_type : str, required
         The type of annotation. Must be one of:
         - "source": Adds a source label to the chart.
         - "y-axis": Adds a label near the y-axis.
         - "trace_label": Adds annotations to specific traces.
         - "label": Adds a generic label annotation.
-    
+
     dataframe : pandas.DataFrame, optional
         A DataFrame to extract values for certain annotations (e.g., "y-axis").
-    
+
     dataframe_column : str, optional
-        The column in `dataframe` to use for the annotation's x-coordinate (used with "y-axis" type).
-    
+        The column in `dataframe` to use for the annotation's x-coordinate
+        (used with "y-axis" type).
+
     trace_list : list, optional
         A list of Plotly traces to annotate (used with "trace_label" type).
-    
+
     trace_list_idx : int or list of ints, optional
-        The indices of traces in `trace_list` to annotate. If not provided, all traces are annotated.
-    
+        The indices of traces in `trace_list` to annotate.
+        If not provided, all traces are annotated.
+
     x_pad : float, default=0
-        An optional padding to apply to the x-coordinate of the annotation(s). Useful for adjusting placement.
-    
+        An optional padding to apply to the x-coordinate of the annotation(s).
+        Useful for adjusting placement.
+
     Raises:
     -------
     ValueError
@@ -208,20 +247,32 @@ def add_annotation(
 
 
 def add_title(
-        fig, 
-        title, 
+        fig,
+        title,
         width=80,
         bold=True):
-    
+    """Adds a styled title to a Plotly figure.
+
+    Parameters:
+        fig (plotly.graph_objects.Figure): The Plotly figure to which the title will be added.
+        title (str): The text of the title to be displayed.
+        width (int, optional): The maximum width of the title in characters before wrapping.
+        Defaults to 80.
+        bold (bool, optional): Whether the title text should be bold. Defaults to True.
+
+    Returns:
+        None: The function modifies the figure in place.
+    """
+
     title = textwrap.wrap(f"{title}", width=width)
     font_size = "1.5rem"
     title.append("</span>")
-    
+
     if bold:
         span_start = f"<span style='font-size:{font_size};font-weight:bold'>"
     else:
         span_start = f"<span style='font-size:{font_size}>"
-    
+
     title = span_start + "<br>".join(title)
 
     fig.update_layout(
@@ -230,6 +281,7 @@ def add_title(
         title_yref='container',
         title_xanchor='left',
         title_x=0)
+
 
 def wrap_labels(text, max_chars=20):
     """
@@ -244,6 +296,7 @@ def wrap_labels(text, max_chars=20):
     """
     # Wrap the text with textwrap and replace newlines with <br>
     return textwrap.fill(text, width=max_chars).replace('\n', '<br>')
+
 
 def set_axis_range(
     fig: go.Figure,
@@ -279,7 +332,8 @@ def set_axis_range(
     Raises
     ------
     ValueError
-        If `min_value` or `max_value` is not provided and `dataframe` or `dataframe_column` is missing.
+        If `min_value` or `max_value` is not provided
+        and `dataframe` or `dataframe_column` is missing.
     """
 
     axis_update_funcs = {
@@ -289,9 +343,15 @@ def set_axis_range(
 
     if min_value is None or max_value is None:
         if dataframe is None or dataframe_column is None:
-            raise ValueError("Both dataframe and dataframe_column must be provided if min_value or max_value is None.")
-        
-        padding = (dataframe[dataframe_column].max() - dataframe[dataframe_column].min()) / len(dataframe[dataframe_column])
+            raise ValueError(
+                "Both dataframe and dataframe_column must be provided "
+                "if min_value or max_value is None."
+            )
+
+        column_max = dataframe[dataframe_column].max()
+        column_min = dataframe[dataframe_column].min()
+        column_len = len(dataframe[dataframe_column])
+        padding = (column_max - column_min) / column_len
         min_value = dataframe[dataframe_column].min() - padding if min_value is None else min_value
         max_value = dataframe[dataframe_column].max() + padding if max_value is None else max_value
 

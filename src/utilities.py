@@ -1,24 +1,27 @@
 """
-This script provides useful funcs to all other scripts
+This script provides useful functions to all other scripts
 """
 import os
-import yaml
-import pandas as pd
-import plotly.graph_objs as go  # Offline plotting
+import textwrap
+
 import chart_studio.plotly as py  # Online plotting
 import chart_studio.tools
+import pandas as pd
+import plotly.graph_objs as go  # Offline plotting
 import plotly.io as pio
-import textwrap
+import yaml
 from dotenv import find_dotenv, load_dotenv
 
 import src.visualization.prt_theme as prt_theme
 
+
 def read_config():
-    # Read in config file
+    """Read in config file"""
     config = {k: v for d in yaml.load(
-        open('config.yaml'),
-            Loader=yaml.SafeLoader) for k, v in d.items()}
+        open('config.yaml', encoding='utf-8'),
+        Loader=yaml.SafeLoader) for k, v in d.items()}
     return config
+
 
 def setup_plotly_credentials():
     """Loads environment variables and sets Plotly credentials."""
@@ -29,23 +32,45 @@ def setup_plotly_credentials():
     )
     pio.templates.default = "prt_template"
 
-## Read data
-def load_data(filepath: str, usecols=None, parse_dates=None, date_format=None) -> pd.DataFrame:
-    """Loads processed data from CSV with optional column selection and date parsing."""
-    return pd.read_csv(filepath, usecols=usecols, parse_dates=parse_dates, date_format=date_format)
 
-## Generate annotations dynamically
-def generate_annotations(traces, colorway, max_chars=None, y_label=None, y_label_placement=None, y_offset_dict=None, x_pad=None):
+# Read data
+def load_data(
+        filepath: str,
+        usecols=None,
+        parse_dates=None,
+        date_format=None,
+        ) -> pd.DataFrame:
+    """Loads processed data from CSV with optional column selection and date
+        parsing."""
+    return pd.read_csv(
+        filepath,
+        usecols=usecols,
+        parse_dates=parse_dates,
+        date_format=date_format)
+
+
+# Generate annotations dynamically
+def generate_annotations(
+        traces,
+        colorway,
+        max_chars=None,
+        y_label=None,
+        y_label_placement=None,
+        y_offset_dict=None,
+        x_pad=None):
     """
-    Generates trace labels and y-label annotation, allowing individual y-value adjustments.
-    
+    Generates trace labels and y-label annotation, allowing individual y-value
+        adjustments.
+
     Parameters:
         traces (list): Plotly trace objects.
         colorway (list): Color scheme from Plotly template.
-        max_chars (int, optional): Set maximum number of characters for trace labels before text is wrapped.
+        max_chars (int, optional): Set maximum number of characters for trace
+            labels before text is wrapped.
         y_label (str, optional): Y-axis label text.
         y_label_placement (str, optional): Y-axis label placement.
-        y_offset_dict (dict, optional): A dictionary mapping trace names (years) to y-offsets.
+        y_offset_dict (dict, optional): A dictionary mapping trace names
+            (years) to y-offsets.
         x_pad (float or int, optional): Horizontal padding for trace labels.
     """
     if y_offset_dict is None:
@@ -56,8 +81,12 @@ def generate_annotations(traces, colorway, max_chars=None, y_label=None, y_label
             xref="x",
             yref="y",
             x=trace.x[-1] + x_pad if x_pad else trace.x[-1],
-            y=trace.y[-1] + y_offset_dict.get(trace.name, 0),  # Apply y-offset if available
-            text=prt_theme.wrap_labels(trace.name, max_chars) if max_chars else trace.name,
+            # Apply y-offset if available
+            y=trace.y[-1] + y_offset_dict.get(trace.name, 0),
+            text=(
+                prt_theme.wrap_labels(trace.name, max_chars)
+                if max_chars else trace.name
+            ),
             xanchor="left",
             align="left",
             showarrow=False,
@@ -84,15 +113,15 @@ def generate_annotations(traces, colorway, max_chars=None, y_label=None, y_label
 
     return annotations
 
-## Main function to create chart
+
+# Main function to create chart
 def create_chart(
-    df, 
-    xaxis_tickvals, 
-    xaxis_ticktext, 
-    traces, 
-    title: str, 
+    xaxis_tickvals,
+    xaxis_ticktext,
+    traces,
+    title: str,
     y_label: str,
-    xaxis_range:tuple,
+    xaxis_range: tuple,
     yaxis_dtick=None,
     xaxis_range_vals=(1, 53),
     xaxis_nticks=None,
@@ -110,7 +139,12 @@ def create_chart(
     colorway = pio.templates[pio.templates.default].layout.colorway
 
     # Generate annotations with optional y_offset_dict
-    annotations = generate_annotations(traces, colorway, y_label, y_offset_dict)
+    annotations = generate_annotations(
+        traces,
+        colorway,
+        y_label,
+        y_offset_dict
+        )
 
     fig.update_layout(
         title="<br>".join(chart_title),
@@ -127,10 +161,11 @@ def create_chart(
 
     return fig
 
-## Save chart (offline and online)
+
+# Save chart (offline and online)
 def save_chart(fig, filename):
     """Saves the chart as an image and uploads it online."""
-    config = read_config() # Read in config file
+    config = read_config()  # Read in config file
     fig.write_image(os.path.join(config['viz']['outPath'], f'{filename}.svg'))
 
     fig.layout.images = [

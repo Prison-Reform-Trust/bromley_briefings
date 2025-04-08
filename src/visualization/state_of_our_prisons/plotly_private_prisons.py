@@ -10,6 +10,7 @@ Source:
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
