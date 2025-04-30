@@ -52,7 +52,7 @@ def generate_traces(df):
             textinfo="none",
             hoverinfo="none",
             title_text=str(row['chart_title']),
-            title_font_size=10,
+            # title_font_size=10,
             title_position="bottom center",
             automargin=True,
         )
@@ -61,7 +61,7 @@ def generate_traces(df):
     return traces
 
 
-def generate_pie_labels(fig, annotations_list=None, y_offset=0.01):
+def generate_pie_labels(fig, annotations_list=None, y_offset=0.015):
     """Generates pie chart value labels for the figure."""
     annotations = [] if annotations_list is None else annotations_list
 
@@ -80,7 +80,7 @@ def generate_pie_labels(fig, annotations_list=None, y_offset=0.01):
                     x=x,
                     y=y,
                     showarrow=False,
-                    font=dict(size=13),
+                    # font=dict(size=13),
                     xanchor="center",
                     yanchor="middle",
                 )
@@ -110,7 +110,6 @@ def generate_chart_titles(fig, annotations_list=None):
                 x=(fig.data[col1].domain['x'][0] + fig.data[col2].domain['x'][1]) / 2,
                 y=fig.data[col1].domain['y'][1],
                 showarrow=False,
-                font_size=10,
                 xanchor="center",
                 yanchor="bottom",
                 borderpad=4,
@@ -126,11 +125,12 @@ def get_label_positions(fig):
 
     # Calculate a set of y-values centred around the y domain of each row of pie charts
     # and sort them in descending order to ensure correct order of placement
-    y_values = sorted({sum(trace.domain['y']) / 2 for trace in fig.data}, reverse=True)
+    # y_values = sorted({sum(trace.domain['y']) / 2 for trace in fig.data}, reverse=True)
+    y_values = sorted({trace.domain['y'][1] for trace in fig.data}, reverse=True)
     return first_x, y_values
 
 
-def generate_standout_labels(fig, annotations_list=None):
+def generate_standout_labels(fig, annotations_list=None, y_offset=0.035):
     """Generates standout labels for the pie charts."""
     annotations = [] if annotations_list is None else annotations_list
 
@@ -148,9 +148,9 @@ def generate_standout_labels(fig, annotations_list=None):
             dict(
                 text=str(label),
                 x=first_x / 2,
-                y=y_values[i],
+                y=y_values[i] - y_offset,
                 showarrow=False,
-                font_size=30,
+                font_size=50,
                 font_color=colorway[4],
                 font_weight="bold",
                 xanchor="center",
@@ -161,7 +161,7 @@ def generate_standout_labels(fig, annotations_list=None):
     return annotations
 
 
-def generate_sub_standout_text(fig, annotations_list=None, y_offset=0.025):
+def generate_sub_standout_text(fig, annotations_list=None, y_offset=0.075):
     """Generates text to go below standout labels."""
     annotations = [] if annotations_list is None else annotations_list
 
@@ -180,7 +180,7 @@ def generate_sub_standout_text(fig, annotations_list=None, y_offset=0.025):
                 x=first_x / 2,
                 y=y_values[i] - y_offset,
                 showarrow=False,
-                font_size=10,
+                # font_size=14,
                 xanchor="center",
                 yanchor="top",
             )
@@ -230,7 +230,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         showlegend=False,
         annotations=annotations,
-        margin=dict(t=30, b=4, l=0, r=25),
+        margin=dict(t=50, b=20, l=0, r=25),
     )
 
     return fig
@@ -244,7 +244,6 @@ def get_data_path(filename: str) -> str:
 def test_data():
     """Test function to load and process data."""
     df = utils.load_data(get_data_path("reconviction_factors.csv"))
-    # df = process_data(df)
     return df
 
 
