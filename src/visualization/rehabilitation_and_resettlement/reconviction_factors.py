@@ -52,7 +52,6 @@ def generate_traces(df):
             textinfo="none",
             hoverinfo="none",
             title_text=str(row['chart_title']),
-            # title_font_size=10,
             title_position="bottom center",
             automargin=True,
         )
@@ -80,7 +79,6 @@ def generate_pie_labels(fig, annotations_list=None, y_offset=0.015):
                     x=x,
                     y=y,
                     showarrow=False,
-                    # font=dict(size=13),
                     xanchor="center",
                     yanchor="middle",
                 )
@@ -125,7 +123,6 @@ def get_label_positions(fig):
 
     # Calculate a set of y-values centred around the y domain of each row of pie charts
     # and sort them in descending order to ensure correct order of placement
-    # y_values = sorted({sum(trace.domain['y']) / 2 for trace in fig.data}, reverse=True)
     y_values = sorted({trace.domain['y'][1] for trace in fig.data}, reverse=True)
     return first_x, y_values
 
@@ -180,7 +177,6 @@ def generate_sub_standout_text(fig, annotations_list=None, y_offset=0.075):
                 x=first_x / 2,
                 y=y_values[i] - y_offset,
                 showarrow=False,
-                # font_size=14,
                 xanchor="center",
                 yanchor="top",
             )
