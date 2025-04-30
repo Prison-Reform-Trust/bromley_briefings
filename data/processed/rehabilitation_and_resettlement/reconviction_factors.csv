@@ -1,0 +1,9 @@
+﻿factor,outcome,value,chart_title
+family_visits,negative,68,No visits
+family_visits,positive,47,Visits
+use_drugs,negative,76,Used class A drugs
+use_drugs,positive,43,Did not use class A drugs
+live_with_family,negative,61,Not living with family
+live_with_family,positive,48,Living with family
+employed,negative,59,Unemployed
+employed,positive,39,Employed
