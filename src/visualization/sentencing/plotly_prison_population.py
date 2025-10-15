@@ -90,7 +90,7 @@ def main() -> go.Figure:
     df = utils.load_data(data_path)
     fig = create_chart(df)
     with open('plotly_graph.html', 'w', encoding='utf-8') as f:  # NOTE: Need to replace filename with config value
-        f.write(fig.to_html(include_plotlyjs='cdn', config=config['plotly']['config']))
+        f.write(fig.to_html(full_html=False, include_plotlyjs='cdn', config=config['plotly']['config']))
     return fig
 
 
