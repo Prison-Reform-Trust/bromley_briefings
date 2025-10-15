@@ -95,14 +95,30 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_credentials()
     data_path = os.path.join(config['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    with open('plotly_graph.html', 'w', encoding='utf-8') as f:  # NOTE: Need to replace filename with config value
-        f.write(fig.to_html(full_html=False, include_plotlyjs='cdn', config=config['plotly']['config']))
+    return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+
+    plotly_jinja_data = {
+        "title": TITLE,
+        "subtitle": SUBTITLE,
+        "fig": fig.to_html(full_html=False, include_plotlyjs='cdn', config=config['plotly']['config']),
+        "source": SOURCE
+        }
+
+    with open(OUTPUT_HTML_PATH, "w", encoding="utf-8") as output_file:
+        with open(INPUT_TEMPLATE_PATH, "r", encoding="utf-8") as template_file:
+            j2_template = Template(template_file.read())
+            output_file.write(j2_template.render(plotly_jinja_data))
     return fig
 
 
