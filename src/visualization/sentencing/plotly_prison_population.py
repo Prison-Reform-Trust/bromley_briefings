@@ -11,11 +11,10 @@ Source:
 """
 
 import os
-import chart_studio.plotly as py
+
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 from matplotlib import colors
 
 # Local modules
@@ -90,7 +89,8 @@ def main() -> go.Figure:
     data_path = os.path.join(config['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="prison_population_inc_projections")
+    with open('plotly_graph.html', 'w', encoding='utf-8') as f:  # NOTE: Need to replace filename with config value
+        f.write(fig.to_html(include_plotlyjs='cdn', config=config['plotly']['config']))
     return fig
 
 
