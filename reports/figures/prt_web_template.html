@@ -3,6 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    {% if embed_styles and embedded_styles %}
+    <style>
+    {{ embedded_styles }}
+    </style>
+    {% endif %}
 </head>
 
 <body>

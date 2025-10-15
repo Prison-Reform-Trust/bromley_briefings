@@ -200,7 +200,9 @@ def save_plotly_chart_as_html(
     subtitle: str,
     source: str,
     template_path: Optional[str] = None,
-    config: Optional[dict] = None
+    config: Optional[dict] = None,
+    embed_styles: bool = False,
+    styles_path: Optional[str] = None
 ) -> None:
     """Saves a Plotly figure as an HTML file using a Jinja2 template.
 
@@ -212,12 +214,23 @@ def save_plotly_chart_as_html(
         source (str): Data source attribution.
         template_path (str, optional): Path to Jinja2 template. Uses default if None.
         config (dict, optional): Plotly config. Uses default if None.
+        embed_styles (bool): Whether to embed CSS styles directly in HTML. Default False.
+        styles_path (str, optional): Path to CSS file. Uses default if None.
     """
     if config is None:
         config = read_config()
 
     if template_path is None:
         template_path = "reports/figures/prt_web_template.html"
+
+    if styles_path is None:
+        styles_path = "reports/figures/styles.css"
+
+    # Load CSS styles if embedding is requested
+    embedded_styles = ""
+    if embed_styles and os.path.exists(styles_path):
+        with open(styles_path, "r", encoding="utf-8") as css_file:
+            embedded_styles = css_file.read()
 
     plotly_jinja_data = {
         "title": title,
@@ -227,7 +240,9 @@ def save_plotly_chart_as_html(
             include_plotlyjs='cdn',
             config=config['plotly']['config']
         ),
-        "source": source
+        "source": source,
+        "embedded_styles": embedded_styles,
+        "embed_styles": embed_styles
     }
 
     # Ensure output directory exists
