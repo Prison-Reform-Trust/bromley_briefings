@@ -3,8 +3,9 @@
 
 """
 Title: How many people do we imprison in England & Wales?
-Subtitle: There are around 86,000 people in prison. The prison population has risen by 93% in the last 30 years—and it is predicted to rise further still.
-Source: 
+Subtitle: There are around 86,000 people in prison. The prison population has risen by 93% in the last 30 years—and it
+is predicted to rise further still.
+Source:
 - Ministry of Justice (2023). Offender management statistics: Prison population 2023.
 - Ministry of Justice (2024). Prison population projections: 2024 to 2029.
 """
@@ -24,9 +25,15 @@ import src.visualization.prt_theme as prt_theme
 # Load configuration
 config = utils.read_config()
 
+
 def create_chart(df: pd.DataFrame) -> go.Figure:
-    """Creates a Plotly chart for prison population trends with projections."""
-    
+    """Generates a line chart showing the prison population and projections.
+    Args:
+        df (pd.DataFrame): Dataframe containing the prison population data.
+    Returns:
+        go.Figure: Plotly figure object.
+    """
+
     fig = go.Figure()
     colorway = pio.templates[pio.templates.default].layout.colorway
     projection_shading = f'rgba{colors.to_rgba(colorway[0], alpha=0.2)}'
@@ -60,7 +67,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             hovertemplate="%{y} prisoners", cliponaxis=False,
         ),
     ]
-    
+
     fig.add_traces(traces)
 
     # Configure axes
