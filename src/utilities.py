@@ -3,6 +3,7 @@ This script provides useful functions to all other scripts
 """
 import os
 import textwrap
+from typing import Optional
 
 import chart_studio.plotly as py  # Online plotting
 import chart_studio.tools
@@ -11,6 +12,7 @@ import plotly.graph_objs as go  # Offline plotting
 import plotly.io as pio
 import yaml
 from dotenv import find_dotenv, load_dotenv
+from jinja2 import Template
 
 import src.visualization.prt_theme as prt_theme
 
@@ -189,3 +191,49 @@ def save_chart(fig, filename):
     )
 
     py.plot(fig, filename=filename)
+
+
+def save_plotly_chart_as_html(
+    fig: go.Figure,
+    output_path: str,
+    title: str,
+    subtitle: str,
+    source: str,
+    template_path: Optional[str] = None,
+    config: Optional[dict] = None
+) -> None:
+    """Saves a Plotly figure as an HTML file using a Jinja2 template.
+
+    Args:
+        fig (go.Figure): Plotly figure object.
+        output_path (str): Path where the HTML file will be saved.
+        title (str): Chart title.
+        subtitle (str): Chart subtitle.
+        source (str): Data source attribution.
+        template_path (str, optional): Path to Jinja2 template. Uses default if None.
+        config (dict, optional): Plotly config. Uses default if None.
+    """
+    if config is None:
+        config = read_config()
+
+    if template_path is None:
+        template_path = "reports/figures/prt_web_template.html"
+
+    plotly_jinja_data = {
+        "title": title,
+        "subtitle": subtitle,
+        "fig": fig.to_html(
+            full_html=False,
+            include_plotlyjs='cdn',
+            config=config['plotly']['config']
+        ),
+        "source": source
+    }
+
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as output_file:
+        with open(template_path, "r", encoding="utf-8") as template_file:
+            j2_template = Template(template_file.read())
+            output_file.write(j2_template.render(plotly_jinja_data))

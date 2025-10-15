@@ -11,7 +11,6 @@ import os
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from jinja2 import Template
 from matplotlib import colors
 
 # Local modules
@@ -32,9 +31,8 @@ SOURCE = (
     "Ministry of Justice (2024). Prison population projections: 2024 to 2029."
 )
 
-# NOTE: Temporary file paths - to be replaced with config values in future
-OUTPUT_HTML_PATH = "reports/figures/sentencing/prison_population_inc_projections.html"
-INPUT_TEMPLATE_PATH = "reports/figures/prt_web_template.html"
+# NOTE: Temporary file path - to be replaced with config values in future
+OUTPUT_PATH = "reports/figures/sentencing/prison_population_inc_projections.html"
 
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
@@ -104,22 +102,16 @@ def prepare_chart() -> go.Figure:
     return fig
 
 
-def main() -> go.Figure:
+def main() -> None:
     """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
     fig = prepare_chart()
-
-    plotly_jinja_data = {
-        "title": TITLE,
-        "subtitle": SUBTITLE,
-        "fig": fig.to_html(full_html=False, include_plotlyjs='cdn', config=config['plotly']['config']),
-        "source": SOURCE
-        }
-
-    with open(OUTPUT_HTML_PATH, "w", encoding="utf-8") as output_file:
-        with open(INPUT_TEMPLATE_PATH, "r", encoding="utf-8") as template_file:
-            j2_template = Template(template_file.read())
-            output_file.write(j2_template.render(plotly_jinja_data))
-    return fig
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE
+    )
 
 
 if __name__ == "__main__":
