@@ -2,12 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: How many people do we imprison in England & Wales?
-Subtitle: There are around 86,000 people in prison. The prison population has risen by 93% in the last 30 years—and it
-is predicted to rise further still.
-Source:
-- Ministry of Justice (2023). Offender management statistics: Prison population 2023.
-- Ministry of Justice (2024). Prison population projections: 2024 to 2029.
+A Plotly chart showing the prison population in England & Wales and future projections.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
@@ -15,6 +11,7 @@ import os
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
+from jinja2 import Template
 from matplotlib import colors
 
 # Local modules
@@ -23,6 +20,21 @@ import src.visualization.prt_theme as prt_theme
 
 # Load configuration
 config = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "How many people do we imprison in England & Wales?"
+SUBTITLE = (
+    r"There are around 86,000 people in prison. The prison population has risen by 93% in the last 30 years—"
+    r"and it is predicted to rise further still."
+)
+SOURCE = (
+    "Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
+    "Ministry of Justice (2024). Prison population projections: 2024 to 2029."
+)
+
+# NOTE: Temporary file paths - to be replaced with config values in future
+OUTPUT_HTML_PATH = "reports/figures/sentencing/prison_population_inc_projections.html"
+INPUT_TEMPLATE_PATH = "reports/figures/prt_web_template.html"
 
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
