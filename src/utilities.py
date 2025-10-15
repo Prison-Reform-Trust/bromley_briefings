@@ -23,7 +23,7 @@ def read_config():
     return config
 
 
-def setup_plotly_credentials():
+def setup_plotly_credentials():  # TODO: #43 Remove Chart Studio credentials following service end of life
     """Loads environment variables and sets Plotly credentials."""
     load_dotenv(find_dotenv())
     chart_studio.tools.set_credentials_file(
