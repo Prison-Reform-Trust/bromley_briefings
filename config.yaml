@@ -1,4 +1,5 @@
 # File paths
+# TODO: #42 Add 'sections' paths to ensure consistency of filepath names throughout
 - data:
     rawFilePath: data/raw/
     clnFilePath: data/processed/
