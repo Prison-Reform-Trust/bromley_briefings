@@ -15,6 +15,4 @@
         "editable": False
         "displaylogo": False
         "showAxisDragHandles": False
-        "responsive": False
-        "dragmode": False
-
+        "responsive": True
