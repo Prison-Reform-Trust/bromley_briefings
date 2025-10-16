@@ -1,4 +1,13 @@
 /* styles.css */
+* {
+    font-family:"aktiv-grotesk",sans-serif;
+    color:#343436
+}
+
+html {
+    font-size:62.5%
+}
+
 hr.plotly-top {
     border: none;
     height: 2px;

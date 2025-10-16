@@ -110,7 +110,8 @@ def main() -> None:
         output_path=OUTPUT_PATH,
         title=TITLE,
         subtitle=SUBTITLE,
-        source=SOURCE
+        source=SOURCE,
+        embed_styles=True,
     )
 
 
