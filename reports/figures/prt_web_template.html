@@ -23,37 +23,50 @@
     
     <script type="text/javascript">
         function sendHeightToParent() {
-            var totalHeight = document.body.scrollHeight;
-            var chartId = '{{ chart_id | default("plotly-chart") }}';
-            
-            window.parent.postMessage({
-                'plotly-height': {
-                    [chartId]: totalHeight
-                }
-            }, '*');
+            // Force a small delay to ensure DOM has updated
+            setTimeout(function() {
+                var totalHeight = document.body.scrollHeight;
+                var chartId = '{{ chart_id | default("plotly-chart") }}';
+                
+                console.log("Sending height:", totalHeight); // Debug log
+                
+                window.parent.postMessage({
+                    'plotly-height': {
+                        [chartId]: totalHeight
+                    }
+                }, '*');
+            }, 50);
         }
         
         // Wait for Plotly chart to be fully rendered
         window.addEventListener('load', function() {
-            // Longer delay to ensure Plotly is fully rendered
-            setTimeout(function() {
-                sendHeightToParent();
-                
-                // Also try again after an additional delay
-                setTimeout(sendHeightToParent, 500);
-                
-                // Send height when window resizes
-                window.addEventListener('resize', function() {
-                    setTimeout(sendHeightToParent, 100);
-                });
-                
-                // Listen for Plotly-specific events if available
-                if (window.Plotly) {
-                    // Send height after any Plotly redraws
-                    document.addEventListener('plotly_afterplot', sendHeightToParent);
-                    document.addEventListener('plotly_redraw', sendHeightToParent);
-                }
-            }, 200); // Small delay to ensure chart is fully rendered
+            // Hook into the actual Plotly rendering
+            if (window.Plotly) {
+                // Wait for the plot to be created
+                var checkForPlot = setInterval(function() {
+                    var plotDivs = document.querySelectorAll('.plotly-graph-div');
+                    if (plotDivs.length > 0) {
+                        clearInterval(checkForPlot);
+                        
+                        // Wait for Plotly to finish rendering
+                        plotDivs[0].on('plotly_afterplot', function() {
+                            console.log("Plotly afterplot fired"); // Debug log
+                            sendHeightToParent();
+                        });
+                        
+                        // Also send after a delay as backup
+                        setTimeout(sendHeightToParent, 1000);
+                    }
+                }, 100);
+            } else {
+                // Fallback if Plotly isn't available
+                setTimeout(sendHeightToParent, 1000);
+            }
+            
+            // Send height when window resizes
+            window.addEventListener('resize', function() {
+                setTimeout(sendHeightToParent, 100);
+            });
         });
     </script>
 </body>
