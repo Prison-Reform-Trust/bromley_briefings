@@ -24,41 +24,32 @@
     <script type="text/javascript">
         function sendHeightToParent() {
             setTimeout(function() {
-                var totalHeight = document.body.scrollHeight;
-                var offsetHeight = document.body.offsetHeight;
-                var clientHeight = document.body.clientHeight;
                 var chartId = 'plotly-chart';
                 
-                console.log("=== HEIGHT DEBUG ===");
-                console.log("scrollHeight:", totalHeight);
-                console.log("offsetHeight:", offsetHeight);
-                console.log("clientHeight:", clientHeight);
-                
-                // Check the bottom HR element specifically
+                // Calculate the actual height by finding the bottom-most element
                 var bottomHr = document.querySelector('hr.plotly-bottom');
+                var actualHeight;
+                
                 if (bottomHr) {
                     var hrRect = bottomHr.getBoundingClientRect();
-                    var hrBottom = hrRect.bottom + window.scrollY;
-                    console.log("Bottom HR position from top:", hrBottom);
-                    console.log("Bottom HR getBoundingClientRect:", hrRect);
+                    actualHeight = Math.ceil(hrRect.bottom + window.scrollY + 5); // Add 5px padding
+                } else {
+                    // Fallback to scrollHeight if HR not found
+                    actualHeight = document.body.scrollHeight;
                 }
                 
-                // Also check the source paragraph
-                var sourcePara = document.querySelector('#plotly-source');
-                if (sourcePara) {
-                    var sourceRect = sourcePara.getBoundingClientRect();
-                    var sourceBottom = sourceRect.bottom + window.scrollY;
-                    console.log("Source paragraph bottom:", sourceBottom);
-                }
-                
-                console.log("Sending height:", totalHeight);
+                console.log("=== HEIGHT DEBUG ===");
+                console.log("scrollHeight:", document.body.scrollHeight);
+                console.log("Bottom HR position:", bottomHr ? hrRect.bottom + window.scrollY : 'not found');
+                console.log("Calculated height:", actualHeight);
+                console.log("Sending height:", actualHeight);
                 
                 window.parent.postMessage({
                     'plotly-height': {
-                        [chartId]: totalHeight
+                        [chartId]: actualHeight
                     }
                 }, '*');
-            }, 100); // Increased delay
+            }, 100);
         }
         
         // Wait for Plotly chart to be fully rendered
