@@ -1,35 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Importing libraries
+"""
+A Plotly chart showing the prison population in England & Wales and future projections.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
+"""
+
 import os
 
-import chart_studio
-import chart_studio.plotly as py
-import pandas as pd
 import plotly.graph_objs as go
-import plotly.io as pio
-from plotly.subplots import make_subplots
-from dotenv import find_dotenv, load_dotenv
-
-from src.visualization import prt_theme
-
-##Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
-
-##Adding plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
-#Setting default Plotly template
-pio.templates.default = "prt_template"
-
-import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Setting default Plotly template
-pio.templates.default = "prt_template"
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
+
+# Load configuration
+CONFIG = utils.read_config()
 
 # Data
 colors = ["rgb(160, 29, 40)", "rgba(84, 86, 91, 0.15)"]
@@ -50,7 +37,7 @@ fig.add_trace(go.Pie(
     values=[55, 45],
     name="Offences",
     marker_colors=colors,
-    direction ='clockwise', # Setting direction and sort attributes to match for each chart
+    direction='clockwise',  # Setting direction and sort attributes to match for each chart
     sort=False,
     title_text=prt_theme.wrap_labels("<br>The majority have committed a non-violent crime", 32), # Wrapping the title
     title_position="bottom center",
@@ -63,7 +50,7 @@ fig.add_trace(go.Pie(
     values=[37, 63],
     name="Sentence length",
     marker_colors=colors,
-    direction ='clockwise',
+    direction='clockwise',
     sort=False,
     title_text=prt_theme.wrap_labels("<br>Almost two in five were sentenced to serve less than six months", 38), # Wrapping the title
     title_position="bottom center",
