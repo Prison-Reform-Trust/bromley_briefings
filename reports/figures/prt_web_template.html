@@ -39,6 +39,7 @@
                 }
                 
                 console.log("=== HEIGHT DEBUG ===");
+                console.log("Window width:", window.innerWidth);
                 console.log("scrollHeight:", document.body.scrollHeight);
                 console.log("Bottom HR position:", bottomHr ? hrRect.bottom + window.scrollY : 'not found');
                 console.log("Calculated height:", actualHeight);
@@ -50,6 +51,19 @@
                     }
                 }, '*');
             }, 100);
+        }
+        
+        // Debounce function to prevent excessive resize events
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
         
         // Wait for Plotly chart to be fully rendered
@@ -71,6 +85,12 @@
                 console.log("Third height calculation attempt:");
                 sendHeightToParent();
             }, 3000);
+            
+            // Recalculate height when window resizes (debounced to prevent spam)
+            window.addEventListener('resize', debounce(function() {
+                console.log("Window resized, recalculating height...");
+                sendHeightToParent();
+            }, 250));
         });
     </script>
 </body>
