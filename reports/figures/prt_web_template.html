@@ -22,36 +22,38 @@
     <hr class="plotly-bottom">
     
     <script type="text/javascript">
+        function sendHeightToParent() {
+            var totalHeight = document.body.scrollHeight;
+            var chartId = '{{ chart_id | default("plotly-chart") }}';
+            
+            window.parent.postMessage({
+                'plotly-height': {
+                    [chartId]: totalHeight
+                }
+            }, '*');
+        }
+        
         // Wait for Plotly chart to be fully rendered
         window.addEventListener('load', function() {
+            // Longer delay to ensure Plotly is fully rendered
             setTimeout(function() {
-                // Get the chart container
-                var chartContainer = document.getElementById('plotly-chart-container');
-                if (chartContainer) {
-                    // Calculate total page height
-                    var totalHeight = document.body.scrollHeight;
-                    
-                    // Use a generic chart ID or extract from URL
-                    var chartId = '{{ chart_id | default("plotly-chart") }}';
-                    
-                    // Send height to parent window
-                    window.parent.postMessage({
-                        'plotly-height': {
-                            [chartId]: totalHeight
-                        }
-                    }, '*');
-                    
-                    // Also send height when window resizes
-                    window.addEventListener('resize', function() {
-                        var newHeight = document.body.scrollHeight;
-                        window.parent.postMessage({
-                            'plotly-height': {
-                                [chartId]: newHeight
-                            }
-                        }, '*');
-                    });
+                sendHeightToParent();
+                
+                // Also try again after an additional delay
+                setTimeout(sendHeightToParent, 500);
+                
+                // Send height when window resizes
+                window.addEventListener('resize', function() {
+                    setTimeout(sendHeightToParent, 100);
+                });
+                
+                // Listen for Plotly-specific events if available
+                if (window.Plotly) {
+                    // Send height after any Plotly redraws
+                    document.addEventListener('plotly_afterplot', sendHeightToParent);
+                    document.addEventListener('plotly_redraw', sendHeightToParent);
                 }
-            }, 100); // Small delay to ensure chart is fully rendered
+            }, 200); // Small delay to ensure chart is fully rendered
         });
     </script>
 </body>
