@@ -24,7 +24,7 @@
     <script type="text/javascript">
         function sendHeightToParent() {
             setTimeout(function() {
-                var chartId = 'plotly-chart';
+                var chartId = '{{ chart_id | default("plotly-chart") }}';
                 
                 // Calculate the actual height by finding the bottom-most element
                 var bottomHr = document.querySelector('hr.plotly-bottom');
@@ -37,13 +37,6 @@
                     // Fallback to scrollHeight if HR not found
                     actualHeight = document.body.scrollHeight;
                 }
-                
-                console.log("=== HEIGHT DEBUG ===");
-                console.log("Window width:", window.innerWidth);
-                console.log("scrollHeight:", document.body.scrollHeight);
-                console.log("Bottom HR position:", bottomHr ? hrRect.bottom + window.scrollY : 'not found');
-                console.log("Calculated height:", actualHeight);
-                console.log("Sending height:", actualHeight);
                 
                 window.parent.postMessage({
                     'plotly-height': {
@@ -66,31 +59,15 @@
             };
         }
         
-        // Wait for Plotly chart to be fully rendered
+        // Wait for chart to be fully rendered
         window.addEventListener('load', function() {
-            console.log("Page loaded, waiting for Plotly...");
+            // Multiple attempts to ensure chart is fully loaded
+            setTimeout(sendHeightToParent, 500);
+            setTimeout(sendHeightToParent, 1500);
+            setTimeout(sendHeightToParent, 3000);
             
-            // Multiple attempts with increasing delays
-            setTimeout(function() {
-                console.log("First height calculation attempt:");
-                sendHeightToParent();
-            }, 500);
-            
-            setTimeout(function() {
-                console.log("Second height calculation attempt:");
-                sendHeightToParent();
-            }, 1500);
-            
-            setTimeout(function() {
-                console.log("Third height calculation attempt:");
-                sendHeightToParent();
-            }, 3000);
-            
-            // Recalculate height when window resizes (debounced to prevent spam)
-            window.addEventListener('resize', debounce(function() {
-                console.log("Window resized, recalculating height...");
-                sendHeightToParent();
-            }, 250));
+            // Recalculate height when window resizes
+            window.addEventListener('resize', debounce(sendHeightToParent, 250));
         });
     </script>
 </body>
