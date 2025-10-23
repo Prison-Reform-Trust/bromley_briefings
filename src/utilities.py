@@ -24,6 +24,9 @@ def read_config():
         Loader=yaml.SafeLoader) for k, v in d.items()}
     return config
 
+# Load config once at module level
+CONFIG = read_config()
+
 
 def setup_plotly_credentials():  # TODO: #43 Remove Chart Studio credentials following service end of life
     """Loads environment variables and sets Plotly credentials."""
@@ -164,11 +167,19 @@ def create_chart(
     return fig
 
 
+def get_output_path(section: str, filename: str) -> str:
+    """Generate output path from config values."""
+    return os.path.join(
+        CONFIG['viz']['outPath'],
+        CONFIG['report-section'][section],
+        filename
+    )
+
+
 # Save chart (offline and online)
 def save_chart(fig, filename):
     """Saves the chart as an image and uploads it online."""
-    config = read_config()  # Read in config file
-    fig.write_image(os.path.join(config['viz']['outPath'], f'{filename}.svg'))
+    fig.write_image(os.path.join(CONFIG['viz']['outPath'], f'{filename}.svg'))
 
     fig.layout.images = [
         dict(
@@ -218,7 +229,7 @@ def save_plotly_chart_as_html(
         styles_path (str, optional): Path to CSS file. Uses default if None.
     """
     if config is None:
-        config = read_config()
+        config = CONFIG
 
     if template_path is None:
         template_path = "reports/figures/prt_web_template.html"
