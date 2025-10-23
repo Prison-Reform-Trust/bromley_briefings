@@ -18,7 +18,7 @@ import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = "How many people do we imprison in England & Wales?"
@@ -30,9 +30,10 @@ SOURCE = (
     "Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
     "Ministry of Justice (2024). Prison population projections: 2024 to 2029."
 )
-
-# NOTE: Temporary file path - to be replaced with config values in future
-OUTPUT_PATH = "reports/figures/sentencing/prison_population_inc_projections.html"
+OUTPUT_PATH = utils.get_output_path(
+    section='sentencing',
+    filename='prison_population_inc_projections.html'
+)
 
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
@@ -96,7 +97,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_credentials()
-    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
     return fig
