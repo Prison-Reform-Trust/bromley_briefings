@@ -17,6 +17,7 @@ hr.plotly-top {
 
 hr.plotly-bottom {
     border: 0.5px solid #54565B;
+    margin-bottom: 10px;
 }
 
 #plotly-title {
