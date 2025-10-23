@@ -23,50 +23,63 @@
     
     <script type="text/javascript">
         function sendHeightToParent() {
-            // Force a small delay to ensure DOM has updated
             setTimeout(function() {
                 var totalHeight = document.body.scrollHeight;
-                var chartId = '{{ chart_id | default("plotly-chart") }}';
+                var offsetHeight = document.body.offsetHeight;
+                var clientHeight = document.body.clientHeight;
+                var chartId = 'plotly-chart';
                 
-                console.log("Sending height:", totalHeight); // Debug log
+                console.log("=== HEIGHT DEBUG ===");
+                console.log("scrollHeight:", totalHeight);
+                console.log("offsetHeight:", offsetHeight);
+                console.log("clientHeight:", clientHeight);
+                
+                // Check the bottom HR element specifically
+                var bottomHr = document.querySelector('hr.plotly-bottom');
+                if (bottomHr) {
+                    var hrRect = bottomHr.getBoundingClientRect();
+                    var hrBottom = hrRect.bottom + window.scrollY;
+                    console.log("Bottom HR position from top:", hrBottom);
+                    console.log("Bottom HR getBoundingClientRect:", hrRect);
+                }
+                
+                // Also check the source paragraph
+                var sourcePara = document.querySelector('#plotly-source');
+                if (sourcePara) {
+                    var sourceRect = sourcePara.getBoundingClientRect();
+                    var sourceBottom = sourceRect.bottom + window.scrollY;
+                    console.log("Source paragraph bottom:", sourceBottom);
+                }
+                
+                console.log("Sending height:", totalHeight);
                 
                 window.parent.postMessage({
                     'plotly-height': {
                         [chartId]: totalHeight
                     }
                 }, '*');
-            }, 50);
+            }, 100); // Increased delay
         }
         
         // Wait for Plotly chart to be fully rendered
         window.addEventListener('load', function() {
-            // Hook into the actual Plotly rendering
-            if (window.Plotly) {
-                // Wait for the plot to be created
-                var checkForPlot = setInterval(function() {
-                    var plotDivs = document.querySelectorAll('.plotly-graph-div');
-                    if (plotDivs.length > 0) {
-                        clearInterval(checkForPlot);
-                        
-                        // Wait for Plotly to finish rendering
-                        plotDivs[0].on('plotly_afterplot', function() {
-                            console.log("Plotly afterplot fired"); // Debug log
-                            sendHeightToParent();
-                        });
-                        
-                        // Also send after a delay as backup
-                        setTimeout(sendHeightToParent, 1000);
-                    }
-                }, 100);
-            } else {
-                // Fallback if Plotly isn't available
-                setTimeout(sendHeightToParent, 1000);
-            }
+            console.log("Page loaded, waiting for Plotly...");
             
-            // Send height when window resizes
-            window.addEventListener('resize', function() {
-                setTimeout(sendHeightToParent, 100);
-            });
+            // Multiple attempts with increasing delays
+            setTimeout(function() {
+                console.log("First height calculation attempt:");
+                sendHeightToParent();
+            }, 500);
+            
+            setTimeout(function() {
+                console.log("Second height calculation attempt:");
+                sendHeightToParent();
+            }, 1500);
+            
+            setTimeout(function() {
+                console.log("Third height calculation attempt:");
+                sendHeightToParent();
+            }, 3000);
         });
     </script>
 </body>
