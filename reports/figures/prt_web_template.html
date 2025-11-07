@@ -3,72 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
     {% if embed_styles and embedded_styles %}
     <style>
     {{ embedded_styles }}
     </style>
     {% endif %}
 </head>
-
-<body style="margin: 0">
-    <hr class="plotly-top">
-    <h2 id="plotly-title">{{ title }}</h2>
-    <h3 id="plotly-subtitle">{{ subtitle }}</h3>
-    <div id="plotly-chart-container">
+<!-- ----- COPY BELOW INTO WORDPRESS HTML BLOCK ----- -->
+<body>
+    <div class="plotly-chart-wrapper">
+        <hr class="plotly-top">
+        <h2 id="plotly-title">{{ title }}</h2>
+        <h3 id="plotly-subtitle">{{ subtitle }}</h3>
         {{ fig }}
+        <p id="plotly-source">Source: {{ source }}</p>
+        <hr class="plotly-bottom">
     </div>
-    <p id="plotly-source">Source: {{ source }}</p>
-    <hr class="plotly-bottom">
-    
-    <script type="text/javascript">
-        function sendHeightToParent() {
-            setTimeout(function() {
-                var chartId = '{{ chart_id | default("plotly-chart") }}';
-                
-                // Calculate the actual height by finding the bottom-most element
-                var bottomHr = document.querySelector('hr.plotly-bottom');
-                var actualHeight;
-                
-                if (bottomHr) {
-                    var hrRect = bottomHr.getBoundingClientRect();
-                    actualHeight = Math.ceil(hrRect.bottom + window.scrollY + 5); // Add 5px padding
-                } else {
-                    // Fallback to scrollHeight if HR not found
-                    actualHeight = document.body.scrollHeight;
-                }
-                
-                window.parent.postMessage({
-                    'plotly-height': {
-                        [chartId]: actualHeight
-                    }
-                }, '*');
-            }, 100);
-        }
-        
-        // Debounce function to prevent excessive resize events
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-        
-        // Wait for chart to be fully rendered
-        window.addEventListener('load', function() {
-            // Multiple attempts to ensure chart is fully loaded
-            setTimeout(sendHeightToParent, 500);
-            setTimeout(sendHeightToParent, 1500);
-            setTimeout(sendHeightToParent, 3000);
-            
-            // Recalculate height when window resizes
-            window.addEventListener('resize', debounce(sendHeightToParent, 250));
-        });
-    </script>
+<!-- ----- END COPY ----- -->
 </body>
 </html>

@@ -248,7 +248,7 @@ def save_plotly_chart_as_html(
         "subtitle": subtitle,
         "fig": fig.to_html(
             full_html=False,
-            include_plotlyjs='cdn',
+            include_plotlyjs=False,
             config=config['plotly']['config']
         ),
         "source": source,

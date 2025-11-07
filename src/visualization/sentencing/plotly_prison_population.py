@@ -112,7 +112,6 @@ def main() -> None:
         title=TITLE,
         subtitle=SUBTITLE,
         source=SOURCE,
-        embed_styles=True,
     )
 
 
