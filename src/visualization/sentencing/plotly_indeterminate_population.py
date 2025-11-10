@@ -8,6 +8,7 @@ Source: Ministry of Justice (2024). Offender management statistics quarterly: Ap
 """
 
 import os
+
 import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
@@ -69,7 +70,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "sentencing/indeterminate_population.csv")
     df = utils.load_data(data_path, usecols=['year', 'indet_unreleased', 'indet_recalled']).pipe(process_data)
     fig = create_chart(df)

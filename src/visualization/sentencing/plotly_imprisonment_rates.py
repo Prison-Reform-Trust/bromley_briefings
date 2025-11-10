@@ -8,6 +8,7 @@ Source: World Prison Brief, Institute for Crime & Justice Policy Research. 10 Ma
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -51,7 +52,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "sentencing/imprisonment_rates.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)

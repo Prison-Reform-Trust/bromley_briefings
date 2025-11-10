@@ -94,7 +94,7 @@ def generate_html(fig: go.Figure) -> None:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/private_prisons.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)

@@ -14,7 +14,7 @@ import yaml
 from dotenv import find_dotenv, load_dotenv
 from jinja2 import Template
 
-import src.visualization.prt_theme as prt_theme
+from src.visualization import prt_theme
 
 
 def read_config():
@@ -28,13 +28,8 @@ def read_config():
 CONFIG = read_config()
 
 
-def setup_plotly_credentials():  # TODO: #43 Remove Chart Studio credentials following service end of life
-    """Loads environment variables and sets Plotly credentials."""
-    load_dotenv(find_dotenv())
-    chart_studio.tools.set_credentials_file(
-        username=os.getenv("PLOTLY_USERNAME"),
-        api_key=os.getenv("PLOTLY_API_KEY"),
-    )
+def setup_plotly_template():
+    """Sets Plotly template to PRT theme."""
     pio.templates.default = "prt_template"
 
 

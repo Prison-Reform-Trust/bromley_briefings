@@ -7,7 +7,6 @@ The chart is saved as an HTML file using a Jinja2 template for embedding in a we
 """
 
 import plotly.graph_objs as go
-import plotly.io as pio
 from plotly.subplots import make_subplots
 
 # Local modules
@@ -15,7 +14,7 @@ import src.utilities as utils
 from src.visualization import prt_theme
 
 # Set template
-pio.templates.default = "prt_template"
+utils.setup_plotly_template()
 
 # Load configuration
 CONFIG = utils.read_config()

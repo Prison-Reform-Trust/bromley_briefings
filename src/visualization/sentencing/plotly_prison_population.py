@@ -96,7 +96,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)

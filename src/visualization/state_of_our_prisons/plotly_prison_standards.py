@@ -9,6 +9,7 @@ Note 2020 is not included due to low number of prisons inspected during Covid-19
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -134,14 +135,14 @@ def save_html(html_content: str) -> None:
 
 def test_data() -> pd.DataFrame:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/prison_standards.csv")
     df = utils.load_data(data_path).pipe(process_data)
     return df
 
 def main() -> None:
     """Loads data, generates the chart, and saves it as an HTML file with hover effects."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/prison_standards.csv")
     df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)

@@ -8,6 +8,7 @@ Source: Ministry of Justice (2024). HMPPS workforce quarterly: March 2024. And p
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
@@ -92,7 +93,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/workforce_experience.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)

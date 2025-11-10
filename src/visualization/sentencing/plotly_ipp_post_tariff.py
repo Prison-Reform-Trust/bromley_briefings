@@ -11,6 +11,7 @@ Source:
 """
 
 import os
+
 import chart_studio
 import chart_studio.plotly as py
 import pandas as pd
@@ -91,7 +92,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 def main() -> go.Figure:
     """Load data, generate the chart, and upload it to Chart Studio."""
     
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config["data"]["clnFilePath"], "sentencing/ipp_post_tariff.csv")
 
     df = (
