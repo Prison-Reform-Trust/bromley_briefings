@@ -30,6 +30,7 @@ OUTPUT_PATH = utils.get_output_path(
     filename='plotly_reoffending_sentence_comparison.html'
 )
 
+
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Generates a line chart showing the prison population and projections.
     Args:
@@ -40,14 +41,15 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
 
     # Loop over each unique sentence
+    unique_sentences = df['wrapped_sentence'].unique()
     for sentence in unique_sentences:
         # Filter dataframe for the current sentence
         sentence_data = df[df['wrapped_sentence'] == sentence]
-        
+
         # Get the percentage value(s) for this sentence
         # Assuming we want the first occurrence's percentage, use `.iloc[0]`
         percent = sentence_data['percent'].iloc[0]
-        
+
         # Add a trace for this sentence
         fig.add_trace(go.Bar(
             x=[percent],  # Use percentage on the x-axis
@@ -71,7 +73,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ticks="",
         showticklabels=False,
         zeroline=False,
-        range=[0, 80], # Must specify lower range as well as upper to avoid trace labels from being cut off
+        range=[0, 80],  # Must specify lower range as well as upper to avoid trace labels from being cut off
     )
 
     fig.update_layout(
@@ -81,7 +83,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         dragmode=False
         )
 
-    ## Chart annotations
+    # Chart annotations
     annotations = []
 
     # Add y-axis label annotation with placement based on dataframe column
@@ -89,23 +91,41 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Adding annotations to layout
     fig.update_layout(annotations=annotations)
-    
+
     return fig
 
-#Read in datasets
-df = pd.read_csv("data/processed/sentencing/reoffending_sentence_comparison.csv")
 
-# Wrapping y-axis labels using textwrap.fill with apply
-df['wrapped_sentence'] = df['sentence'].apply(prt_theme.wrap_labels, max_chars=20)
-
-# Get unique wrapped sentences for plotting
-unique_sentences = df['wrapped_sentence'].unique()
+def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Prepares data for the chart by wrapping sentence labels."""
+    df['wrapped_sentence'] = df['sentence'].apply(prt_theme.wrap_labels, max_chars=20)
+    return df
 
 
 def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
-    df = utils.load_data(data_path)
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/reoffending_sentence_comparison.csv")
+    df = (
+        utils.load_data(data_path)
+        .pipe(prepare_data)
+    )
     fig = create_chart(df)
     return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    utils.setup_plotly_template()
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE
+    )
+    return fig
+
+
+if __name__ == "__main__":
+    main()
