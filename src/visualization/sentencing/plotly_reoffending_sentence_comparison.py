@@ -27,7 +27,7 @@ SUBTITLE = (
 SOURCE = "Ministry of Justice (2013). 2013 Compendium of re-offending statistics and analysis."
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
-    filename='plotly_reoffending_sentence_comparison.html'
+    filename='reoffending_sentence_comparison.html'
 )
 
 
