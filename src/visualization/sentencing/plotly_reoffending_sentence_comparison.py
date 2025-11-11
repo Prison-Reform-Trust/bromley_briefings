@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Importing libraries
+"""
+A Plotly chart comparing the reoffending rates of different sentence types in England & Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
+"""
+
 import os
 
 import pandas as pd
 import plotly.graph_objs as go
-import plotly.io as pio
 
 # Local modules
 import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
-
-# Setting default Plotly template
-pio.templates.default = "prt_template"
 
 # Load configuration
 CONFIG = utils.read_config()
@@ -21,8 +21,8 @@ CONFIG = utils.read_config()
 # Jinja2 template variables
 TITLE = "Community sentences are more effective in reducing reoffending"
 SUBTITLE = (
-    r"A Ministry of Justice study matched people by personal and offence characteristics to compare the "
-    r"effectiveness of different sentence types"
+    r"A Ministry of Justice study matched people by personal and offence characteristics to "
+    r"compare the effectiveness of different sentence types"
 )
 SOURCE = "Ministry of Justice (2013). 2013 Compendium of re-offending statistics and analysis."
 OUTPUT_PATH = utils.get_output_path(
@@ -39,6 +39,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         go.Figure: Plotly figure object.
     """
     fig = go.Figure()
+    annotations = prt_theme.add_annotation(
+        annotations_list=None,
+        text="Reconviction rate (within one year)",
+        annotation_type="y-axis"
+    )
 
     # Loop over each unique sentence
     unique_sentences = df['wrapped_sentence'].unique()
@@ -73,24 +78,16 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ticks="",
         showticklabels=False,
         zeroline=False,
-        range=[0, 80],  # Must specify lower range as well as upper to avoid trace labels from being cut off
+        range=[0, 100],  # Must specify lower range as well as upper to avoid trace labels from being cut off
     )
 
     fig.update_layout(
         margin_pad=5,
         margin=dict(t=20, b=25, l=0, r=0),
         hovermode=False,
-        dragmode=False
+        dragmode=False,
+        annotations=annotations
         )
-
-    # Chart annotations
-    annotations = []
-
-    # Add y-axis label annotation with placement based on dataframe column
-    prt_theme.add_annotation(annotations, "Reconviction rate (within one year)", annotation_type="y-axis")
-
-    # Adding annotations to layout
-    fig.update_layout(annotations=annotations)
 
     return fig
 
