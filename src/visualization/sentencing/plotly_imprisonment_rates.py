@@ -21,7 +21,7 @@ CONFIG = utils.read_config()
 # Jinja2 template variables
 TITLE = "We imprison far more of our population than our nearest neighbours"
 SUBTITLE = "Scotland and England & Wales have the highest imprisonment rates in Western Europe"
-SOURCE = "World Prison Brief, Institute for Crime & Justice Policy Research. 10 March 2025."
+SOURCE = "World Prison Brief, Institute for Crime & Justice Policy Research. 10 March 2025"
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='imprisonment_rates.html'
