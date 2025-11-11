@@ -6,12 +6,10 @@ import textwrap
 from typing import Optional
 
 import chart_studio.plotly as py  # Online plotting
-import chart_studio.tools
 import pandas as pd
 import plotly.graph_objs as go  # Offline plotting
 import plotly.io as pio
 import yaml
-from dotenv import find_dotenv, load_dotenv
 from jinja2 import Template
 
 from src.visualization import prt_theme
@@ -196,7 +194,7 @@ def save_chart(fig, filename):
         height=layout_atr.height,
     )
 
-    py.plot(fig, filename=filename)
+    py.plot(fig, filename=filename)  # NOTE: This will need to be removed following migration away from chart studio
 
 
 def save_plotly_chart_as_html(
