@@ -112,7 +112,6 @@ def prepare_chart() -> go.Figure:
 
 def main() -> go.Figure:
     """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
-    utils.setup_plotly_template()
     fig = prepare_chart()
     utils.save_plotly_chart_as_html(
         fig=fig,
