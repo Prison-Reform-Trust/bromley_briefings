@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: We choose to send people to prison for a long time — and it’s growing
-Subtitle: Almost three times as many people were sentenced to 10 years or more in 2023 than in 2010
-Source: Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023.
+A Plotly chart showing the growth in custodial sentences by length in England & Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
@@ -18,10 +16,19 @@ import plotly.io as pio
 import src.utilities as utils
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
 
-## Generate traces for Plotly
-def generate_traces(df:pd.DataFrame) -> list:
+# Jinja2 template variables
+TITLE = "We choose to send people to prison for a long time — and it's growing"
+SUBTITLE = "Almost three times as many people were sentenced to 10 years or more in 2023 than in 2010"
+SOURCE = "Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023."
+OUTPUT_PATH = utils.get_output_path(
+    section='sentencing',
+    filename='sentence_growth.html'
+)
+
+
+def generate_traces(df: pd.DataFrame) -> list:
     """Generates Plotly traces for each sentence length in dataset."""
     traces = [
         go.Scatter(
@@ -41,25 +48,25 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a line chart showing percentage change of custodial sentences by length."""
 
     fig = go.Figure()
-    traces = generate_traces(df)[::-1] # Reverse order for better visibility
+    traces = generate_traces(df)[::-1]  # Reverse order for better visibility
     fig.add_traces(traces)
-    
+
     # Generate annotations with optional y_offset_dict
     colorway = pio.templates[pio.templates.default].layout.colorway
     y_label = "People sentenced (percentage change since 2010)"
     y_offset_dict = {
         "Less than 6 months": -20,
-        "6 months to less than 12 months": 8, 
+        "6 months to less than 12 months": 8,
         "12 months to less than 4 years": -20,
         "4 years to 10 years": 8
     }
-    
+
     annotations = utils.generate_annotations(
-        traces=traces, 
+        traces=traces,
         colorway=colorway,
         max_chars=19,
-        y_label=y_label, 
-        y_offset_dict=y_offset_dict, 
+        y_label=y_label,
+        y_offset_dict=y_offset_dict,
         x_pad=0.3)
 
     # Set axes ranges
@@ -77,14 +84,27 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/sentence_growth.csv")
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/sentence_growth.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="sentence_growth")
     return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
+    return fig
+
 
 if __name__ == "__main__":
     main()
