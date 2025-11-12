@@ -8,12 +8,12 @@
 - viz:
     outPath: reports/figures/
 
-- report-section:
+- report_section:
     sentencing: sentencing/
-    state-of-our-prisons: state-of-our-prisons/
-    people-in-prison: people-in-prison/
-    health-in-prison: health-in-prison/
-    rehabilitation-and-resettlement: rehabilitation-and-resettlement/
+    state_of_our_prisons: state-of-our-prisons/
+    people_in_prison: people-in-prison/
+    health_in_prison: health-in-prison/
+    rehabilitation_and_resettlement: rehabilitation-and-resettlement/
 
 # Configurations
 - plotly:

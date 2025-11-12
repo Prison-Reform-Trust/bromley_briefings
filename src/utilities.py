@@ -164,7 +164,7 @@ def get_output_path(section: str, filename: str) -> str:
     """Generate output path from config values."""
     return os.path.join(
         CONFIG['viz']['outPath'],
-        CONFIG['report-section'][section],
+        CONFIG['report_section'][section],
         filename
     )
 
