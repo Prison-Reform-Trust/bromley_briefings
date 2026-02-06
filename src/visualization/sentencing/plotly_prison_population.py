@@ -23,12 +23,12 @@ CONFIG = utils.read_config()
 # Jinja2 template variables
 TITLE = "How many people do we imprison in England & Wales?"
 SUBTITLE = (
-    r"There are around 86,000 people in prison. The prison population has risen by 93% in the last 30 years—"
+    r"There are around 87,000 people in prison. The prison population has nearly doubled in the last 30 years—"
     r"and it is predicted to rise further still."
 )
 SOURCE = (
-    "Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
-    "Ministry of Justice (2024). Prison population projections: 2024 to 2029."
+    "Ministry of Justice (2025). Offender management statistics: Prison population 2025.<br>"
+    "Ministry of Justice (2025). Prison population projections: 2025 to 2030."
 )
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
@@ -52,26 +52,26 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     traces = [
         go.Scatter(
             name="Prison population",
-            x=df["date"], y=df["population"].tolist(),
+            x=df["date"].dt.year, y=df["population"].tolist(),
             mode="lines", hovertemplate="%{y} prisoners<extra></extra>",
         ),
         go.Scatter(
             name="Lower projection",
-            x=df["date"], y=df["l_projection"].tolist(),
+            x=df["date"].dt.year, y=df["l_projection"].tolist(),
             marker_color="#444", line_width=0,
             mode="lines", fillcolor=projection_shading,
             hovertemplate="%{y} prisoners",
         ),
         go.Scatter(
             name="Central projection",
-            x=df["date"], y=df["c_projection"].tolist(),
+            x=df["date"].dt.year, y=df["c_projection"].tolist(),
             marker_color=colorway[0], mode="lines",
             line_dash="dot", fillcolor=projection_shading, fill="tonexty",
             hovertemplate="%{y} prisoners",
         ),
         go.Scatter(
             name="High projection",
-            x=df["date"], y=df["h_projection"].tolist(),
+            x=df["date"].dt.year, y=df["h_projection"].tolist(),
             marker_color="#444", line_width=0, mode="lines",
             fillcolor=projection_shading, fill="tonexty",
             hovertemplate="%{y} prisoners", cliponaxis=False,
@@ -98,7 +98,7 @@ def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
     data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/prison_population_inc_projections.csv")
-    df = utils.load_data(data_path)
+    df = utils.load_data(data_path, parse_dates=["date"], date_format="%d/%m/%Y")
     fig = create_chart(df)
     return fig
 
