@@ -20,9 +20,9 @@ utils.setup_plotly_template()
 CONFIG = utils.read_config()
 
 # Jinja2 template variables
-TITLE = ""
-SUBTITLE = ""
-SOURCE = "Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024."
+TITLE = "We overuse imprisonment for non-violent offences"
+SUBTITLE = "Almost 47,000 people were sent to prison to serve a sentence in the year to June 2025"
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: April to June 2025."
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='sentenced_receptions.html'
@@ -48,12 +48,12 @@ def create_chart() -> go.Figure:
     # Create subplots: use 'domain' type for Pie subplot
     fig.add_trace(go.Pie(
         labels=["Non-violent offence", "Violent offence"],
-        values=[55, 45],
+        values=[57, (100-57)],
         name="Offences",
         marker_colors=colors,
         direction='clockwise',  # Setting direction and sort attributes to match for each chart
         sort=False,
-        title_text=prt_theme.wrap_labels("<br>The majority have committed a non-violent crime", 32),
+        title_text=prt_theme.wrap_labels("<br>The majority had committed a non-violent crime", 32),
         title_position="bottom center",
         title_font_weight='bold',
         title_font_size=17,
@@ -61,12 +61,12 @@ def create_chart() -> go.Figure:
 
     fig.add_trace(go.Pie(
         labels=["Less than six months", "Six months or longer"],
-        values=[37, 63],
+        values=[32, (100-32)],
         name="Sentence length",
         marker_colors=colors,
         direction='clockwise',
         sort=False,
-        title_text=prt_theme.wrap_labels("<br>Almost two in five were sentenced to serve less than six months", 38),
+        title_text=prt_theme.wrap_labels("<br>Almost one third were sentenced to serve less than six months", 38),
         title_position="bottom center",
         title_font_weight='bold',
         title_font_size=17,
@@ -84,6 +84,7 @@ def create_chart() -> go.Figure:
             dict(text=f"{fig.data[1].values[0]}%", x=sum(fig.get_subplot(1, 2).x) / 2, y=0.5,
                 font_size=30, font_weight="bold", showarrow=False, xanchor="center")
         ],
+        height=300,
         margin=dict(t=20, b=25, l=0, r=25),
     )
 
@@ -100,6 +101,7 @@ def main() -> None:
         subtitle=SUBTITLE,
         source=SOURCE,
     )
+
 
 if __name__ == "__main__":
     main()

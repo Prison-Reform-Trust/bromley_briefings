@@ -20,8 +20,8 @@ CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = "We choose to send people to prison for a long time — and it's growing"
-SUBTITLE = "Almost three times as many people were sentenced to 10 years or more in 2023 than in 2010"
-SOURCE = "Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023."
+SUBTITLE = "More than three times as many people were sentenced to 10 years or more in 2024 than in 2010"
+SOURCE = "Ministry of Justice (2025) Criminal justice statistics quarterly: Update to December 2024."
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='sentence_growth.html'
@@ -55,10 +55,10 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     colorway = pio.templates[pio.templates.default].layout.colorway
     y_label = "People sentenced (percentage change since 2010)"
     y_offset_dict = {
-        "Less than 6 months": -20,
-        "6 months to less than 12 months": 8,
-        "12 months to less than 4 years": -20,
-        "4 years to 10 years": 8
+        "Less than 6 months": -28,
+        "6 months to less than 12 months": -20,
+        "12 months to less than 4 years": 11,
+        "4 years to 10 years": 10
     }
 
     annotations = utils.generate_annotations(
@@ -70,8 +70,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         x_pad=0.3)
 
     # Set axes ranges
-    fig.update_yaxes(range=[-110, 210])
-    fig.update_xaxes(range=[2009.8, 2024.2])
+    fig.update_yaxes(range=[-110, 260])
+    fig.update_xaxes(range=[2009.8, 2025.2])
 
     # Axis parameter adjustments
     fig.update_layout(

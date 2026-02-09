@@ -24,7 +24,7 @@ SUBTITLE = (
     r"The number of people in prison serving an indeterminate sentence has fallen in recent years — "
     r"but growing numbers are being recalled back after their release"
 )
-SOURCE = "Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024."
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: January to March 2025."
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='indeterminate_population.html'
@@ -42,7 +42,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def generate_traces(df: pd.DataFrame) -> list:
-    """Generates Plotly traces for each offence  in dataset."""
+    """Generates Plotly traces for each offence in dataset."""
 
     traces = [
         go.Bar(

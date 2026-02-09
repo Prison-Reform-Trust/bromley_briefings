@@ -22,8 +22,8 @@ CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = ""
-SUBTITLE = "For more serious, indictable offences, the average prison sentence is now 62.4 months—almost two years longer than in 2011"
-SOURCE = "Ministry of Justice (2024) Criminal justice statistics quarterly: Update to December 2023."
+SUBTITLE = "For more serious, indictable offences, the average prison sentence is now 69.9 months—more than two and a half years longer than in 2010"
+SOURCE = "Ministry of Justice (2025) Criminal justice statistics quarterly: Update to December 2024."
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='sentence_lengths.html'
@@ -63,7 +63,7 @@ def generate_traces(df: pd.DataFrame) -> list:
             text=text_indictable,
             texttemplate="%{text}",
             textposition="inside",
-            hovertemplate="<b>%{y}</b>: %{x} months",
+            hovertemplate="%{x} months",
             marker_color=colorway[1],
         ),
         go.Bar(
@@ -74,7 +74,7 @@ def generate_traces(df: pd.DataFrame) -> list:
             text=text_total,
             texttemplate="%{text}",
             textposition="inside",
-            hovertemplate="<b>%{y}</b>: %{x} months",
+            hovertemplate="%{x} months",
             marker_color=colorway[0],
         ),
     ]
@@ -95,13 +95,14 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.add_traces(traces)
 
     # Configure axes
-    fig.update_yaxes(autorange="reversed", tick0=2011, dtick=2)
+    fig.update_yaxes(autorange="reversed")
     fig.update_xaxes(zeroline=False)
 
     # Configure layout
     fig.update_layout(
         barmode="overlay",
-        hovermode="closest",
+        hovermode="y unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         margin_l=40,
         annotations=annotations,
         # dragmode="pan", Currently deactivated. May see whether I can use in future to view earlier time period when panned

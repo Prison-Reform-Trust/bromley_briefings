@@ -60,10 +60,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             x=[percent],  # Use percentage on the x-axis
             y=[sentence],  # Sentence on the y-axis (wrapped using 'label' above)
             orientation='h',
+            width=0.65,
             hovertemplate="%{y}: %{text}%<extra></extra>",
             text=[percent],
             texttemplate="%{x}%",
-            textposition="outside",
+            textposition="inside",
             cliponaxis=False,
             name=str(sentence)
         ))
@@ -82,6 +83,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
 
     fig.update_layout(
+        height=300,
         margin_pad=5,
         margin=dict(t=20, b=25, l=0, r=0),
         hovermode=False,

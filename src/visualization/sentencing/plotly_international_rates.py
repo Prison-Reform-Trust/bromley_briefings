@@ -21,7 +21,7 @@ CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = "If we imprison more people won't crime fall?"
-SUBTITLE = "International comparisons show there is no consistent link between the two"
+SUBTITLE = "There is no link between the prison population and levels of crime according to the National Audit Office. International comparisons show there is no consistent link between the two"
 SOURCE = (
     "<a href = https://www.prisonstudies.org/world-prison-brief-data>Institute for Crime and Justice Policy Research (2023). World Prison Brief. Birkbeck, University of London.</a><br>"
     "<a href = https://ec.europa.eu/eurostat/databrowser/view/crim_hist/default/table>Eurostat (2015). Crimes recorded by the police (1950-2000).</a><br>"
@@ -116,7 +116,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure layout
     fig.update_layout(
-        margin=dict(t=20, b=25, l=55, r=70, pad=5),
+        height=300,
+        margin=dict(t=30, b=25, l=55, r=70, pad=5),
         annotations=annotations,
     )
 
@@ -130,6 +131,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         fig.update_yaxes(
             title_text="Imprisonment rate per 100,000" if i == 1 else '',
             title_font_color=colorway[0],
+            title_font_size=14,
+            title_standoff=20,
             showgrid=True,
             range=primary_y_range,  # Set range for primary y-axis
             dtick=50,
@@ -143,6 +146,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         fig.update_yaxes(
             title_text="Crime rate per 100,000" if i == num_subplots else '',
             title_font_color=colorway[1],
+            title_font_size=14,
+            title_standoff=20,
             showgrid=False,
             range=secondary_y_range,  # Set range for secondary y-axis
             dtick=3000,
