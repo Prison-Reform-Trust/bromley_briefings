@@ -21,7 +21,7 @@ CONFIG = utils.read_config()
 # Jinja2 template variables
 TITLE = "Life behind bars"
 SUBTITLE = "The number of people in prison serving a life sentence has almost trebled in the last 30 years"
-SOURCE = "Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024."
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: January to March 2025."
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='lifer_population.html'

@@ -24,7 +24,7 @@ CONFIG = utils.read_config()
 TITLE = "How many people do we imprison in England & Wales?"
 SUBTITLE = (
     r"There are around 87,000 people in prison. The prison population has nearly doubled in the last 30 years—"
-    r"and it is predicted to rise further still."
+    r"and it is predicted to rise further still"
 )
 SOURCE = (
     "Ministry of Justice (2025). Offender management statistics: Prison population 2025.<br>"

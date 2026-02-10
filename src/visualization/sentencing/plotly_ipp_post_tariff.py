@@ -20,14 +20,14 @@ import src.visualization.prt_theme as prt_theme
 CONFIG = utils.read_config()
 
 # Jinja2 template variables
-TITLE = "Over 1,000 people serving the IPP sentence remain in prison who have never been released."
+TITLE = "Nearly 1,000 people serving the IPP sentence remain in prison who have never been released"
 SUBTITLE = (
-    r"On average, people serving the IPP sentence have spent 10 years in addition to their "
-    r"original period of punishment — with many serving even longer."
+    r"On average, people serving the IPP sentence have spent 11 years in addition to their "
+    r"original period of punishment — with many serving even longer"
 )
 SOURCE = (
-    "Table 1.9b, Ministry of Justice (2023). Offender management statistics quarterly: April to June 2023.<br>"
-    "House of Lords written question HL423, 4 December 2023."
+    "Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024.<br>"
+    "House of Lords written question HL3985, 13 January 2025."
 )
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',

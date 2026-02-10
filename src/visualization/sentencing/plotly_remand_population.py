@@ -21,7 +21,7 @@ CONFIG = utils.read_config()
 # Jinja2 template variables
 TITLE = "Remand on the rise"
 SUBTITLE = "The number of people in prison on remand is now at its highest level in at least 50 years"
-SOURCE = "Ministry of Justice (2024). Offender management statistics quarterly: January to March 2024. And previous editions"
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: January to March 2025. And previous editions"
 OUTPUT_PATH = utils.get_output_path(
     section='sentencing',
     filename='remand_population.html'
