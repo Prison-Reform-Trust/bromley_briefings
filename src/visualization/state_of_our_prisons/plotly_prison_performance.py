@@ -9,11 +9,12 @@ Source: Source: Ministry of Justice. Annual prison performance ratings 2023-24 a
 """
 
 import os
+
 import chart_studio.plotly as py
 import pandas as pd
+import plotly.colors as pcols
 import plotly.graph_objs as go
 import plotly.io as pio
-import plotly.colors as pcols
 from dotenv import find_dotenv, load_dotenv
 
 # Local modules
@@ -24,6 +25,7 @@ import src.visualization.prt_theme as prt_theme
 config = utils.read_config()
 
 import pandas as pd
+
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
     """Melt dataframe from wide to long and enforce rating order"""
@@ -125,7 +127,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/prison_performance.csv")
     df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)

@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: We imprison far more of our population than our nearest neighbours
-Subtitle: Scotland and England & Wales have the highest imprisonment rates in Western Europe.
-Source: World Prison Brief, Institute for Crime & Justice Policy Research. 10 March 2025.
+A Plotly chart showing imprisonment rates by country.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
-import chart_studio.plotly as py
+
 import pandas as pd
 import plotly.graph_objs as go
 
@@ -17,18 +16,32 @@ import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "We imprison far more of our population than our nearest neighbours"
+SUBTITLE = "Scotland and England & Wales have the highest imprisonment rates in Western Europe"
+SOURCE = "Institute for Crime & Justice Policy Research (2025). World Prison Brief."
+OUTPUT_PATH = utils.get_output_path(
+    section='sentencing',
+    filename='imprisonment_rates.html'
+)
+
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a horizontal bar chart of imprisonment rates by country."""
 
     fig = go.Figure()
-    annotations = prt_theme.add_annotation(None, "People in prison per 100,000 population", annotation_type="y-axis")
+    annotations = prt_theme.add_annotation(
+        annotations_list=None,
+        text="People in prison per 100,000 population",
+        annotation_type="y-axis"
+    )
 
     fig.add_trace(
         go.Bar(
-            x=df["rate"].tolist(), 
-            y=df["country"].tolist(), 
+            x=df["rate"].tolist(),
+            y=df["country"].tolist(),
             orientation="h",
             hovertemplate="%{text} per 100,000 population<extra></extra>",
             text=df["rate"].tolist(),
@@ -49,13 +62,25 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
-    data_path = os.path.join(config['data']['clnFilePath'], "sentencing/imprisonment_rates.csv")
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
+    utils.setup_plotly_template()
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/imprisonment_rates.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="imprisonment_rates")
+    return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE
+    )
     return fig
 
 

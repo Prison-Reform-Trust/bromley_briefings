@@ -3,16 +3,16 @@ This script provides useful functions to all other scripts
 """
 import os
 import textwrap
+from typing import Optional
 
 import chart_studio.plotly as py  # Online plotting
-import chart_studio.tools
 import pandas as pd
 import plotly.graph_objs as go  # Offline plotting
 import plotly.io as pio
 import yaml
-from dotenv import find_dotenv, load_dotenv
+from jinja2 import Template
 
-import src.visualization.prt_theme as prt_theme
+from src.visualization import prt_theme
 
 
 def read_config():
@@ -22,14 +22,12 @@ def read_config():
         Loader=yaml.SafeLoader) for k, v in d.items()}
     return config
 
+# Load config once at module level
+CONFIG = read_config()
 
-def setup_plotly_credentials():
-    """Loads environment variables and sets Plotly credentials."""
-    load_dotenv(find_dotenv())
-    chart_studio.tools.set_credentials_file(
-        username=os.getenv("PLOTLY_USERNAME"),
-        api_key=os.getenv("PLOTLY_API_KEY"),
-    )
+
+def setup_plotly_template():
+    """Sets Plotly template to PRT theme."""
     pio.templates.default = "prt_template"
 
 
@@ -162,11 +160,19 @@ def create_chart(
     return fig
 
 
+def get_output_path(section: str, filename: str) -> str:
+    """Generate output path from config values."""
+    return os.path.join(
+        CONFIG['viz']['outPath'],
+        CONFIG['report_section'][section],
+        filename
+    )
+
+
 # Save chart (offline and online)
 def save_chart(fig, filename):
     """Saves the chart as an image and uploads it online."""
-    config = read_config()  # Read in config file
-    fig.write_image(os.path.join(config['viz']['outPath'], f'{filename}.svg'))
+    fig.write_image(os.path.join(CONFIG['viz']['outPath'], f'{filename}.svg'))
 
     fig.layout.images = [
         dict(
@@ -188,4 +194,65 @@ def save_chart(fig, filename):
         height=layout_atr.height,
     )
 
-    py.plot(fig, filename=filename)
+    py.plot(fig, filename=filename)  # NOTE: This will need to be removed following migration away from chart studio
+
+
+def save_plotly_chart_as_html(
+    fig: go.Figure,
+    output_path: str,
+    title: str,
+    subtitle: str,
+    source: str,
+    template_path: Optional[str] = None,
+    config: Optional[dict] = None,
+    embed_styles: bool = False,
+    styles_path: Optional[str] = None
+) -> None:
+    """Saves a Plotly figure as an HTML file using a Jinja2 template.
+
+    Args:
+        fig (go.Figure): Plotly figure object.
+        output_path (str): Path where the HTML file will be saved.
+        title (str): Chart title.
+        subtitle (str): Chart subtitle.
+        source (str): Data source attribution.
+        template_path (str, optional): Path to Jinja2 template. Uses default if None.
+        config (dict, optional): Plotly config. Uses default if None.
+        embed_styles (bool): Whether to embed CSS styles directly in HTML. Default False.
+        styles_path (str, optional): Path to CSS file. Uses default if None.
+    """
+    if config is None:
+        config = CONFIG
+
+    if template_path is None:
+        template_path = "reports/figures/prt_web_template.html"
+
+    if styles_path is None:
+        styles_path = "reports/figures/styles.css"
+
+    # Load CSS styles if embedding is requested
+    embedded_styles = ""
+    if embed_styles and os.path.exists(styles_path):
+        with open(styles_path, "r", encoding="utf-8") as css_file:
+            embedded_styles = css_file.read()
+
+    plotly_jinja_data = {
+        "title": title,
+        "subtitle": subtitle,
+        "fig": fig.to_html(
+            full_html=False,
+            include_plotlyjs=False,
+            config=config['plotly']['config']
+        ),
+        "source": source,
+        "embedded_styles": embedded_styles,
+        "embed_styles": embed_styles
+    }
+
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as output_file:
+        with open(template_path, "r", encoding="utf-8") as template_file:
+            j2_template = Template(template_file.read())
+            output_file.write(j2_template.render(plotly_jinja_data))

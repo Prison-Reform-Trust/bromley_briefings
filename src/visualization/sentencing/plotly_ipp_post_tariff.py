@@ -2,28 +2,37 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Over 1,000 people serving the IPP sentence remain in prison who have never been released.
-Subtitle: On average, people serving the IPP sentence have spent 10 years in addition to their 
-original period of punishment — with many serving even longer.
-Source:
-- Ministry of Justice (2023). Offender management statistics quarterly: April to June 2023.
-- House of Lords written question HL423, 4 December 2023.
+A Plotly chart showing the number of people serving IPP sentences beyond their tariff in England & Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
-import chart_studio
-import chart_studio.plotly as py
+
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "Nearly 1,000 people serving the IPP sentence remain in prison who have never been released"
+SUBTITLE = (
+    r"On average, people serving the IPP sentence have spent 11 years in addition to their "
+    r"original period of punishment — with many serving even longer"
+)
+SOURCE = (
+    "Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024.<br>"
+    "House of Lords written question HL3985, 13 January 2025."
+)
+OUTPUT_PATH = utils.get_output_path(
+    section='sentencing',
+    filename='ipp_post_tariff.html'
+)
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -40,7 +49,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Create a bar chart showing additional years spent in prison post-tariff."""
-    
+
     fig = go.Figure()
     annotations = prt_theme.add_annotation(None, "People in prison", annotation_type="y-axis")
     colorway = pio.templates[pio.templates.default].layout.colorway
@@ -88,19 +97,31 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def main() -> go.Figure:
-    """Load data, generate the chart, and upload it to Chart Studio."""
-    
-    utils.setup_plotly_credentials()
-    data_path = os.path.join(config["data"]["clnFilePath"], "sentencing/ipp_post_tariff.csv")
-
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
+    utils.setup_plotly_template()
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/ipp_post_tariff.csv")
     df = (
-        utils.load_data(data_path, usecols=["Years over tariff", "short_year", "number"])
+        utils.load_data(
+            data_path,
+            usecols=["Years over tariff", "short_year", "number"]
+        )
         .pipe(process_data)
     )
-
     fig = create_chart(df)
-    py.plot(fig, filename="ipp_post_tariff")
+    return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE
+    )
     return fig
 
 

@@ -126,7 +126,7 @@ def get_data_path(filename: str) -> str:
 def main() -> go.Figure:
     """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
 
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
 
     df_offences = utils.load_data(get_data_path("offences_by_sex.csv")).pipe(process_data)
     df_sentences = utils.load_data(get_data_path("sentences_by_sex.csv")).pipe(process_data)

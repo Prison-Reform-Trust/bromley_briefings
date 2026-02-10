@@ -114,7 +114,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def main() -> go.Figure:
     """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     data_path = os.path.join(config['data']['clnFilePath'], "people_in_prison/bame_age_proportion.csv")
     df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)

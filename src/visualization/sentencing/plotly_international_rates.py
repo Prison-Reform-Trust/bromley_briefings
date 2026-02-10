@@ -2,49 +2,46 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: If we imprison more people won't crime fall?
-Subtitle: International comparisons show there is no consistent link between the two
-Sources: 
-- Institute for Crime and Justice Policy Research (2023). World Prison Brief. Birkbeck, University of London. https://www.prisonstudies.org/world-prison-brief-data
-- Eurostat (2015). Crimes recorded by the police (1950-2000). https://ec.europa.eu/eurostat/databrowser/view/crim_hist/default/table
-- Clarke, S.(2013). Trends in crime and criminal justice, 2010. Eurostat.
-- Home Office (2023). Police recorded crime and outcomes open data tables: Outcomes open data ending March 2021.
-- Office for National Statistics (2022). UK population estimates, 1838 to 2020.
-- Statistics Finland (2023). 13ex -- Offences recorded and their solving by offence category according to the municipality of offence and year of reporting, 1980-2022.
-- Statistics Finland (2023). Population and society. https://www.stat.fi/tup/suoluk/suoluk_vaesto_en.html
-- Statistics Canada (2018). Canada's crime rate: Two decades of decline. https://www150.statcan.gc.ca/n1/pub/11-630-x/11-630-x2015001-eng.htm#def1
-- Statistics Canada (2023). Incident-based crime statistics, by detailed violations, Canada, provinces, territories, Census Metropolitan areas and Canadian Forces Military Police.
+A Plotly chart comparing imprisonment rates and crime rates across multiple countries.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
+
 import pandas as pd
-import chart_studio
-import chart_studio.plotly as py
 import plotly.graph_objs as go
 import plotly.io as pio
 from plotly.subplots import make_subplots
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
 
-# Load environment variables and configuration
-load_dotenv(find_dotenv())
-config = utils.read_config()
+# Load configuration
+CONFIG = utils.read_config()
 
-# Set Plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), 
-    api_key=os.getenv("PLOTLY_API_KEY")
+# Jinja2 template variables
+TITLE = "If we imprison more people won't crime fall?"
+SUBTITLE = "There is no link between the prison population and levels of crime according to the National Audit Office. International comparisons show there is no consistent link between the two"
+SOURCE = (
+    "<a href = https://www.prisonstudies.org/world-prison-brief-data>Institute for Crime and Justice Policy Research (2023). World Prison Brief. Birkbeck, University of London.</a><br>"
+    "<a href = https://ec.europa.eu/eurostat/databrowser/view/crim_hist/default/table>Eurostat (2015). Crimes recorded by the police (1950-2000).</a><br>"
+    "Clarke, S. (2013). Trends in crime and criminal justice, 2010. Eurostat.<br>"
+    "Home Office (2023). Police recorded crime and outcomes open data tables: Outcomes open data ending March 2021.<br>"
+    "Office for National Statistics (2022). UK population estimates, 1838 to 2020.<br>"
+    "Statistics Finland (2023). 13ex -- Offences recorded and their solving by offence category according to the municipality of offence and year of reporting, 1980-2022.<br>"
+    "<a href = https://www.stat.fi/tup/suoluk/suoluk_vaesto_en.html>Statistics Finland (2023). Population and society.</a><br>"
+    "<a href = https://www150.statcan.gc.ca/n1/pub/11-630-x/11-630-x2015001-eng.htm#def1>Statistics Canada (2018). Canada's crime rate: Two decades of decline.</a><br>"
+    "Statistics Canada (2023). Incident-based crime statistics, by detailed violations, Canada, provinces, territories, Census Metropolitan areas and Canadian Forces Military Police."
+)
+OUTPUT_PATH = utils.get_output_path(
+    section='sentencing',
+    filename='international_rates.html'
 )
 
-# Set default Plotly template
-pio.templates.default = "prt_template"
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a multi-country subplot chart comparing imprisonment and crime rates."""
-    
+
     # Get colorway from the current Plotly template
     colorway = pio.templates[pio.templates.default].layout.colorway
 
@@ -58,8 +55,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Create subplots
     fig = make_subplots(
-        rows=1, 
-        cols=num_subplots, 
+        rows=1,
+        cols=num_subplots,
         specs=[[{"secondary_y": True}] * num_subplots],
     )
 
@@ -100,7 +97,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
                 text=df_country["country"],
                 name="Imprisonment rate",
                 hovertemplate="<b>%{text}</b><br>%{x}: %{y} per 100,000",
-            ), 
+            ),
             row=1, col=idx+1
         )
 
@@ -113,13 +110,14 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
                 text=df_country["country"],
                 name="Crime rate",
                 hovertemplate="<b>%{text}</b><br>%{x}: %{y:,.0f} per 100,000",
-            ), 
+            ),
             row=1, col=idx+1, secondary_y=True
         )
 
     # Configure layout
     fig.update_layout(
-        margin=dict(t=20, b=25, l=55, r=70, pad=5),
+        height=300,
+        margin=dict(t=30, b=25, l=55, r=70, pad=5),
         annotations=annotations,
     )
 
@@ -132,7 +130,9 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         # Primary y-axis: Only show the title on the first subplot
         fig.update_yaxes(
             title_text="Imprisonment rate per 100,000" if i == 1 else '',
-            titlefont_color=colorway[0],
+            title_font_color=colorway[0],
+            title_font_size=14,
+            title_standoff=20,
             showgrid=True,
             range=primary_y_range,  # Set range for primary y-axis
             dtick=50,
@@ -145,7 +145,9 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         # Secondary y-axis: Only show the title on the last subplot
         fig.update_yaxes(
             title_text="Crime rate per 100,000" if i == num_subplots else '',
-            titlefont_color=colorway[1],
+            title_font_color=colorway[1],
+            title_font_size=14,
+            title_standoff=20,
             showgrid=False,
             range=secondary_y_range,  # Set range for secondary y-axis
             dtick=3000,
@@ -162,20 +164,37 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         # Remove primary y-axis tick labels from subplots where they are unnecessary
         if i != 1:  # Keep tick labels only on the first subplot for primary y-axis
             fig.update_yaxes(showticklabels=False, row=1, col=i, secondary_y=False)
-        
+
         # Remove secondary y-axis tick labels from subplots where they are unnecessary
         if i != num_subplots:  # Keep tick labels only on the last subplot for secondary y-axis
             fig.update_yaxes(showticklabels=False, row=1, col=i, secondary_y=True)
 
     return fig
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
-    data_path = f"{config['data']['clnFilePath']}sentencing/international_rates.csv"
+
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
+    utils.setup_plotly_template()
+    data_path = f"{CONFIG['data']['clnFilePath']}sentencing/international_rates.csv"
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="international_rates")
     return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    utils.setup_plotly_template()
+    fig = prepare_chart()
+
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE
+    )
+    return fig
+
 
 if __name__ == "__main__":
     main()

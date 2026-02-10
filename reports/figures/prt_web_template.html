@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% if embed_styles and embedded_styles %}
+    <style>
+    {{ embedded_styles }}
+    </style>
+    {% endif %}
+</head>
+<body>
+<!-- ----- COPY BELOW INTO WORDPRESS HTML BLOCK ----- -->
+    <div class="plotly-chart-wrapper">
+        <hr class="plotly-top">
+        <h2 id="plotly-title">{{ title }}</h2>
+        <h3 id="plotly-subtitle">{{ subtitle }}</h3>
+        {{ fig }}
+        <p id="plotly-source">Source: {{ source }}</p>
+        <hr class="plotly-bottom">
+    </div>
+<!-- ----- END COPY ----- -->
+</body>
+</html>

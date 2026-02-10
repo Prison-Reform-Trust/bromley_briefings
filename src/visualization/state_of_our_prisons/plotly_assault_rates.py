@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Assaults in prisons in England and Wales
-Subtitle: Assaults and serious assaults declined during the pandemic—but are rising again
-Source: Ministry of Justice (2024). Safety in custody: quarterly update to December 2023.
+A Plotly chart showing assault and serious assault rates in prisons in England and Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
 import pandas as pd
-import chart_studio.plotly as py
 import plotly.graph_objs as go
 import plotly.io as pio
 from plotly.subplots import make_subplots
@@ -20,50 +18,70 @@ import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
 
-def generate_traces(df:pd.DataFrame) -> go.Figure:
-    """Generates Plotly subplot figure and traces for assaults and serious assault"""
-    
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-    
-    fig.add_trace(
-        go.Scatter(
+# Jinja2 template variables
+TITLE = "Assaults in prisons in England and Wales"
+SUBTITLE = "Assaults and serious assaults declined during the pandemic—but are rising again"
+SOURCE = "Ministry of Justice (2024). Safety in custody: quarterly update to December 2023."
+OUTPUT_PATH = utils.get_output_path(
+    section='state_of_our_prisons',
+    filename='assault_rates.html'
+)
+
+
+def generate_traces(df: pd.DataFrame) -> list[tuple[go.Scatter, bool]]:
+    """Generates Plotly traces for assaults and serious assault with secondary_y info"""
+
+    traces = [
+        (go.Scatter(
             x=df["year"],
             y=df["serious"],
             mode="lines+markers",
             name="serious assault rate",
             hovertemplate="%{y} serious assaults per 1,000 prisoners<extra></extra>",
-        ),
-        secondary_y=True,
-    )
-
-    fig.add_trace(
-        go.Scatter(
+        ), True),  # secondary_y=True
+        (go.Scatter(
             x=df["year"],
             y=df["assaults"],
             mode="lines+markers",
             name="assault rate",
             hovertemplate="%{y} assaults per 1,000 prisoners<extra></extra>",
-        ),
-        secondary_y=False,
-    )
-    return fig
+        ), False),  # secondary_y=False
+    ]
+
+    return traces
+
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
-    """Creates a Plotly line chart of assault and serious assault rates in prison since 2012."""
-    
-    fig = generate_traces(df)
+    """Creates a Plotly line chart of assault and serious assault rates in prison."""
+
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
     colorway = pio.templates[pio.templates.default].layout.colorway
-    
-    annotations = prt_theme.add_annotation(None, "Incidents per 1,000 prisoners", annotation_type="y-axis", y=1)
-    prt_theme.add_annotation(annotations, "The definition of recorded<br>assaults changed in 2019", annotation_type="label", xref="x", yref="y", x=2019.5, y=475)
+
+    # Add traces
+    traces = generate_traces(df)
+    for trace, secondary_y in traces:
+        fig.add_trace(trace, secondary_y=secondary_y)
+
+    annotations = prt_theme.add_annotation(
+        annotations_list=None,
+        text="Incidents per 1,000 prisoners",
+        annotation_type="y-axis",
+        y=1)
+
+    prt_theme.add_annotation(
+        annotations_list=annotations,
+        text="The definition of recorded<br>assaults changed in 2019",
+        annotation_type="label",
+        xref="x", yref="y",
+        x=2019.5, y=475)
 
     # Configure axes
     fig.update_yaxes(
         title_text="Serious assaults",
-        range=[0,51],
-        titlefont_color=colorway[0],
+        range=[0, 51],
+        title_font_color=colorway[0],
         tickfont_color=colorway[0],
         automargin=True,
         overlaying="y",
@@ -71,21 +89,20 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         secondary_y=True)
 
     fig.update_yaxes(
-        title_text="Assaults", 
-        range=[0,510],
+        title_text="Assaults",
+        range=[0, 510],
         title_standoff=20,
-        titlefont_color=colorway[1],
+        title_font_color=colorway[1],
         tickfont_color=colorway[1],
         automargin=True,
         secondary_y=False)
-    
-    # fig.update_xaxes(autorangeoptions_maxallowed=2024) Autorange works locally but doesn't on Chart Studio
 
     # Configure layout
     fig.update_layout(
-        annotations=annotations)
+        annotations=annotations,
+        height=350)
 
-    ## Adding dotted line for recording change
+    # Adding dotted line for recording change
     fig.add_shape(
         type="line",
         x0=2019,
@@ -96,15 +113,27 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         layer="below",
     )
     return fig
-    
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_credentials()
-    data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/assaults.csv")
+
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
+    utils.setup_plotly_template()
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "state_of_our_prisons/assaults.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="assault_rates")
+    return fig
+
+
+def main() -> go.Figure:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE
+    )
     return fig
 
 

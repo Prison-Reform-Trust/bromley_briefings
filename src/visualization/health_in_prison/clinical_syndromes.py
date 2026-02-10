@@ -124,7 +124,7 @@ def test_data():
 def main() -> go.Figure:
     """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
 
-    utils.setup_plotly_credentials()
+    utils.setup_plotly_template()
     df = utils.load_data(get_data_path("clinical_syndromes.csv")).pipe(process_data)
     fig = create_chart(df)
     py.plot(fig, filename="clinical_syndromes")

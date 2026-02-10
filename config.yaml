@@ -1,4 +1,5 @@
 # File paths
+# TODO: #42 Add 'sections' paths to ensure consistency of filepath names throughout
 - data:
     rawFilePath: data/raw/
     clnFilePath: data/processed/
@@ -6,6 +7,13 @@
 
 - viz:
     outPath: reports/figures/
+
+- report_section:
+    sentencing: sentencing/
+    state_of_our_prisons: state_of_our_prisons/
+    people_in_prison: people_in_prison/
+    health_in_prison: health_in_prison/
+    rehabilitation_and_resettlement: rehabilitation_and_resettlement/
 
 # Configurations
 - plotly:
@@ -15,6 +23,4 @@
         "editable": False
         "displaylogo": False
         "showAxisDragHandles": False
-        "responsive": False
-        "dragmode": False
-
+        "responsive": True
