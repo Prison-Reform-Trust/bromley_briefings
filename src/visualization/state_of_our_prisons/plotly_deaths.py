@@ -1,24 +1,33 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """
-Title: Deaths in prisons in England and Wales
-Subtitle: Nearly 350 people died in prison during 2024
-Source: Ministry of Justice (2024). Safety in custody: quarterly update to September 2024
+A Plotly chart showing the proportion of deaths in prison in England & Wales by:
+    - type
+    - gender
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
+
+# Set template
+utils.setup_plotly_template()
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "Deaths in prisons in England and Wales"
+SUBTITLE = "More than 400 people died in prison in the year to September 2025"
+SOURCE = "Ministry of Justice (2025). Safety in custody: quarterly update to June 2025"
+OUTPUT_PATH = utils.get_output_path(
+    section='state_of_our_prisons',
+    filename='deaths.html'
+)
+
 
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a sunburst chart showing number and proportion of deaths in prison by type and gender."""
@@ -38,20 +47,33 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ))
 
     fig.update_layout(
-        margin=dict(t=0, b=0, l=0, r=0),
-        uniformtext=dict(minsize=12, mode="hide"),
+        margin=dict(t=0, b=20, l=0, r=0),
+        uniformtext=dict(minsize=11, mode="hide"),
+        height=500,
         )
-    
+
     return fig
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
-    utils.setup_plotly_template()
-    data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/deaths.csv")
+
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
+    # utils.setup_plotly_template()
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "state_of_our_prisons/deaths.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="deaths")
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
