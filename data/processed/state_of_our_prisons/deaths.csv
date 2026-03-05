@@ -1,14 +1,14 @@
 ids,death_type,value,parent
-Total deaths,Total deaths,342,
-Self-inflicted,Self-inflicted,89,Total deaths
-Self-inflicted - Male,Male,85,Self-inflicted
-Self-inflicted - Female,Female,4,Self-inflicted
-Natural causes,Natural causes,192,Total deaths
-Natural causes - Male,Male,188,Natural causes
-Natural causes - Female,Female,4,Natural causes
-Homicide,Homicide,7,Total deaths
-Homicide - Male,Male,7,Homicide
+Total deaths,Total deaths,411,
+Self-inflicted,Self-inflicted,96,Total deaths
+Self-inflicted - Male,Male,90,Self-inflicted
+Self-inflicted - Female,Female,6,Self-inflicted
+Natural causes,Natural causes,221,Total deaths
+Natural causes - Male,Male,218,Natural causes
+Natural causes - Female,Female,3,Natural causes
+Homicide,Homicide,6,Total deaths
+Homicide - Male,Male,6,Homicide
 Homicide - Female,Female,0,Homicide
-Other,Other,54,Total deaths
-Other - Male,Male,53,Other
-Other - Female,Female,1,Other
+Other,Other,88,Total deaths
+Other - Male,Male,85,Other
+Other - Female,Female,3,Other
