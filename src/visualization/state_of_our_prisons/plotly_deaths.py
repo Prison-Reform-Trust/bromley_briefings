@@ -13,9 +13,6 @@ import plotly.graph_objs as go
 # Local modules
 import src.utilities as utils
 
-# Set template
-utils.setup_plotly_template()
-
 # Load configuration
 CONFIG = utils.read_config()
 
@@ -57,7 +54,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
 def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
-    # utils.setup_plotly_template()
+    utils.setup_plotly_template()
     data_path = os.path.join(CONFIG['data']['clnFilePath'], "state_of_our_prisons/deaths.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
