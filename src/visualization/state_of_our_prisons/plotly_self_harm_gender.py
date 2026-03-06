@@ -48,9 +48,10 @@ def generate_traces(df: pd.DataFrame) -> list:
             texttemplate="%{text}%",
             textposition="inside",
             customdata=df[['women_incidents']],
-            hovertemplate=
-                "<b>%{y}</b>: %{x}<br>" +
-                "%{customdata[0]:,.0f} incidents",
+            hovertemplate=(
+                "%{x} of all incidents<br>" +
+                "%{customdata[0]:,.0f} incidents"
+            ),
         ),
         go.Bar(
             x=df["men_proportion"],
@@ -61,9 +62,10 @@ def generate_traces(df: pd.DataFrame) -> list:
             texttemplate="%{text}%",
             textposition="inside",
             customdata=df[['men_incidents']],
-            hovertemplate=
-                "<b>%{y}</b>: %{x}<br>" +
-                "%{customdata[0]:,.0f} incidents",  # TODO #21 Add number of incidents to dataset and include in hovertemplate
+            hovertemplate=(
+                "%{x} of all incidents<br>" +
+                "%{customdata[0]:,.0f} incidents"
+            ),  # TODO #21 Add number of incidents to dataset and include in hovertemplate
         ),
     ]
     return traces
@@ -101,7 +103,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     # Configure layout
     fig.update_layout(
         barmode="stack",
-        hovermode="closest",
+        hovermode="y unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         margin_r=0,
         height=350,
         annotations=annotations,
