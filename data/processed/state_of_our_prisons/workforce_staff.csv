@@ -1,5 +1,5 @@
 year,percent,number,type
-2010,0.00,24830,HMPPS employed prison officers
+2010,0,24830,HMPPS employed prison officers
 2011,-0.02,24369,HMPPS employed prison officers
 2012,-0.08,22735,HMPPS employed prison officers
 2013,-0.13,21506,HMPPS employed prison officers
@@ -13,8 +13,9 @@ year,percent,number,type
 2021,-0.12,21879,HMPPS employed prison officers
 2022,-0.12,21935,HMPPS employed prison officers
 2023,-0.11,22218,HMPPS employed prison officers
-2024,-0.05,23613,HMPPS employed prison officers
-2010,0,85002,Prison population
+2024,-0.05,23614,HMPPS employed prison officers
+2025,-0.08,22737,HMPPS employed prison officers
+2010,0.00,85002,Prison population
 2011,0.00,85374,Prison population
 2012,0.01,86048,Prison population
 2013,-0.01,83842,Prison population
@@ -29,3 +30,4 @@ year,percent,number,type
 2022,-0.05,80659,Prison population
 2023,0.01,85851,Prison population
 2024,0.03,87726,Prison population
+2025,0.03,87334,Prison population
