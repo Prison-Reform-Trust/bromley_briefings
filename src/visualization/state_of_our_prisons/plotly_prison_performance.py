@@ -64,6 +64,11 @@ def generate_traces(df):
         "serious_concern": pcols.qualitative.Prism[7],
     }
 
+    visible = {
+        "outstanding": "legendonly",
+        "good": "legendonly",
+    }
+
     # Custom names for labels
     name_mapping = {
         "serious_concern": "Serious concern",
@@ -79,6 +84,7 @@ def generate_traces(df):
             texttemplate="%{text}%",
             textposition="inside",
             textangle=0,
+            visible=visible.get(rating, True),  # Sets whether trace is visible by default
             hovertemplate="%{y}%",
             marker_color=colors[rating],
         )
