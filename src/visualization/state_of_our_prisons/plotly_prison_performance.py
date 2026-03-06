@@ -1,43 +1,42 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Title: Prison performance in England and Wales
-Subtitle: More than two in five prisons are rated “of concern” or “serious concern" by the prison service
-Source: Source: Ministry of Justice. Annual prison performance ratings 2023-24 and previous editions.
-        Note that ratings were suspended in 2020-21 and reduced in 2021-22
-"""
-
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.colors as pcols
 import plotly.graph_objs as go
-import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
 
-import pandas as pd
+# Jinja2 template variables
+TITLE = "Prison performance in England and Wales"
+SUBTITLE = "Almost half of prisons are rated “of concern” or “serious concern”"
+SOURCE = (
+    "Ministry of Justice (2025). Annual prison performance ratings 2024 25. And previous editions<br>"
+    "Note that ratings were suspended in 2020-21 and reduced in 2021-22"
+)
+OUTPUT_PATH = utils.get_output_path(
+    section='state_of_our_prisons',
+    filename='prison_performance.html'
+)
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
     """Melt dataframe from wide to long and enforce rating order"""
-    
+
     # Define the desired order
     desired_order = [
         "serious_concern",
         "concern",
         "good",
-        "outstanding", 
+        "outstanding",
         ]
-    
+
     # Melt the DataFrame to long format
     df = df.melt(
         id_vars=['year'],
@@ -45,7 +44,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
         var_name='rating',
         value_name='number'
     )
-    
+
     # Extract first four digits of year e.g. 2015
     df["year"] = df["year"].astype(str).str.extract(r"^(\d{4})")
 
@@ -53,6 +52,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
     df["rating"] = pd.Categorical(df["rating"], categories=desired_order, ordered=True)
 
     return df
+
 
 def generate_traces(df):
     """Generate bar chart traces"""
@@ -87,6 +87,7 @@ def generate_traces(df):
 
     return traces
 
+
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a Plotly stacked bar chart of proportion of prisons by rating since 2015-16."""
 
@@ -112,8 +113,6 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         hovermode=False,
         margin_r=0,
         margin_t=0,
-        uniformtext_minsize=11, 
-        uniformtext_mode='show',
         showlegend=True,
         legend=dict(
             orientation="h",
@@ -125,14 +124,26 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
     return fig
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
+
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/prison_performance.csv")
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "state_of_our_prisons/prison_performance.csv")
     df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)
-    py.plot(fig, filename="prison_performance")
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
