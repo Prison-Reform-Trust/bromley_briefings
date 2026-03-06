@@ -2,25 +2,31 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Growing inexperience
-Subtitle: Staff with less than three years service is high and those with 10 or more years is declining
-Source: Ministry of Justice (2024). HMPPS workforce quarterly: March 2024. And previous editions.
+A Plotly chart showing proportion of self-harm incidents by women in prisons in England and Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = ""
+SUBTITLE = "Staff with less than three years service is high and those with 10 or more years is declining"
+SOURCE = "Ministry of Justice (2025). HMPPS workforce quarterly: March 2025. And previous editions."
+OUTPUT_PATH = utils.get_output_path(
+    section='state_of_our_prisons',
+    filename='workforce_experience.html'
+)
+
 
 def generate_traces(df):
     """Generate bar chart traces dynamically based on dataframe columns."""
@@ -58,6 +64,7 @@ def generate_traces(df):
 
     return traces
 
+
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a Plotly horizontal bar chart of proportion of all self-harm incidents by gender."""
 
@@ -82,23 +89,44 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         barmode="stack",
         hovermode="x unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         margin_r=0,
         margin_t=0,
-        uniformtext_minsize=12, 
+        uniformtext_minsize=12,
         uniformtext_mode='hide',
-        hoverlabel_bgcolor="#F7F7F2",
+        height=350,
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1,
+            xanchor="left",
+            x=-0.007,
+            traceorder="normal"
+        ),
     )
     return fig
 
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    data_path = os.path.join(config['data']['clnFilePath'], "state_of_our_prisons/workforce_experience.csv")
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "state_of_our_prisons/workforce_experience.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="workforce_experience")
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
