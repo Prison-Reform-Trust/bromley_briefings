@@ -23,7 +23,7 @@ CONFIG = utils.read_config()
 # Jinja2 template variables
 TITLE = "Assaults in prisons in England and Wales"
 SUBTITLE = "Assaults and serious assaults declined during the pandemic—but are rising again"
-SOURCE = "Ministry of Justice (2024). Safety in custody: quarterly update to December 2023."
+SOURCE = "Ministry of Justice (2025). Safety in custody: quarterly update to December 2024"
 OUTPUT_PATH = utils.get_output_path(
     section='state_of_our_prisons',
     filename='assault_rates.html'
@@ -99,6 +99,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure layout
     fig.update_layout(
+        hovermode="x unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         annotations=annotations,
         height=350)
 
