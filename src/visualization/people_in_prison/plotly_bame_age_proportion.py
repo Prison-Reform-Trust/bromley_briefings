@@ -2,31 +2,36 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Ethnicity in prisons in England and Wales
-Subtitle: Ethnic minority representation is even greater amongst younger prisoners
-Sources:
-    - House of Lords written question HL3924, 24 November 2021.
-    - Ministry of Justice (2021) Youth Custody report September 2021 
+A Plotly chart showing the proportion of the prison population in England and Wales, by age group and ethnicity.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
 
 # Local modules
 import src.utilities as utils
-import src.visualization.prt_theme as prt_theme
+from src.visualization import prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "Ethnicity in prisons in England and Wales"
+SUBTITLE = "Ethnic minority representation is even greater amongst younger prisoners"
+SOURCE = "Ministry of Justice (2025). Chapter 6: Offender management tables. Ethnicity and the criminal justice system 2024."
+OUTPUT_PATH = utils.get_output_path(
+    section='people_in_prison',
+    filename='bame_age_proportion.html'
+)
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Melt dataframe from wide to long and enforce order"""
-    
+    """Melt dataframe from wide to long and sort by proportion"""
+
     # Melt the DataFrame to long format
     df = (
         df
@@ -35,11 +40,8 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
             var_name='ethnicity',
             value_name='proportion'
         )
-        .sort_values(by=["ethnicity"], ascending=True)
+        .sort_values(by=["proportion"], ascending=False)
         )
-
-    # Convert 'ethnicity' to categorical to maintain order
-    df["ethnicity"] = pd.Categorical(df["ethnicity"], ordered=True)
 
     return df
 
@@ -54,11 +56,11 @@ def generate_traces(df):
 
     traces = [
         go.Bar(
-            x=df_ethnicity["proportion"].tolist(),
-            y=df_ethnicity['age'].tolist(),
+            x=df_ethnicity["proportion"],
+            y=df_ethnicity['age'],
             orientation="h",
             name=str(ethnicity),
-            text=df_ethnicity["proportion"].tolist(),
+            text=df_ethnicity["proportion"],
             texttemplate="%{text}%",
             textposition="inside",
             textangle=0,
@@ -97,6 +99,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         hovermode="closest",
         margin_r=0,
         annotations=annotations,
+        uniformtext=dict(minsize=11, mode="hide"),
+        xaxis_showgrid=True,
         showlegend=True,
         legend=dict(
             orientation="h",
@@ -112,14 +116,25 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    data_path = os.path.join(config['data']['clnFilePath'], "people_in_prison/bame_age_proportion.csv")
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "people_in_prison/bame_age_proportion.csv")
     df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)
-    py.plot(fig, filename="bame_age_proportion")
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
