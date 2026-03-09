@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Women tend to commit less serious offences — many serve prison sentences of less than 12 months
-Subtitle: In 2023, women entered prison for committing these offences, to serve these sentences
-Source: Ministry of Justice (2024). Offender management statistics quarterly: October to December 2023.
+A Plotly chart showing the proportion of receptions by offence and sentence length, by sex.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
@@ -20,7 +18,16 @@ import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "Women tend to commit less serious offences — many serve prison sentences of less than 12 months"
+SUBTITLE = "In 2024, women entered prison for committing these offences, to serve these sentences"
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: October to December 2024"
+OUTPUT_PATH = utils.get_output_path(
+    section='people_in_prison',
+    filename='offences_sentences_by_sex.html'
+)
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -100,6 +107,7 @@ def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Fi
         showlegend=True,
         barmode="group",
         hovermode="y unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         uniformtext_minsize=8,
         uniformtext_mode="hide",
         height=800,
@@ -120,21 +128,30 @@ def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Fi
 
 def get_data_path(filename: str) -> str:
     """Returns the full path for a given filename in the cleaned data directory."""
-    return os.path.join(config["data"]["clnFilePath"], "people_in_prison", filename)
+    return os.path.join(CONFIG["data"]["clnFilePath"], "people_in_prison", filename)
 
 
-def main() -> go.Figure:
-    """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
-
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
 
     df_offences = utils.load_data(get_data_path("offences_by_sex.csv")).pipe(process_data)
     df_sentences = utils.load_data(get_data_path("sentences_by_sex.csv")).pipe(process_data)
 
     fig = create_chart(df_offences, df_sentences)
-    py.plot(fig, filename="offences__sentences_by_sex")
-
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
