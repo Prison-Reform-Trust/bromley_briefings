@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Ethnicity in prisons in England and Wales
-Subtitle: The number of Asian and mixed ethnicity prisoners has risen sharply since 2004
-Source: Ministry of Justice (2024). Offender management statistics quarterly: April to June 2024
+A Plotly chart showing the percentage change in the prison population in England and Wales, by ethnicity.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
@@ -18,9 +16,19 @@ import plotly.io as pio
 import src.utilities as utils
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
 
-def generate_traces(df:pd.DataFrame) -> list:
+# Jinja2 template variables
+TITLE = "Ethnicity in prisons in England and Wales"
+SUBTITLE = "The number of Asian and mixed ethnicity prisoners has risen sharply since 2004"
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: April to June 2025."
+OUTPUT_PATH = utils.get_output_path(
+    section='people_in_prison',
+    filename='bame_population.html'
+)
+
+
+def generate_traces(df: pd.DataFrame) -> list:
     """Generates Plotly traces for each ethnic group in dataset."""
     traces = [
         go.Scatter(
@@ -35,6 +43,7 @@ def generate_traces(df:pd.DataFrame) -> list:
     ]
     return traces
 
+
 def create_chart(df: pd.DataFrame) -> go.Figure:
     """Creates a line chart showing percentage change of custodial sentences by length."""
 
@@ -47,12 +56,12 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     y_label = "People in prison (percentage change since 2004)"
 
     annotations = utils.generate_annotations(
-        traces=traces, 
+        traces=traces,
         colorway=colorway,
         max_chars=19,
-        y_label=y_label, 
+        y_label=y_label,
         x_pad=0.3)
-    
+
     # Axis parameter adjustments
     fig.update_yaxes(
         automargin=True,
@@ -60,11 +69,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
 
     fig.update_xaxes(
-        range=[2003.8, 2025.2],
+        range=[2003.8, 2025.8],
         tick0=2004,
         dtick=2,
         )
-    
+
     # Layout parameter adjustments
     fig.update_layout(
         yaxis_ticksuffix='%',
@@ -74,14 +83,27 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     )
     return fig
 
-def main() -> go.Figure:
-    """Loads data, generates the chart, and uploads it to Chart Studio."""
+
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    data_path = os.path.join(config['data']['clnFilePath'], "people_in_prison/bame_population.csv")
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "people_in_prison/bame_population.csv")
     df = utils.load_data(data_path)
     fig = create_chart(df)
-    py.plot(fig, filename="bame_population")
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
+
 
 if __name__ == "__main__":
     main()
