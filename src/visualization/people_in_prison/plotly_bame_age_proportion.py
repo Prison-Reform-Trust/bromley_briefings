@@ -51,6 +51,9 @@ def generate_traces(df):
 
     colorway = pio.templates[pio.templates.default].layout.colorway
     colors = {
+        "Asian": colorway[0],
+        "Black": colorway[1],
+        "Mixed": colorway[2],
         "Other": colorway[4],
     }
 
