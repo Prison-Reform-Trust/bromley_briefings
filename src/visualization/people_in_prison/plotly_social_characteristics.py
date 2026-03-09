@@ -2,38 +2,46 @@
 # -*- coding: utf-8 -*-
 
 """
-Title: Social characteristics of adult prisoners
-Subtitle: 
-Sources:
-    - Harker, L. et al. (2013). How safe are our children? NSPCC.
-    - HM Inspectorate of Prisons (2024). Annual report 2023-24. HM Stationery Office.
-    - Light, M., et al. (2013). Gender differences in substance misuse and mental health amongst prisoners. Ministry of Justice.
-    - Ministry of Justice (2012). Accommodation, homelessness and reoffending of prisoners.
-    - Ministry of Justice (2010.) Compendium of reoffending statistics.
-    - Ministry of Justice (2012). Estimating the prevalence of disability amongst prisoners.
-    - Ministry of Justice (2012). Prisoners' childhood and family backgrounds.
-    - Ministry of Justice (2012). The pre-custody employment, training and education status of newly sentenced prisoners.
-    - Table KS611EW, Office for National Statistics (2012). 2011 Census.
-    - Table 1, Office for National Statistics (2013). Families and households, 2012.
-    - Office for National Statistics (2013). Labour market statistics, September 2013.
-    - Office for National Statistics (2013). Population estimates for UK, England and Wales, Scotland and Northern Ireland — Mid 2012.
-    - Welsh Government (2013). Absenteeism by pupil characteristics 2011/12.
-    - Wiles, N. et al. (2006). Self-reported psychotic symptoms in the general population. The British Journal of Psychiatry, 188: 519-52
+A Plotly chart showing the social characteristics of adult prisoners in England and Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
 
 # Local modules
 import src.utilities as utils
-from src.visualization import prt_theme
+import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "Social characteristics of adult prisoners"
+SUBTITLE = ""
+SOURCE = (
+    "<br>Harker, L. et al. (2013). How safe are our children? NSPCC.<br>"
+    "HM Inspectorate of Prisons (2024). Annual report 2023-24. HM Stationery Office.<br>"
+    "Light, M., et al. (2013). Gender differences in substance misuse and mental health amongst prisoners. Ministry of Justice.<br>"
+    "Ministry of Justice (2012). Accommodation, homelessness and reoffending of prisoners.<br>"
+    "Ministry of Justice (2010). Compendium of reoffending statistics.<br>"
+    "Ministry of Justice (2012). Estimating the prevalence of disability amongst prisoners.<br>"
+    "Ministry of Justice (2012). Prisoners' childhood and family backgrounds.<br>"
+    "Ministry of Justice (2012). The pre-custody employment, training and education status of newly sentenced prisoners.<br>"
+    "Table KS611EW, Office for National Statistics (2012). 2011 Census.<br>"
+    "Table 1, Office for National Statistics (2013). Families and households, 2012.<br>"
+    "Office for National Statistics (2013). Labour market statistics, September 2013.<br>"
+    "Office for National Statistics (2013). Population estimates for UK, England and Wales, Scotland and Northern Ireland — Mid 2012.<br>"
+    "Welsh Government (2013). Absenteeism by pupil characteristics 2011/12.<br>"
+    "Wiles, N. et al. (2006). Self-reported psychotic symptoms in the general population. The British Journal of Psychiatry, 188: 519-52."
+)
+OUTPUT_PATH = utils.get_output_path(
+    section='people_in_prison',
+    filename='social_characteristics.html'
+)
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -107,7 +115,6 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         zeroline=False,
         showline=True,
         ticks="outside",
-        automargin=True,
         ticksuffix='%',
         range=[0, 100],
     )
@@ -115,7 +122,9 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     # Configure layout
     fig.update_layout(
         height=1000,
+        margin_b=45,
         hovermode="y unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         showlegend=True,
         legend=dict(
             orientation="h",
@@ -131,27 +140,25 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def get_data_path(filename: str) -> str:
-    """Returns the full path for a given filename in the cleaned data directory."""
-    return os.path.join(config["data"]["clnFilePath"], "people_in_prison", filename)
-
-
-def test_data():
-    """Test function to load and process data."""
-    df = utils.load_data(get_data_path("social_characteristics.csv"))
-    df = process_data(df)
-    return df
-
-
-def main() -> go.Figure:
-    """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
-
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    df = utils.load_data(get_data_path("social_characteristics.csv")).pipe(process_data)
+    data_path = os.path.join(CONFIG["data"]["clnFilePath"], "people_in_prison/social_characteristics.csv")
+    df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)
-    py.plot(fig, filename="social_characteristics")
-
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
