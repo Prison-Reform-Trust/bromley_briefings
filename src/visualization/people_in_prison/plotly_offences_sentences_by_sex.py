@@ -104,13 +104,13 @@ def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Fi
 
     # Configure layout
     fig.update_layout(
-        showlegend=True,
         barmode="group",
         hovermode="y unified",
         hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         uniformtext_minsize=8,
         uniformtext_mode="hide",
         height=800,
+        showlegend=True,
         legend=dict(
             orientation="v",
             traceorder="reversed",
@@ -119,7 +119,7 @@ def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Fi
             yanchor="top",
             y=1,
             xanchor="right",
-            x=0.95,
+            x=1.1,
         ),
     )
 
