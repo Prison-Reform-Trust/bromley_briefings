@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A Plotly chart showing rates of self-harm in prisons in England and Wales.
+A Plotly chart showing rates of self-harm amongst women in prison in England and Wales.
 The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
