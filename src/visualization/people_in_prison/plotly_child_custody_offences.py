@@ -99,6 +99,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         secondary_y=True
     )
 
+    fig.update_xaxes(automargin=True)
+    
     # Configure layout
     fig.update_layout(
         hovermode="x unified",

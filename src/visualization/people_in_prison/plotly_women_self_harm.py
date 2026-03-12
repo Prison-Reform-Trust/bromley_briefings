@@ -50,7 +50,10 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         tickformat=",.0f"
     )
 
-    fig.update_xaxes(dtick=2)
+    fig.update_xaxes(
+        dtick=2,
+        automargin=True,
+    )
 
     # Configure layout
     fig.update_layout(
