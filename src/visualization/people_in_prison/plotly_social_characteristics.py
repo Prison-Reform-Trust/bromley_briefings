@@ -132,9 +132,9 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             itemclick="toggleothers",
             itemdoubleclick=False,
             yanchor="bottom",
-            y=0.97,
+            y=1,
             xanchor="right",
-            x=1,
+            x=1.05,
         ),
     )
     return fig
