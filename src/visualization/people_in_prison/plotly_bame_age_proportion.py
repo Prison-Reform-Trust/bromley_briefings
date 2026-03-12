@@ -94,6 +94,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_xaxes(
         zeroline=False,
         ticksuffix='%',
+        automargin=True,
         )
 
     # Configure layout
@@ -111,7 +112,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             itemclick="toggleothers",
             itemdoubleclick=False,
             yanchor="bottom",
-            y=1,
+            y=1.1,
             xanchor="right",
             x=0.95,
         ),
