@@ -53,7 +53,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Generate annotations with optional y_offset_dict
     colorway = pio.templates[pio.templates.default].layout.colorway
-    y_label = "People in prison (percentage change since 2004)"
+    y_label = "People in prison<br>(percentage change since 2004)"
 
     annotations = utils.generate_annotations(
         traces=traces,
@@ -72,10 +72,12 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         range=[2003.8, 2025.8],
         tick0=2004,
         dtick=2,
+        automargin=True,
         )
 
     # Layout parameter adjustments
     fig.update_layout(
+        margin_r=30,
         yaxis_ticksuffix='%',
         hovermode='x unified',
         hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
