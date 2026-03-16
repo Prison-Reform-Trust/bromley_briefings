@@ -119,7 +119,7 @@ def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Fi
             yanchor="top",
             y=1,
             xanchor="right",
-            x=1.1,
+            x=1.15,
         ),
     )
 
