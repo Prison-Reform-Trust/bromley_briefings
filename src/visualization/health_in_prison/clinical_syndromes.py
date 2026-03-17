@@ -1,25 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
-Title: Estimated prevalence of clinical syndromes in the prison population
-Subtitle:
-Source: Tyler, N. et al. (2019) An updated picture of the mental health needs of male and female
-prisoners in the UK: prevalence, comorbidity, and gender differences,
-Social Psychiatry and Psychiatric Epidemiology, 54, 1143-1152.
+A Plotly chart showing the estimated prevalence of clinical syndromes in the prison population in England and Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 
 # Local modules
 import src.utilities as utils
-from src.visualization import prt_theme
+import src.visualization.prt_theme as prt_theme
 
 # Load configuration
-config = utils.read_config()
+CONFIG = utils.read_config()
+
+# Jinja2 template variables
+TITLE = "Estimated prevalence of clinical syndromes in the prison population"
+SUBTITLE = ""
+SOURCE = (
+    "Tyler, N. et al. (2019) An updated picture of the mental health needs of male and female\
+    prisoners in the UK: prevalence, comorbidity, and gender differences,\
+    Social Psychiatry and Psychiatric Epidemiology, 54, 1143-1152."
+)
+OUTPUT_PATH = utils.get_output_path(
+    section='health_in_prison',
+    filename='clinical_syndromes.html'
+)
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -48,13 +58,13 @@ def generate_traces(df):
     """Generate chart traces"""
     traces = [
         go.Scatter(
-            x=df_gender["percent"].tolist(),
-            y=df_gender['wrapped_condition'].tolist(),
+            x=df_gender["percent"],
+            y=df_gender["wrapped_condition"],
             orientation="h",
             mode="markers",
             opacity=0.6,
             name=str(gender).capitalize(),
-            text=df_gender["gender"].tolist(),
+            text=df_gender["gender"],
             texttemplate="%{text}%",
             textposition="top center",
             hovertemplate="%{x}",
@@ -92,12 +102,12 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure layout
     fig.update_layout(
-        scattermode="group",
         hovermode="y unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         showlegend=True,
         legend=dict(
             orientation="h",
-            traceorder="normal",
+            traceorder="reversed",
             itemclick="toggleothers",
             itemdoubleclick=False,
             yanchor="bottom",
@@ -109,27 +119,25 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def get_data_path(filename: str) -> str:
-    """Returns the full path for a given filename in the cleaned data directory."""
-    return os.path.join(config["data"]["clnFilePath"], "health_in_prison", filename)
-
-
-def test_data():
-    """Test function to load and process data."""
-    df = utils.load_data(get_data_path("clinical_syndromes.csv"))
-    df = process_data(df)
-    return df
-
-
-def main() -> go.Figure:
-    """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
-
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    df = utils.load_data(get_data_path("clinical_syndromes.csv")).pipe(process_data)
+    data_path = os.path.join(CONFIG["data"]["clnFilePath"], "health_in_prison", "clinical_syndromes.csv")
+    df = utils.load_data(data_path).pipe(process_data)
     fig = create_chart(df)
-    py.plot(fig, filename="clinical_syndromes")
-
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
