@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
-Title: Factors which can affect reconviction rates
-Subtitle:
-Source: Brunton-Smith, I. & Hopkins, K. (2013) The factors associated with 
-proven reoffending following release from prison: Findings from waves 1-3 of SPCR. 
-Ministry of Justice.
+A Plotly chart showing the relative reoffending rates of people leaving prison in England and Wales.
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
 """
 
 import os
 from functools import reduce
 
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
@@ -22,15 +19,29 @@ import src.utilities as utils
 import src.visualization.prt_theme as prt_theme
 
 # Load configuration and colorway
-config = utils.read_config()
-colorway = pio.templates[pio.templates.default].layout.colorway
+CONFIG = utils.read_config()
+COLORWAY = None
+SMALLER_FONT_SIZE = 12
+
+# Jinja2 template variables
+TITLE = "Factors which can affect reconviction rates"
+SUBTITLE = ""
+SOURCE = (
+    "Brunton-Smith, I. & Hopkins, K. (2013) The factors associated with \
+    proven reoffending following release from prison: Findings from waves 1-3 of SPCR. \
+    Ministry of Justice."
+)
+OUTPUT_PATH = utils.get_output_path(
+    section='rehabilitation_and_resettlement',
+    filename='reconviction_factors.html'
+)
 
 
 def generate_traces(df):
     """Generate chart traces"""
     colors = {
-        "negative": colorway[0],
-        "positive": colorway[3],
+        "negative": COLORWAY[0],
+        "positive": COLORWAY[3],
         "remainder": "rgba(84, 86, 91, 0.15)"
         }
 
@@ -53,7 +64,8 @@ def generate_traces(df):
             hoverinfo="none",
             title_text=str(row['chart_title']),
             title_position="bottom center",
-            automargin=True,
+            title_font_size=SMALLER_FONT_SIZE,
+            # automargin=True,
         )
         traces.append(trace)
 
@@ -78,6 +90,7 @@ def generate_pie_labels(fig, annotations_list=None, y_offset=0.015):
                     text=f"{value}%",
                     x=x,
                     y=y,
+                    font_size=SMALLER_FONT_SIZE,
                     showarrow=False,
                     xanchor="center",
                     yanchor="middle",
@@ -104,9 +117,10 @@ def generate_chart_titles(fig, annotations_list=None):
     for i, (col1, col2) in enumerate(chart_pairs):
         annotations.append(
             dict(
-                text=prt_theme.wrap_labels(chart_titles[i], max_chars=50),
+                text=prt_theme.wrap_labels(chart_titles[i], max_chars=35),
                 x=(fig.data[col1].domain['x'][0] + fig.data[col2].domain['x'][1]) / 2,
                 y=fig.data[col1].domain['y'][1],
+                font_size=SMALLER_FONT_SIZE,
                 showarrow=False,
                 xanchor="center",
                 yanchor="bottom",
@@ -147,8 +161,8 @@ def generate_standout_labels(fig, annotations_list=None, y_offset=0.035):
                 x=first_x / 2,
                 y=y_values[i] - y_offset,
                 showarrow=False,
-                font_size=50,
-                font_color=colorway[4],
+                font_size=40,
+                font_color=COLORWAY[4],
                 font_weight="bold",
                 xanchor="center",
                 yanchor="middle",
@@ -173,9 +187,10 @@ def generate_sub_standout_text(fig, annotations_list=None, y_offset=0.075):
     for i, text in enumerate(text):
         annotations.append(
             dict(
-                text=str(prt_theme.wrap_labels(text, max_chars=35)),
+                text=str(prt_theme.wrap_labels(text, max_chars=25)),
                 x=first_x / 2,
                 y=y_values[i] - y_offset,
+                font_size=SMALLER_FONT_SIZE,
                 showarrow=False,
                 xanchor="center",
                 yanchor="top",
@@ -188,14 +203,15 @@ def generate_sub_standout_text(fig, annotations_list=None, y_offset=0.075):
 def create_subplots() -> go.Figure:
     """Creates a figure with subplots for grouped pie charts."""
     specs = [
-        [None, None, {"type": "domain"}, {"type": "domain"}]
+        [None, {"type": "domain"}, {"type": "domain"}]
         for _ in range(4)
     ]
 
     fig = make_subplots(
-        rows=4, cols=4,
+        rows=4, cols=3,
         row_heights=[0.25] * 4,
         vertical_spacing=0.13,
+        column_widths=[0.5, 0.25, 0.25],
         specs=specs,
     )
     return fig
@@ -208,7 +224,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Determine rows and cols based on number of traces
     num_charts = len(traces)
-    chart_pairs = [(r, c) for r in range(1, 5) for c in (3, 4)]
+    chart_pairs = [(r, c) for r in range(1, 5) for c in (2, 3)]
     rows, cols = zip(*chart_pairs[:num_charts])
 
     fig.add_traces(traces, rows=rows, cols=cols)
@@ -226,32 +242,42 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         showlegend=False,
         annotations=annotations,
-        margin=dict(t=50, b=20, l=0, r=25),
+        title_font_size=SMALLER_FONT_SIZE,
+        margin=dict(t=60, b=20, l=0, r=0),
+        height=600,
     )
 
     return fig
 
 
-def get_data_path(filename: str) -> str:
-    """Returns the full path for a given filename in the cleaned data directory."""
-    return os.path.join(config["data"]["clnFilePath"], "rehabilitation_and_resettlement", filename)
-
-
-def test_data():
-    """Test function to load and process data."""
-    df = utils.load_data(get_data_path("reconviction_factors.csv"))
-    return df
-
-
-def main() -> go.Figure:
-    """Loads data, processes it, generates the chart, and uploads it to Chart Studio."""
-
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
-    df = utils.load_data(get_data_path("reconviction_factors.csv"))
-    fig = create_chart(df)
-    py.plot(fig, filename="reconviction_factors")
 
+    # set COLORWAY after template is active
+    global COLORWAY
+    COLORWAY = pio.templates[pio.templates.default].layout.colorway
+
+    data_path = os.path.join(
+        CONFIG["data"]["clnFilePath"],
+        "rehabilitation_and_resettlement",
+        "reconviction_factors.csv",
+    )
+    df = utils.load_data(data_path)
+    fig = create_chart(df)
     return fig
+
+
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
 
 if __name__ == "__main__":
