@@ -31,8 +31,11 @@ OUTPUT_PATH = utils.get_output_path(
 
 
 def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Filters data to retain every other year."""
-    return df.iloc[::2].copy()
+    """Transforms data from wide to long"""
+    df = df.T.reset_index()
+    df.columns = df.iloc[0, :]
+    df.drop(index=df.index[0], axis=0, inplace=True)
+    return df
 
 
 def generate_labels(df: pd.DataFrame) -> tuple[list, list]:
@@ -52,18 +55,18 @@ def generate_labels(df: pd.DataFrame) -> tuple[list, list]:
 def generate_traces(df: pd.DataFrame) -> list:
     """Generates Plotly traces"""
     # text_total, text_indictable = generate_labels(df)
-    colorway = pio.templates[pio.templates.default].layout.colorway
+    colorway = ("#F9A237", "#A01D28", "#808080", "#499CC9", "#573D6B")
 
     traces = [
         go.Bar(
-            x=df[col],
-            y=[df.loc[0, col]],
+            x=df['value'],
+            y=df['sentence'],
             orientation="h",
-            
+            text=df['text'].title(),
             textposition="inside",
             marker_color=colorway[i],
         )
-        for i, col in enumerate(df.columns[1:])
+        for i, sentence in enumerate(df)  # This needs updating to account for new transposition of data
     ]
 
     return traces
@@ -83,14 +86,18 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.add_traces(traces)
 
     # Configure axes
-    fig.update_xaxes(zeroline=False)
+    fig.update_xaxes(
+        zeroline=False,
+        ticks="",
+        )
 
     # Configure layout
     fig.update_layout(
+        height=100,
         barmode="stack",
-        hovermode="y unified",
-        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
-        margin_l=40,
+        hovermode="closest",
+        yaxis_showticklabels=False,
+        xaxis_showticklabels=False,
         # annotations=annotations,
     )
     return fig
