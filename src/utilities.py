@@ -202,7 +202,7 @@ def save_plotly_chart_as_html(
     output_path: str,
     title: str,
     subtitle: str,
-    source: str,
+    source: str,  # TODO: #46 Make source optional and "Source: " label truthy in the template
     template_path: Optional[str] = None,
     config: Optional[dict] = None,
     embed_styles: bool = False,
