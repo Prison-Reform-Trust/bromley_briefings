@@ -21,7 +21,7 @@ CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = "Legend"
-SUBTITLE = ""
+SUBTITLE = "Stages of a custodial sentence"
 SOURCE = ""
 OUTPUT_PATH = utils.get_output_path(
     section='sentences_explained',
