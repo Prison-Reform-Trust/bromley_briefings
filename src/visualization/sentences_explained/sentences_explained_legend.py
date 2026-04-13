@@ -87,6 +87,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         uniformtext_mode='show',
         barmode="stack",
         hovermode="closest",
+        hoverlabel_font_color="white",
         yaxis_showticklabels=False,
         xaxis_showticklabels=False,
     )
