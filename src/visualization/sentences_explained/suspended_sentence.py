@@ -39,7 +39,7 @@ def generate_traces() -> list:
             textposition="inside",
             insidetextanchor="middle",
             textfont_color="white",
-            textfont_size=14,
+            textfont_size=16,
             hovertemplate="Suspended sentence<extra></extra>",
             marker_color=colorway[0],
             width=7,
