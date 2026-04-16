@@ -63,6 +63,8 @@ def create_chart() -> go.Figure:
     fig.update_xaxes(
         zeroline=False,
         ticks="",
+        range=[0, 100],
+        fixedrange=True
         )
 
     # Configure layout
@@ -72,7 +74,7 @@ def create_chart() -> go.Figure:
         uniformtext_minsize=12,
         uniformtext_mode='show',
         barmode="stack",
-        hovermode="closest",
+        hovermode=False,
         hoverlabel_font_color="white",
         yaxis_showticklabels=False,
         xaxis_showticklabels=False,
