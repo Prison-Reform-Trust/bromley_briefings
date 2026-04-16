@@ -21,7 +21,7 @@ CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = "Legend"
-SUBTITLE = "Stages of a custodial sentence"
+SUBTITLE = "Possible stages of a custodial sentence"
 SOURCE = ""
 OUTPUT_PATH = utils.get_output_path(
     section='sentences_explained',
@@ -77,6 +77,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_xaxes(
         zeroline=False,
         ticks="",
+        range=[0, 100],
+        fixedrange=True
         )
 
     # Configure layout
