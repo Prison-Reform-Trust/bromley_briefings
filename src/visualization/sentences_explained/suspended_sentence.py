@@ -11,13 +11,14 @@ import plotly.graph_objs as go
 
 # Local modules
 import src.utilities as utils
+from src.visualization import prt_theme
 
 # Load configuration
 CONFIG = utils.read_config()
 
 # Jinja2 template variables
 TITLE = ""
-SUBTITLE = ""
+SUBTITLE = "Suspended sentence order"
 SOURCE = ""
 OUTPUT_PATH = utils.get_output_path(
     section='sentences_explained',
@@ -34,7 +35,7 @@ def generate_traces() -> list:
             x=[100],
             y=[1],
             orientation="h",
-            text="Imprisonment can be triggered by breaches or further offending",
+            text=prt_theme.wrap_labels("Imprisonment can be triggered by breaches or further offending", max_chars=35),
             textposition="inside",
             insidetextanchor="middle",
             textfont_color="white",
