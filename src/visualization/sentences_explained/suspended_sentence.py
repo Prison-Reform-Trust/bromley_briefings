@@ -54,6 +54,8 @@ def create_chart() -> go.Figure:
 
     fig = go.Figure()
     traces = generate_traces()
+    annotations = prt_theme.add_annotation(text="Start", annotation_type="label", x=0, xref="x", y=0, xanchor="left")
+    prt_theme.add_annotation(annotations_list=annotations, text="End", annotation_type="label", x=100, xref="x", y=0, xanchor="right")
 
     fig.add_traces(traces)
 
@@ -66,14 +68,15 @@ def create_chart() -> go.Figure:
     # Configure layout
     fig.update_layout(
         height=100,
-        margin={'t': 0, 'b': 0, 'l': 0, 'r': 0},
-        uniformtext_minsize=9,
+        margin={'t': 0, 'b': 20, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
+        uniformtext_minsize=12,
         uniformtext_mode='show',
         barmode="stack",
         hovermode="closest",
         hoverlabel_font_color="white",
         yaxis_showticklabels=False,
         xaxis_showticklabels=False,
+        annotations=annotations
     )
     return fig
 
