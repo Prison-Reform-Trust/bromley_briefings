@@ -171,7 +171,8 @@ def add_annotation(
 
     """
     # Ensure annotations_list is initialized
-    annotations_list = annotations_list or []
+    if annotations_list is None:
+        annotations_list = []
 
     annotation_types = {"source", "y-axis", "trace_label", "label"}
     if annotation_type not in annotation_types:
