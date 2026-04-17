@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A Plotly chart showing the legend for the sentences explained section.
+A Plotly chart showing the sentence breakdown SDS sentences for more serious offences.
 The chart is saved as an HTML file using a Jinja2 template for embedding
 in a web page.
 """
