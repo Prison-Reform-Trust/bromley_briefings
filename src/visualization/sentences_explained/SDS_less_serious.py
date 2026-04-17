@@ -73,16 +73,6 @@ def create_chart() -> go.Figure:
 
     fig.add_traces(traces)
 
-    fig.add_shape(
-        type="line",
-        x0=40, y0=0, x1=40, y1=1,
-        xref="x", yref="paper",
-        line=dict(
-            color="white",
-            width=2,
-            dash="dot")
-        )
-
     # Configure axes
     fig.update_xaxes(
         zeroline=False,
