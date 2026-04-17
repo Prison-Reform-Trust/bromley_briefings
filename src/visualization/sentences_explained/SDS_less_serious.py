@@ -12,6 +12,7 @@ import plotly.graph_objs as go
 # Local modules
 import src.utilities as utils
 from src.visualization import prt_theme
+from src.visualization.sentences_explained import chart_functions as cf
 
 # Load configuration
 CONFIG = utils.read_config()
@@ -25,6 +26,14 @@ OUTPUT_PATH = utils.get_output_path(
     filename='SDS_less_serious.html'
 )
 
+# Line and annotation constants
+LINE_POSITIONS = [40]
+ANNOTATION_CONFIGS = [
+    {"text": "Start", "x": 0, "xanchor": "left"},
+    {"text": "End", "x": 100, "xanchor": "right"},
+    {"text": prt_theme.wrap_labels("Automatic release", max_chars=10), "x": LINE_POSITIONS[-1], "xanchor": "center"},
+]
+
 
 def generate_traces() -> list:
     """Generates Plotly traces"""
@@ -32,10 +41,10 @@ def generate_traces() -> list:
 
     traces = [
         go.Bar(
-            x=[40],
+            x=[LINE_POSITIONS[-1]],
             y=[1],
             orientation="h",
-            text=prt_theme.wrap_labels("40% of custodial term", max_chars=15),
+            text=prt_theme.wrap_labels(f"{LINE_POSITIONS[-1]}% of custodial term", max_chars=15),
             textposition="inside",
             textfont_color="white",
             textfont_size=16,
@@ -43,15 +52,14 @@ def generate_traces() -> list:
             marker_color=colorway[1],
             width=7,
         ),
-    go.Bar(
-            x=[60],
+        go.Bar(
+            x=[100 - LINE_POSITIONS[-1]],
             y=[1],
             orientation="h",
             hovertemplate="Part of custodial<br>period spent on<br>licence following<br>automatic release<extra></extra>",
             marker_color=colorway[3],
             width=7,
         ),
-
     ]
 
     return traces
@@ -62,9 +70,6 @@ def create_chart() -> go.Figure:
 
     fig = go.Figure()
     traces = generate_traces()
-    annotations = prt_theme.add_annotation(text="Start", annotation_type="label", x=0, xref="x", y=0, xanchor="left")
-    prt_theme.add_annotation(annotations_list=annotations, text="End", annotation_type="label", x=100, xref="x", y=0, xanchor="right")
-    prt_theme.add_annotation(annotations_list=annotations, text="Automatic release", annotation_type="label", x=40, xref="x", y=0, xanchor="center")
 
     fig.add_traces(traces)
 
@@ -88,8 +93,8 @@ def create_chart() -> go.Figure:
 
     # Configure layout
     fig.update_layout(
-        height=100,
-        margin={'t': 0, 'b': 20, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
+        height=115,
+        margin={'t': 0, 'b': 35, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
         uniformtext_minsize=16,
         uniformtext_mode='show',
         barmode="stack",
@@ -97,7 +102,6 @@ def create_chart() -> go.Figure:
         hoverlabel_font_color="white",
         yaxis_showticklabels=False,
         xaxis_showticklabels=False,
-        annotations=annotations
     )
     return fig
 
@@ -106,6 +110,9 @@ def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
     fig = create_chart()
+    shapes = cf.prepare_line_shapes(LINE_POSITIONS)
+    annotations = cf.prepare_annotations(ANNOTATION_CONFIGS)
+    fig = cf.apply_layout_updates(fig, shapes=shapes, annotations=annotations)
     return fig
 
 
