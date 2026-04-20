@@ -65,7 +65,7 @@ def generate_traces() -> list:
             x=[144 - LINE_POSITIONS[1]],
             y=[1],
             orientation="h",
-            text=prt_theme.wrap_labels("up to 8 years", max_chars=15),
+            text=prt_theme.wrap_labels("Up to 8 years", max_chars=15),
             textposition="inside",
             textfont_color="white",
             textfont_size=16,
