@@ -29,8 +29,8 @@ OUTPUT_PATH = utils.get_output_path(
 # Line and annotation constants
 LINE_POSITIONS = [66, 100]
 ANNOTATION_CONFIGS = [
-    {"text": "Start", "x": 0, "xanchor": "left"},
-    {"text": "End", "x": 110, "xanchor": "right"},
+    {"text": "Start", "x": 0, "xanchor": "left", "y": 1, "yanchor": "bottom"},
+    {"text": "End", "x": 110, "xanchor": "right", "y": 1, "yanchor": "bottom"},
     {"text": prt_theme.wrap_labels("Discretionary release", max_chars=13), "x": LINE_POSITIONS[0], "xanchor": "center"},
     {"text": "100%", "x": LINE_POSITIONS[1], "xanchor": "center"},
 ]
@@ -97,8 +97,8 @@ def create_chart() -> go.Figure:
 
     # Configure layout
     fig.update_layout(
-        height=115,  # Added extra height to accommodate annotations and added margin
-        margin={'t': 0, 'b': 35, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
+        height=130,  # Added extra height to accommodate annotations and added margin
+        margin={'t': 15, 'b': 35, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
         uniformtext_minsize=16,
         uniformtext_mode='show',
         barmode="stack",
