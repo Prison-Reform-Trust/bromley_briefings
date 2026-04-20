@@ -3,7 +3,7 @@
 
 """Module of shared functions for the sentences explained charts"""
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import plotly.graph_objs as go
 
@@ -35,33 +35,50 @@ def prepare_line_shapes(line_positions: List) -> List[Dict]:
     ]
 
 
-def prepare_annotations(annotation_configs: List[Dict]) -> list:
+def prepare_annotations(annotation_configs: List[Dict[str, Any]]) -> list:
     """
     Prepares annotations to be added to the figure.
 
     Parameters:
-        annotation_configs (list of dict): Each dict should contain keys:
-            - "text" (str): The annotation text.
-            - "x" (float or int): The x position for the annotation.
-            - "xanchor" (str): The x anchor for the annotation.
-            - "font_size" (int, optional): Font size for the annotation (default is 12).
+        annotation_configs (list of dict):
+            Each dict is passed as keyword arguments to
+            `prt_theme.add_annotation()`. Supported keys are the same as
+            `add_annotation`, except `annotations_list` is handled internally.
+            Example keys include:
+                - text
+                - x
+                - y
+                - xref
+                - yref
+                - xanchor
+                - yanchor
+                - align
+                - showarrow
+                - font_size
+                - font_color
+                - annotation_type
+                - dataframe
+                - dataframe_column
+                - trace_list
+                - trace_list_idx
+                - x_pad
+
+            Defaults applied by this wrapper when keys are missing:
+                - annotation_type="label"
+                - xref="x"
+                - y=0
 
     Returns:
         list: List of prepared annotation dicts.
     """
     annotations = []
     for config in annotation_configs:
-        prt_theme.add_annotation(
-            annotations_list=annotations,
-            text=config["text"],
-            annotation_type="label",
-            x=config["x"],
-            xref="x",
-            y=0,
-            xanchor=config["xanchor"],
-            font_size=config.get("font_size", 12)  # Default font size
-        )
-
+        params = config.copy()
+        params.setdefault("annotation_type", "label")
+        params.setdefault("xref", "x")
+        params.setdefault("y", 0)
+        params.setdefault("font_size", 12)
+        prt_theme.add_annotation(annotations_list=annotations, **params)
     return annotations
 
 
