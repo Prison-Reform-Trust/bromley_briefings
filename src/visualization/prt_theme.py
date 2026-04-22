@@ -226,7 +226,7 @@ def add_annotation(
             raise ValueError("Text must be provided.")
         x = x if x is not None else 0.5
         y = y if y is not None else 0.5
-        align = "center"
+        align = align if align is not None else "center"
 
     # Apply padding if x is set
     x = x + x_pad if x is not None else None
