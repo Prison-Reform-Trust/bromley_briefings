@@ -12,6 +12,7 @@ import plotly.graph_objs as go
 # Local modules
 import src.utilities as utils
 from src.visualization import prt_theme
+from src.visualization.sentences_explained import chart_functions as cf
 
 # Load configuration
 CONFIG = utils.read_config()
@@ -25,6 +26,13 @@ OUTPUT_PATH = utils.get_output_path(
     filename='suspended_sentence.html'
 )
 
+# Line and annotation constants
+LINE_POSITIONS = [100]
+ANNOTATION_CONFIGS = [
+    {"text": "Start", "x": 0, "xanchor": "left", "y": 1, "yanchor": "bottom"},
+    {"text": "End", "x": 100, "xanchor": "right", "y": 1, "yanchor": "bottom"},
+]
+
 
 def generate_traces() -> list:
     """Generates Plotly traces"""
@@ -32,7 +40,7 @@ def generate_traces() -> list:
 
     traces = [
         go.Bar(
-            x=[100],
+            x=[LINE_POSITIONS[0]],
             y=[1],
             orientation="h",
             text=prt_theme.wrap_labels("Imprisonment can be triggered by breaches or further offending", max_chars=35),
@@ -54,8 +62,6 @@ def create_chart() -> go.Figure:
 
     fig = go.Figure()
     traces = generate_traces()
-    annotations = prt_theme.add_annotation(text="Start", annotation_type="label", x=0, xref="x", y=0, xanchor="left")
-    prt_theme.add_annotation(annotations_list=annotations, text="End", annotation_type="label", x=100, xref="x", y=0, xanchor="right")
 
     fig.add_traces(traces)
 
@@ -69,8 +75,8 @@ def create_chart() -> go.Figure:
 
     # Configure layout
     fig.update_layout(
-        height=100,
-        margin={'t': 0, 'b': 20, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
+        height=95,
+        margin={'t': 15, 'b': 0, 'l': 0, 'r': 0, 'pad': 0, 'autoexpand': False},
         uniformtext_minsize=12,
         uniformtext_mode='show',
         barmode="stack",
@@ -78,7 +84,6 @@ def create_chart() -> go.Figure:
         hoverlabel_font_color="white",
         yaxis_showticklabels=False,
         xaxis_showticklabels=False,
-        annotations=annotations
     )
     return fig
 
@@ -87,6 +92,8 @@ def prepare_chart() -> go.Figure:
     """Loads data and prepares the Plotly chart."""
     utils.setup_plotly_template()
     fig = create_chart()
+    annotations = cf.prepare_annotations(ANNOTATION_CONFIGS)
+    fig = cf.apply_layout_updates(fig, annotations=annotations)
     return fig
 
 
