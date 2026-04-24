@@ -93,11 +93,13 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         )
     fig.update_xaxes(
         zeroline=False,
+        showticklabels=False,
+        ticks="",
         title_text="Proportion of all self-harm incidents",
         title_font_size=15,
-        title_standoff=25,
+        title_standoff=15,
         automargin=True,  # Allow necessary title spacing
-        ticksuffix='%',
+        # ticksuffix='%',
         )
 
     # Configure layout
