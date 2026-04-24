@@ -54,20 +54,21 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     fig.update_yaxes(
         type='category',
-        autorange="reversed"
+        autorange="reversed",
+        automargin=True,
     )
 
     fig.update_xaxes(
         ticks="inside",
         tickformat=",.0f",
         dtick=200,
+        range=[0, 1000],
     )
 
     fig.update_layout(
-        margin_l=45,
         margin_r=0,
         height=350,
-        annotations=annotations
+        annotations=annotations,
         )
 
     return fig
