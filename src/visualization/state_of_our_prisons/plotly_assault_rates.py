@@ -74,8 +74,9 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         annotations_list=annotations,
         text="The definition of recorded<br>assaults changed in 2019",
         annotation_type="label",
+        font_size=10,
         xref="x", yref="y",
-        x=2019.5, y=475)
+        x=2019.2, y=475)
 
     # Configure axes
     fig.update_yaxes(
@@ -97,8 +98,14 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         automargin=True,
         secondary_y=False)
 
+    fig.update_xaxes(
+        range=[2011.5, 2024.5],
+        dtick=2
+    )
+
     # Configure layout
     fig.update_layout(
+        margin_b=35,
         hovermode="x unified",
         hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
         annotations=annotations,
