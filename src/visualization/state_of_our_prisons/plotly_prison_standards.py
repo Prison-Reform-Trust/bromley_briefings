@@ -85,11 +85,12 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Set axes ranges
     fig.update_yaxes(range=[0, 102])
-    fig.update_xaxes(range=[2007.8, 2024.2])
+    fig.update_xaxes(range=[2007.8, 2024.5], dtick=2)
 
     # Layout parameter adjustments
     fig.update_layout(
         margin_l=45,
+        margin_b=35,
         yaxis_ticksuffix="%",
         hovermode="x unified",
         hoverlabel_bgcolor="rgba(247, 242, 242, 0.8)",
@@ -98,10 +99,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         height=400,
         legend=dict(
             orientation="h",
-            yanchor="bottom",
-            y=0.9,
+            font_size=11,
+            yanchor="top",
+            y=1,
             xanchor="right",
-            x=0.995,
+            x=1,
         ),
     )
 
