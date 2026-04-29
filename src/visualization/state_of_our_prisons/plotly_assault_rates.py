@@ -82,6 +82,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(
         title_text="Serious assaults",
         range=[0, 51],
+        title_standoff=15,
         title_font_color=colorway[0],
         tickfont_color=colorway[0],
         automargin=True,
@@ -92,7 +93,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(
         title_text="Assaults",
         range=[0, 510],
-        title_standoff=20,
+        title_standoff=15,
         title_font_color=colorway[1],
         tickfont_color=colorway[1],
         automargin=True,
