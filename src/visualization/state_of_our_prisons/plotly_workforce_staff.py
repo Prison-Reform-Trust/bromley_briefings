@@ -32,8 +32,7 @@ OUTPUT_PATH = utils.get_output_path(
 
 
 def process_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Filters data by year to retain every other year."""
-    df['type'] = df['type'].replace({"HMPPS employed prison officers": "HMPPS employed<br>prison officers"})
+    """Multiplies percent values."""
     df['percent'] = df['percent'] * 100
     return df
 
@@ -68,13 +67,14 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     annotations = utils.generate_annotations(
         traces=traces,
         colorway=colorway,
+        max_chars=10,
         y_label="Percentage change since 2010",
         x_pad=0.3
         )
 
     # Set axes ranges
     fig.update_yaxes(range=[-31, 11])
-    fig.update_xaxes(range=[2009.8, 2026.2])
+    fig.update_xaxes(range=[2009.5, 2026.5])
 
     # Axis parameter adjustments
     fig.update_layout(
