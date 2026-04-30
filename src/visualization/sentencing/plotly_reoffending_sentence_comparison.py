@@ -41,8 +41,10 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
     annotations = prt_theme.add_annotation(
         annotations_list=None,
-        text="Reconviction rate (within one year)",
-        annotation_type="y-axis"
+        text=prt_theme.wrap_labels("Reconviction rate (within one year)", max_chars=20),
+        annotation_type="y-axis",
+        yanchor="top",
+        y=1.08
     )
 
     # Loop over each unique sentence
@@ -79,13 +81,12 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ticks="",
         showticklabels=False,
         zeroline=False,
-        range=[0, 100],  # Must specify lower range as well as upper to avoid trace labels from being cut off
+        range=[0, 80],  # Must specify lower range as well as upper to avoid trace labels from being cut off
     )
 
     fig.update_layout(
         height=300,
-        margin_pad=5,
-        margin=dict(t=20, b=25, l=0, r=0),
+        margin=dict(b=0, r=0),
         hovermode=False,
         dragmode=False,
         annotations=annotations
