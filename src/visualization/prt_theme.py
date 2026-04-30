@@ -56,7 +56,6 @@ pio.templates["prt_template"] = go.layout.Template(
         xaxis_tickcolor="#54565B",
         xaxis_gridcolor="rgba(84, 86, 91, 0.15)",
         yaxis_gridcolor="rgba(84, 86, 91, 0.15)",
-        # width=700,
         height=400,
         margin=dict(t=20, b=25, l=0, r=25, pad=5),
         dragmode=False,
@@ -78,8 +77,8 @@ def add_annotation(
     y: Optional[Union[float, List[float]]] = None,
     xref: str = "paper",
     yref: str = "paper",
-    xanchor: str = "left",
-    yanchor: str = "top",
+    xanchor: Optional[str] = None,
+    yanchor: Optional[str] = None,
     align: Optional[str] = None,
     showarrow: bool = False,
     font_size: int = 14,
@@ -119,11 +118,11 @@ def add_annotation(
         The reference for the y-coordinate.
         Can be "paper" (relative to the plot area) or "y" (data coordinates).
 
-    xanchor : str, default="left"
-        The horizontal alignment of the annotation. Options include "left", "center", and "right".
+    xanchor : str, optional, default="auto"
+        The horizontal alignment of the annotation. Options include "auto", "left", "center", and "right".
 
-    yanchor : str, default="top"
-        The vertical alignment of the annotation. Options include "top", "middle", and "bottom".
+    yanchor : str, optional, default="auto"
+        The vertical alignment of the annotation. Options include "auto", "top", "middle", and "bottom".
 
     align : str, optional
         The alignment of the text within the annotation box.
@@ -191,7 +190,8 @@ def add_annotation(
             xref = "x"
         else:
             x = x or 0
-        y, yanchor = y or 1, "bottom"
+        y = y if y is not None else 1
+        yanchor = yanchor if yanchor is not None else "bottom"
 
     elif annotation_type == "trace_label":
         if not trace_list:
