@@ -53,23 +53,32 @@ def generate_annotations(
         colorway,
         max_chars=None,
         y_label=None,
-        y_label_placement=None,
+        y_label_xpos=None,
+        y_label_ypos=None,
         y_offset_dict=None,
         x_pad=None):
-    """
-    Generates trace labels and y-label annotation, allowing individual y-value
-        adjustments.
+    """Generates trace labels and y-axis label annotation for Plotly charts.
+    
+    Creates end-of-line trace labels for each trace and a y-axis label annotation,
+    with support for individual y-value adjustments and text wrapping.
 
-    Parameters:
-        traces (list): Plotly trace objects.
-        colorway (list): Color scheme from Plotly template.
-        max_chars (int, optional): Set maximum number of characters for trace
-            labels before text is wrapped.
-        y_label (str, optional): Y-axis label text.
-        y_label_placement (str, optional): Y-axis label placement.
-        y_offset_dict (dict, optional): A dictionary mapping trace names
-            (years) to y-offsets.
-        x_pad (float or int, optional): Horizontal padding for trace labels.
+    Args:
+        traces (list): Plotly trace objects to label.
+        colorway (list): Color scheme from Plotly template for label coloring.
+        max_chars (int, optional): Maximum number of characters for trace labels
+            before text wrapping. Defaults to None (no wrapping).
+        y_label (str, optional): Y-axis label text. Defaults to empty string.
+        y_label_xpos (float, optional): X position for y-axis label annotation.
+            Defaults to first trace's first x value.
+        y_label_ypos (float, optional): Y position for y-axis label annotation.
+            Defaults to 1.04 (above plot area).
+        y_offset_dict (dict, optional): Dictionary mapping trace names to y-offsets
+            for fine-tuning label positions. Defaults to empty dict.
+        x_pad (float or int, optional): Horizontal padding for trace labels from
+            the end of each trace. Defaults to None (no padding).
+    
+    Returns:
+        list: List of annotation dictionaries for Plotly figures.
     """
     if y_offset_dict is None:
         y_offset_dict = {}
@@ -99,8 +108,8 @@ def generate_annotations(
         dict(
             xref="x",
             yref="paper",
-            x=y_label_placement if y_label_placement else traces[0].x[0],
-            y=1.04,
+            x=y_label_xpos if y_label_xpos is not None else traces[0].x[0],
+            y=y_label_ypos if y_label_ypos is not None else 1.04,
             align="left",
             xanchor="left",
             showarrow=False,
