@@ -34,8 +34,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
     annotations = prt_theme.add_annotation(
         annotations_list=None,
-        text="People in prison per 100,000 population",
-        annotation_type="y-axis"
+        text="People in prison<br>(per 100,000 population)",
+        annotation_type="y-axis",
+        yanchor="top",
+        y=1.1,
+        align="left"
     )
 
     fig.add_trace(
@@ -57,6 +60,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure layout
     fig.update_layout(
+        margin=dict(b=0, t=35),
         annotations=annotations,
     )
 
