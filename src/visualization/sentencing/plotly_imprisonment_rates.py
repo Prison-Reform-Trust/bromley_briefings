@@ -53,6 +53,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure axes
     fig.update_yaxes(type="category", autorange="reversed", automargin=True)
+    fig.update_xaxes(showticklabels=False, ticks="")
 
     # Configure layout
     fig.update_layout(
