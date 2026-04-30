@@ -74,9 +74,10 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_xaxes(dtick=2, ticks="")
 
     fig.update_layout(
+        margin_b=45,
         barmode="stack",
         hovermode='x',
-        annotations=annotations
+        annotations=annotations,
     )
 
     return fig
