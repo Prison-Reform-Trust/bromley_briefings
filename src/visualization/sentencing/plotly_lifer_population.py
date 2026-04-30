@@ -43,7 +43,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             name="Lifer population",
             x=df["year"].tolist(),
             y=df["number"].tolist(),
-            mode="lines+markers",
+            mode="lines",
             hovertemplate="%{y} people<extra></extra>",
         ),
     )
@@ -53,6 +53,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
 
     # Configure layout
     fig.update_layout(
+        margin_b=35,
         hovermode="x",
         annotations=annotations,
         )
