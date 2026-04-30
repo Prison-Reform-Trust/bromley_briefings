@@ -53,7 +53,7 @@ def create_chart() -> go.Figure:
         marker_colors=colors,
         direction='clockwise',  # Setting direction and sort attributes to match for each chart
         sort=False,
-        title_text=prt_theme.wrap_labels("<br>The majority had committed a non-violent crime", 32),
+        title_text=prt_theme.wrap_labels("<br>The majority had committed a non-violent crime", 25),
         title_position="bottom center",
         title_font_weight='bold',
         title_font_size=17,
@@ -66,7 +66,7 @@ def create_chart() -> go.Figure:
         marker_colors=colors,
         direction='clockwise',
         sort=False,
-        title_text=prt_theme.wrap_labels("<br>Almost one third were sentenced to serve less than six months", 38),
+        title_text=prt_theme.wrap_labels("<br>Almost one third were sentenced to serve less than six months", 25),
         title_position="bottom center",
         title_font_weight='bold',
         title_font_size=17,
@@ -79,12 +79,13 @@ def create_chart() -> go.Figure:
     fig.update_layout(
         showlegend=False,
         annotations=[
-            dict(text=f"{fig.data[0].values[0]}%", x=sum(fig.get_subplot(1, 1).x) / 2, y=0.5,
+            dict(text=f"{fig.data[0].values[0]}%", x=sum(fig.get_subplot(1, 1).x) / 2, y=0.55,
                 font_size=30, font_weight="bold", showarrow=False, xanchor="center"),
-            dict(text=f"{fig.data[1].values[0]}%", x=sum(fig.get_subplot(1, 2).x) / 2, y=0.5,
+            dict(text=f"{fig.data[1].values[0]}%", x=sum(fig.get_subplot(1, 2).x) / 2, y=0.55,
                 font_size=30, font_weight="bold", showarrow=False, xanchor="center")
         ],
         height=300,
+        title_automargin=False,
         margin=dict(t=20, b=25, l=0, r=25),
     )
 
