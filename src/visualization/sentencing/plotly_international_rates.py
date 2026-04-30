@@ -15,6 +15,7 @@ from plotly.subplots import make_subplots
 
 # Local modules
 import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
 # Load configuration
 CONFIG = utils.read_config()
@@ -74,10 +75,10 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         annotations.append(
             dict(
                 x=title_x,
-                y=1.1,
+                y=1.2,
                 xref="paper",
                 yref="paper",
-                text=f"<b>{country}</b>",
+                text=f"<b>{prt_theme.wrap_labels(country, max_chars=7)}</b>",
                 showarrow=False,
                 font_size=14,
                 xanchor="center"
@@ -117,7 +118,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     # Configure layout
     fig.update_layout(
         height=300,
-        margin=dict(t=30, b=25, l=55, r=70, pad=5),
+        margin=dict(t=50, b=45, l=55, r=70),
         annotations=annotations,
     )
 
