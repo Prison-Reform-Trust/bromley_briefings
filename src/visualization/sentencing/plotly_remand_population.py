@@ -50,7 +50,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(
         range=[0, 20100],
         automargin=True,
-        tickformat=",.0f"
+        tickformat=",.0f",
+        fixedrange=True
         )
 
     # Configure layout

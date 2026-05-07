@@ -97,7 +97,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
                 line_color=colorway[0],
                 text=df_country["country"],
                 name="Imprisonment rate",
-                hovertemplate="<b>%{text}</b><br>%{x}: %{y} per 100,000",
+                hovertemplate="%{y} per 100,000",
             ),
             row=1, col=idx+1
         )
@@ -110,7 +110,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
                 line_color=colorway[1],
                 text=df_country["country"],
                 name="Crime rate",
-                hovertemplate="<b>%{text}</b><br>%{x}: %{y:,.0f} per 100,000",
+                hovertemplate="%{y:,.0f} per 100,000",
             ),
             row=1, col=idx+1, secondary_y=True
         )
@@ -120,6 +120,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         height=300,
         margin=dict(t=50, b=45, l=55, r=70),
         annotations=annotations,
+        hovermode="x unified",
+        hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',
     )
 
     # Sync y-axes ranges for primary and secondary y-axes across all subplots
@@ -138,6 +140,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             range=primary_y_range,  # Set range for primary y-axis
             dtick=50,
             tickfont_color=colorway[0],
+            fixedrange=True,
             secondary_y=False,
             showticklabels=True,  # Ensure tick labels are shown
             row=1, col=i
@@ -155,6 +158,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
             tickformat=",.0f",
             tickfont_color=colorway[1],
             tickmode="sync",
+            fixedrange=True,
             secondary_y=True,
             showticklabels=True,  # Ensure tick labels are shown
             row=1, col=i
@@ -164,11 +168,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     for i in range(1, num_subplots + 1):
         # Remove primary y-axis tick labels from subplots where they are unnecessary
         if i != 1:  # Keep tick labels only on the first subplot for primary y-axis
-            fig.update_yaxes(showticklabels=False, row=1, col=i, secondary_y=False)
+            fig.update_yaxes(showticklabels=False, row=1, col=i, fixedrange=True, secondary_y=False)
 
         # Remove secondary y-axis tick labels from subplots where they are unnecessary
         if i != num_subplots:  # Keep tick labels only on the last subplot for secondary y-axis
-            fig.update_yaxes(showticklabels=False, row=1, col=i, secondary_y=True)
+            fig.update_yaxes(showticklabels=False, row=1, col=i, fixedrange=True, secondary_y=True)
 
     return fig
 

@@ -77,6 +77,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         range=[0, 145],
         tickformat=",.0f",
         automargin=True,  # Avoid clipping y-axis labels
+        fixedrange=True
     )
 
     fig.update_xaxes(

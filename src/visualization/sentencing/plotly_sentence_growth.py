@@ -71,8 +71,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         x_pad=0.3)
 
     # Set axes ranges
-    fig.update_yaxes(range=[-110, 260])
-    fig.update_xaxes(range=[2009.8, 2025.2])
+    fig.update_yaxes(range=[-110, 260], fixedrange=True)
+    fig.update_xaxes(range=[2009.8, 2025.2], fixedrange=True)
 
     # Axis parameter adjustments
     fig.update_layout(

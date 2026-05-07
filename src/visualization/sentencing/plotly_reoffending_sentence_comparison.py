@@ -82,6 +82,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         showticklabels=False,
         zeroline=False,
         range=[0, 80],  # Must specify lower range as well as upper to avoid trace labels from being cut off
+        fixedrange=True
     )
 
     fig.update_layout(
