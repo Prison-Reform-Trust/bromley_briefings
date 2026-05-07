@@ -84,8 +84,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     annotations = prt_theme.add_annotation(None, "Prisons rated 'good' or 'reasonably good'", annotation_type="y-axis")
 
     # Set axes ranges
-    fig.update_yaxes(range=[0, 102])
-    fig.update_xaxes(range=[2007.8, 2024.5], dtick=2)
+    fig.update_yaxes(range=[0, 102], fixedrange=True)
+    fig.update_xaxes(range=[2007.8, 2024.5], dtick=2, fixedrange=True)
 
     # Layout parameter adjustments
     fig.update_layout(

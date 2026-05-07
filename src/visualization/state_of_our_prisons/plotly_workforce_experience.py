@@ -99,7 +99,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1,
+            y=1.1,
             xanchor="left",
             x=-0.007,
             traceorder="normal"

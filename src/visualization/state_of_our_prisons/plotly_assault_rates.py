@@ -75,6 +75,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         text="The definition of recorded<br>assaults changed in 2019",
         annotation_type="label",
         font_size=10,
+        xanchor="left",
         xref="x", yref="y",
         x=2019.2, y=475)
 
@@ -86,6 +87,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         title_font_color=colorway[0],
         tickfont_color=colorway[0],
         automargin=True,
+        fixedrange=True,
         overlaying="y",
         tickmode="sync",
         secondary_y=True)
@@ -97,10 +99,12 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         title_font_color=colorway[1],
         tickfont_color=colorway[1],
         automargin=True,
+        fixedrange=True,
         secondary_y=False)
 
     fig.update_xaxes(
         range=[2011.5, 2024.5],
+        fixedrange=True,
         dtick=2
     )
 

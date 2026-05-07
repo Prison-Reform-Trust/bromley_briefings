@@ -73,13 +73,13 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         )
 
     # Set axes ranges
-    fig.update_yaxes(range=[-31, 11])
-    fig.update_xaxes(range=[2009.5, 2026.5])
+    fig.update_yaxes(range=[-31, 11], fixedrange=True)
+    fig.update_xaxes(range=[2009.5, 2026.5], fixedrange=True)
 
     # Axis parameter adjustments
     fig.update_layout(
         margin_l=40,
-        margin_r=75,
+        margin_r=65,
         yaxis_ticksuffix='%',
         hovermode="x unified",
         hoverlabel_bgcolor='rgba(247, 242, 242, 0.8)',

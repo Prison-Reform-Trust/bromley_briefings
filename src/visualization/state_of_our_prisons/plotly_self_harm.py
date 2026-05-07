@@ -63,6 +63,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         tickformat=",.0f",
         dtick=200,
         range=[0, 1000],
+        fixedrange=True
     )
 
     fig.update_layout(
