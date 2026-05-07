@@ -49,7 +49,7 @@ def generate_traces(df: pd.DataFrame) -> list:
             textposition="inside",
             customdata=df[['women_incidents']],
             hovertemplate=(
-                "%{x} of all incidents<br>" +
+                "%{x}% of all incidents<br>" +
                 "%{customdata[0]:,.0f} incidents"
             ),
         ),
@@ -63,7 +63,7 @@ def generate_traces(df: pd.DataFrame) -> list:
             textposition="inside",
             customdata=df[['men_incidents']],
             hovertemplate=(
-                "%{x} of all incidents<br>" +
+                "%{x}% of all incidents<br>" +
                 "%{customdata[0]:,.0f} incidents"
             ),  # TODO #21 Add number of incidents to dataset and include in hovertemplate
         ),
