@@ -47,12 +47,14 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(
         range=[0, 7024],
         automargin=True,
-        tickformat=",.0f"
+        tickformat=",.0f",
+        fixedrange=True
     )
 
     fig.update_xaxes(
         dtick=2,
         automargin=True,
+        fixedrange=True
     )
 
     # Configure layout

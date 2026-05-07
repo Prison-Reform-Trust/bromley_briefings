@@ -66,6 +66,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(
         automargin=True,
         range=[-21, 144],
+        fixedrange=True,
     )
 
     fig.update_xaxes(
@@ -73,6 +74,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         tick0=2004,
         dtick=2,
         automargin=True,
+        fixedrange=True
         )
 
     # Layout parameter adjustments

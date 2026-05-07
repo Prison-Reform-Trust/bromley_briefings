@@ -95,6 +95,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         zeroline=False,
         ticksuffix='%',
         automargin=True,
+        fixedrange=True
         )
 
     # Configure layout

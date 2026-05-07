@@ -74,13 +74,15 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         automargin=True,
         range=[-105, 410],
         dtick=100,
+        fixedrange=True
     )
 
     fig.update_xaxes(
         range=[2001.8, 2025.8],
         tick0=2002,
         dtick=2,
-        automargin=True
+        automargin=True,
+        fixedrange=True
         )
 
     # Layout parameter adjustments

@@ -96,11 +96,17 @@ def create_chart(df_offences: pd.DataFrame, df_sentences: pd.DataFrame) -> go.Fi
 
     # Configure axes
     fig.update_xaxes(
-        range=[0, 51], dtick=10, ticks="", showticklabels=False,
-        automargin=True, ticksuffix="%"
+        range=[0, 51],
+        dtick=10,
+        ticks="",
+        showticklabels=False,
+        automargin=True,
+        ticksuffix="%",
+        fixedrange=True
     )
-    fig.update_yaxes(categoryorder="max ascending", automargin=True, row=1, col=1)
-    fig.update_yaxes(automargin=True, row=2, col=1)
+    
+    fig.update_yaxes(categoryorder="max ascending", automargin=True, fixedrange=True, row=1, col=1)
+    fig.update_yaxes(automargin=True, fixedrange=True, row=2, col=1)
 
     # Configure layout
     fig.update_layout(

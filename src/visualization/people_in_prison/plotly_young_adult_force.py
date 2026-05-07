@@ -60,12 +60,14 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(
         range=[0, 1210],
         automargin=True,
-        tickformat=",.0f"
+        tickformat=",.0f",
+        fixedrange=True
     )
 
     fig.update_xaxes(
         type="category",
         automargin=True,
+        fixedrange=True
     )
 
     # Configure layout

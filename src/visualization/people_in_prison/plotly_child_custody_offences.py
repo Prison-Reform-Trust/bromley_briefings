@@ -82,6 +82,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         tickformat=",.0f",
         title_standoff=20,
         automargin=True,
+        fixedrange=True,
         secondary_y=False
     )
 
@@ -96,10 +97,11 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         tickfont_color=colorway[1],
         overlaying="y",
         automargin=True,
+        fixedrange=True,
         secondary_y=True
     )
 
-    fig.update_xaxes(automargin=True)
+    fig.update_xaxes(automargin=True, fixedrange=True)
     
     # Configure layout
     fig.update_layout(
