@@ -98,6 +98,7 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         ticksuffix='%',
         dtick=20,
         range=[0, 100],
+        fixedrange=True
     )
 
     # Configure layout

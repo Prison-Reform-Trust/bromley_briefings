@@ -69,7 +69,8 @@ def create_chart(df: pd.DataFrame) -> go.Figure:
         range=[0, 27],
         automargin=True,
         tickprefix="£",
-        ticksuffix="m"
+        ticksuffix="m",
+        fixedrange=True
     )
 
     fig.update_xaxes(
