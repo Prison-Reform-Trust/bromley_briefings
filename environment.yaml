@@ -1,7 +1,7 @@
 channels:
-  - plotly
   - conda-forge
   - defaults
+  - plotly
 dependencies:
   - _openmp_mutex=4.5
   - _python_abi3_support=1.0
