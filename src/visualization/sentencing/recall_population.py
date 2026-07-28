@@ -1,86 +1,104 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Importing libraries
+"""
+A Plotly chart showing the number of people in prison on recall in England & Wales
+The chart is saved as an HTML file using a Jinja2 template for embedding in a web page.
+"""
+
 import os
 
-import chart_studio
-import chart_studio.plotly as py
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.io as pio
-from dotenv import find_dotenv, load_dotenv
 from matplotlib import colors
 
-from src.visualization import prt_theme
+# Local modules
+import src.utilities as utils
+import src.visualization.prt_theme as prt_theme
 
-##Loading environment variables
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+# Load configuration
+CONFIG = utils.read_config()
 
-##Adding plotly credentials
-chart_studio.tools.set_credentials_file(
-    username=os.getenv("PLOTLY_USERNAME"), api_key=os.getenv("PLOTLY_API_KEY")
-)
-#Setting default Plotly template and assigning attributes to prt_template
-pio.templates.default = "prt_template"
-prt_template = prt_theme.pio.templates['prt_template']
-PROJECTION_SHADING = f'rgba{colors.to_rgba(prt_template.layout.colorway[0], alpha=0.2)}'
+# Jinja2 template variables
+TITLE = "The rise, and rise, and rise of the recall population"
+SUBTITLE = r"Almost one in five of the sentenced prison population is now held in custody on recall"
+SOURCE = "Ministry of Justice (2025). Offender management statistics quarterly: July to September 2024. And previous editions."
 
-#Read in datasets
-df = pd.read_csv("data/processed/sentencing/recall_population.csv", parse_dates=["date"], date_format="%b-%Y", thousands=",")
-
-## Plotting
-fig = go.Figure()
-
-fig.add_trace(
-    go.Scatter(
-        name="Recall population",
-        x=df["date"],
-        y=df["recall_pop"],
-        mode="lines",
-        hovertemplate="%{y} people<extra></extra>",
-    ),
+OUTPUT_PATH = utils.get_output_path(
+    section='sentencing',
+    filename='recall_population.html'
 )
 
-# Set y-axes range
-fig.update_yaxes(
-    range=[0, 16040],
-    automargin=True,
-    domain=[0,0.95]
+
+def create_chart(df: pd.DataFrame) -> go.Figure:
+    """Generates a line chart showing the prison population and projections.
+    Args:
+        df (pd.DataFrame): Dataframe containing the prison recall data.
+    Returns:
+        go.Figure: Plotly figure object.
+    """
+
+    fig = go.Figure()
+    colorway = pio.templates[pio.templates.default].layout.colorway
+    annotations = prt_theme.add_annotation(None, "People in prison", annotation_type="y-axis")
+
+    fig.add_trace(
+        go.Scatter(
+            name="Recall population",
+            x=df["date"],
+            y=df["recall_pop"],
+            mode="lines",
+            hovertemplate="%{y} people<extra></extra>",
+        ),
     )
 
-# Set x-axes range
-fig.update_xaxes(
-    dtick="M24",
+    # Configure axes
+    fig.update_yaxes(
+        range=[0, 16050],
+        automargin=True,
+        fixedrange=True,
     )
 
-# Axis parameter adjustments
-fig.update_layout(
-    xaxis_ticks="inside",
-    yaxis_tickformat= ",.0f",
-    hovermode="x",
-    margin_pad = 5,
-    margin = dict(t=20, b=25, l=0, r=25),
+    fig.update_xaxes(
+        autorange="max",
+        autorangeoptions_clipmax="2025-01-31",
+        dtick="M24"
+        )
+
+    # Configure layout
+    fig.update_layout(
+        yaxis_tickformat=",.0f",
+        hovermode="x",
+        annotations=annotations,
     )
 
-## Chart annotations
-annotations = []
+    return fig
 
-# Add title
-# prt_theme.add_title(fig, "The prison population has risen by 93% in the last 30 years—and it is predicted to rise further still")
 
-# Add source annotation with default placement
-# prt_theme.add_annotation(annotations, ("Ministry of Justice (2023). Offender management statistics: Prison population 2023.<br>"
-#                                         "Ministry of Justice (2024). Population and capacity briefing for 5 July 2024.<br>"
-#                                         "Ministry of Justice (2024). Prison population projections: 2023 to 2028."), 
-#                                         annotation_type="source")
+def prepare_chart() -> go.Figure:
+    """Loads data and prepares the Plotly chart."""
+    utils.setup_plotly_template()
+    data_path = os.path.join(CONFIG['data']['clnFilePath'], "sentencing/recall_population.csv")
+    df = utils.load_data(data_path, parse_dates=["date"], date_format="%b-%y")
+    fig = create_chart(df)
+    return fig
 
-# Add y-axis label annotation with placement based on dataframe column
-prt_theme.add_annotation(annotations, "People in prison", annotation_type="y-axis")
 
-# Adding annotations to layout
-fig.update_layout(annotations=annotations)
+def main() -> None:
+    """Generates the chart, and saves it as an HTML file using a Jinja2 template."""
+    fig = prepare_chart()
+    utils.save_plotly_chart_as_html(
+        fig=fig,
+        output_path=OUTPUT_PATH,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        source=SOURCE,
+    )
 
-# fig.show()
-py.plot(fig, filename="recall_population")
+
+if __name__ == "__main__":
+    main()
+
+
+# df = pd.read_csv("data/processed/sentencing/recall_population.csv", parse_dates=["date"], date_format="%b-%Y", thousands=",")
